@@ -3,13 +3,10 @@ package main
 import (
 	"log"
 
-	"github.com/joho/godotenv"
+	"github.com/ax-vasquez/wedding-site-api/settings"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	settings.Setup()
 	log.Println("HELLO")
 }

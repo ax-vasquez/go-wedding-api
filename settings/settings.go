@@ -1,5 +1,11 @@
 package settings
 
+import (
+	"log"
+
+	"github.com/joho/godotenv"
+)
+
 type Database struct {
 	Type        string
 	User        string
@@ -10,3 +16,10 @@ type Database struct {
 }
 
 var DatabaseSetting = &Database{}
+
+func Setup() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Panic("Error loading .env file")
+	}
+}

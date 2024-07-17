@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+
+  db:
+    # Selected 16.3 tag because, as of 7/17/24, it is the latest stable version of Postgres; there is no other reason
+    # If we run into trouble, we can safely experiment with different versions since there's nothing in 16.3 that we
+    # need, specifically.
+    image: postgres:16.3
+    restart: always
+    # The max memory size of the container while RUNNING (can be set to a different value for builds)
+    shm_size: 128mb
+    # Mount a directory for persistent data
+    volumes:
+      - ./local-data/postgres:/var/lib/postgresql/data:delegated
+    environment:
+      POSTGRES_DB: ${PGSQL_DBNAME}
+      POSTGRES_USER: ${PGSQL_USER}
+      POSTGRES_PASSWORD: ${PGSQL_PASSWORD}
+    ports:
+      - ${PGSQL_PORT}:5432

@@ -1,1 +1,5 @@
+# Local environment (test) data - generally just extra noise in a repo - not useful
+local-data
+
+# .env files
 *.env*

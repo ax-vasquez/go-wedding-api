@@ -22,7 +22,7 @@ func Setup() {
 		os.Getenv("PGSQL_TIMEZONE"))
 	dbLocal, err := gorm.Open(postgres.Open(dbConnectionString), &gorm.Config{})
 	if err != nil {
-		log.Fatal("There was a problem connecting to the database: ", err.Error())
+		log.Panic("There was a problem connecting to the database: ", err.Error())
 	}
 	db = dbLocal
 }
