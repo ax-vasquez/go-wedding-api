@@ -9,8 +9,6 @@ EXPECTED_KEYS=(
     "PGSQL_TIMEZONE"
 )
 
-value=$(<.env)
-
 # Check if .env file exists
 if ! [ -e .env ]; then
     echo "No .env file found - creating empty .env file"
