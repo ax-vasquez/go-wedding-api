@@ -13,9 +13,11 @@ EXPECTED_KEYS=(
 if ! [ -e .env ]; then
     echo "No .env file found - creating empty .env file"
     touch .env
-    echo "# The contents of this file are generated when you run ./setup.sh" >> .env
-    echo "# You can edit variables as-needed; they will not be overwritten when re-running the setup script" >> .env
-    echo "# You can also add variables as-needed; they are preserved when re-running the setup script" >> .env
+    echo "# ***************************************************************************************************" >> .env
+    echo "# * The contents of this file are generated when you run ./setup.sh                                 *" >> .env
+    echo "# * You can edit variables as-needed; they will not be overwritten when re-running the setup script *" >> .env
+    echo "# * You can also add variables as-needed; they are preserved when re-running the setup script       *" >> .env
+    echo "# ***************************************************************************************************" >> .env
 fi
 
 # Adds missing keys to the .env file, which is done both when updating and creating the .env file
