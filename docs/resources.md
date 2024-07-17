@@ -10,6 +10,10 @@ A list of useful references used while developing this API.
 * [Limiting a container's access to memory](https://docs.docker.com/config/containers/resource_constraints/#limit-a-containers-access-to-memory)
     * This covers the concepts in use with the `shm_size` field in `docker-compose.yml`
 
+### GNU
+
+* [`Makefile` documentation](https://www.gnu.org/software/make/manual/make.html)
+
 ### Gorm
 
 * [Homepage](https://gorm.io/index.html)
@@ -21,7 +25,8 @@ A list of useful references used while developing this API.
 
 * [List of TimeZones supported by Postgres (version 11)](https://bill.harding.blog/2020/03/21/list-of-postgres-11-time-zones/)
 * [REST API tutorial using Gin and Gorm](https://blog.logrocket.com/rest-api-golang-gin-gorm/)
-* [MAKEFILEs for Go Developers](https://tutorialedge.net/golang/makefiles-for-go-developers/)
+* [`Makefile`s for Go Developers](https://tutorialedge.net/golang/makefiles-for-go-developers/)
+* [Makefile tutorial](https://makefiletutorial.com/)
 
 ### GitHub
 
@@ -30,3 +35,5 @@ A list of useful references used while developing this API.
 ### StackOverflow
 
 * [Using `.env` variables in your `docker-compose.yml` file](https://stackoverflow.com/questions/29377853/how-can-i-use-environment-variables-in-docker-compose)
+* [Loading a `.env` file in a `Makefile`](https://stackoverflow.com/questions/44628206/how-to-load-and-export-variables-from-an-env-file-in-makefile)
+* [Create a file using a `Makefile`](https://stackoverflow.com/questions/2667789/how-to-create-a-file-using-makefile)
