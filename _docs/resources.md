@@ -27,6 +27,7 @@ A list of useful references used while developing this API.
 * [REST API tutorial using Gin and Gorm](https://blog.logrocket.com/rest-api-golang-gin-gorm/)
 * [`Makefile`s for Go Developers](https://tutorialedge.net/golang/makefiles-for-go-developers/)
 * [Makefile tutorial](https://makefiletutorial.com/)
+* [How to create a controller](https://letsgo-framework.github.io/guides/controllers.html#how-to-create-a-controller)
 
 ### GitHub
 
@@ -38,3 +39,4 @@ A list of useful references used while developing this API.
 * [Loading a `.env` file in a `Makefile`](https://stackoverflow.com/questions/44628206/how-to-load-and-export-variables-from-an-env-file-in-makefile)
 * [Create a file using a `Makefile`](https://stackoverflow.com/questions/2667789/how-to-create-a-file-using-makefile)
 * [Test naming conventions in Golang](https://stackoverflow.com/questions/15148331/test-naming-conventions-in-golang)
+* [Project structure recommendations for Golang Gin projects](https://stackoverflow.com/questions/57024470/folder-structure-and-package-naming-convention-for-a-rest-api-develop-in-gin-fra)

@@ -9,4 +9,4 @@ and responses using a stack built from scratch.
 
 | Endpoint | Response |
 | -------- | -------- |
-| `/ping` | `"OK"` |
+| `api/v1/ping` | `{ "status": 200, "message": "OK", "data": null }` |
