@@ -3,6 +3,8 @@ package controllers
 import (
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
@@ -30,4 +32,18 @@ func CreateUser(c *gin.Context) {
 	}
 	response.Status = status
 	c.JSON(status, response)
+}
+
+func GetUsers(c *gin.Context) {
+	var userIds []uint
+	userIdStrings := strings.Split(c.Query("ids"), ",")
+	for _, userIdStr := range userIdStrings {
+		userId, _ := strconv.ParseUint(userIdStr, 10, 64)
+		userIds = append(userIds, uint(userId))
+	}
+	users := models.FindUsers(userIds)
+	c.JSON(http.StatusOK, V1_API_RESPONSE{
+		Status: http.StatusOK,
+		Data: gin.H{
+			"users": users}})
 }

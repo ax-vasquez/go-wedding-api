@@ -1,6 +1,9 @@
 package models
 
 import (
+	"fmt"
+	"log"
+
 	"gorm.io/gorm"
 )
 
@@ -14,9 +17,9 @@ type User struct {
 	LastName                string `json:"last_name" binding:"required"`
 	Email                   string `json:"email" binding:"required"`
 	HorsDouevresSelectionId *uint
-	HorsDouevresSelection   HorsDouevres `gorm:"foreignKey:HorsDouevresSelectionId"`
+	HorsDouevresSelection   *HorsDouevres `gorm:"foreignKey:HorsDouevresSelectionId"`
 	EntreeSelectionId       *uint
-	EntreeSelection         Entree `gorm:"foreignKey:EntreeSelectionId"`
+	EntreeSelection         *Entree `gorm:"foreignKey:EntreeSelectionId"`
 }
 
 // Maybe create a user (if no errors) and returns the number of inserted records
@@ -27,4 +30,14 @@ func CreateUser(u *User) (int64, error) {
 		return 0, result.Error
 	}
 	return result.RowsAffected, nil
+}
+
+func FindUsers(ids []uint) []User {
+	var users []User
+	fmt.Println(ids)
+	result := db.Find(&users, ids)
+	if result.Error != nil {
+		log.Println("ERROR: ", result.Error.Error())
+	}
+	return users
 }
