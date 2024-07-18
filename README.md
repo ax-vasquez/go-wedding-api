@@ -7,8 +7,6 @@ and responses using a stack built from scratch.
 
 All endpoints are prefixed with the current API version route: `/api/v1`
 
-### `GET`
-
 | Method | Endpoint | Success Response |
 | ------ | -------- | -------- |
 | `GET` | `/ping` | `{ "status": 200, "message": "OK", "data": null }` |
