@@ -20,9 +20,22 @@ func Setup() {
 		os.Getenv("PGSQL_DBNAME"),
 		os.Getenv("PGSQL_PORT"),
 		os.Getenv("PGSQL_TIMEZONE"))
-	dbLocal, err := gorm.Open(postgres.Open(dbConnectionString), &gorm.Config{})
+
+	var err error
+	db, err = gorm.Open(postgres.Open(dbConnectionString), &gorm.Config{})
 	if err != nil {
 		log.Panic("There was a problem connecting to the database: ", err.Error())
 	}
-	db = dbLocal
+
+	err = nil
+	err = db.AutoMigrate(
+		&Entree{},
+		&HorsDouevres{},
+		&User{},
+		&UserInvitee{},
+		&UserUserInvitee{})
+
+	if err != nil {
+		log.Panic("There was a problem during the database AutoMigrate: ", err.Error())
+	}
 }
