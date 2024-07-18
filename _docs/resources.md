@@ -31,6 +31,7 @@ A list of useful references used while developing this API.
 
 ### GitHub
 
+* [`gin-gonic/gin`](https://github.com/gin-gonic/gin) - _Gin - HTTP web framework written in Go_
 * [`godotenv`](https://github.com/joho/godotenv) - _Go port of Ruby's dotenv library, which loads variables from a `.env` file_
 
 ### StackOverflow
