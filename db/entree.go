@@ -1,9 +1,9 @@
-package models
+package db
 
 import "gorm.io/gorm"
 
-// HorsDouevres table
-type HorsDouevres struct {
+// Entree table
+type Entree struct {
 	gorm.Model
 	OptionName string `json:"option_name"`
 }
