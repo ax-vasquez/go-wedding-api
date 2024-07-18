@@ -28,6 +28,7 @@ A list of useful references used while developing this API.
 * [`Makefile`s for Go Developers](https://tutorialedge.net/golang/makefiles-for-go-developers/)
 * [Makefile tutorial](https://makefiletutorial.com/)
 * [How to create a controller](https://letsgo-framework.github.io/guides/controllers.html#how-to-create-a-controller)
+* [When to use pointers in Go](https://medium.com/@meeusdylan/when-to-use-pointers-in-go-44c15fe04eac)
 
 ### GitHub
 

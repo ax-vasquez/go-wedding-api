@@ -11,6 +11,7 @@ func paveRoutes() *gin.Engine {
 	v1 := r.Group("/api/v1")
 	{
 		v1.GET("/ping", controllers.Ping)
+		v1.POST("/user", controllers.CreateUser)
 	}
 
 	return r
