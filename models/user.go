@@ -26,12 +26,12 @@ type User struct {
 }
 
 // Maybe create a user (if no errors) and returns the number of inserted records
-func CreateUser(u *User) (int64, error) {
+func CreateUser(u *User) (*int64, error) {
 	result := db.Create(&u)
 	if result.Error != nil {
-		return 0, result.Error
+		return nil, result.Error
 	}
-	return result.RowsAffected, nil
+	return &result.RowsAffected, nil
 }
 
 // Maybe update a user (if no errors) and returns the number of inserted records
