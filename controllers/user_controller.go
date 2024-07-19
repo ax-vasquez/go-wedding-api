@@ -107,7 +107,7 @@ func DeleteUser(c *gin.Context) {
 		response.Message = "Failed to insert user record."
 		log.Println("Error creating user: ", err.Error())
 	} else {
-		status = http.StatusCreated
+		status = http.StatusAccepted
 		response.Message = "Deleted user"
 		response.Data = gin.H{"records": result}
 	}

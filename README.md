@@ -7,6 +7,11 @@ and responses using a stack built from scratch.
 
 All endpoints are prefixed with the current API version route: `/api/v1`
 
+### `DELETE`
+
+| Method | Endpoint | Query Parameters | Success Response |
+| ------ | -------- | ---------------- | ---------------- |
+| `DELETE` | `/user/:id` | `id` (part of route) | `{ "status": 202, "message": "Deleted user", "data": { "records": 1 } }` |
 
 ### `GET`
 
