@@ -61,6 +61,7 @@ func CreateUser(c *gin.Context) {
 	c.JSON(status, response)
 }
 
+// Update a user
 func UpdateUser(c *gin.Context) {
 	response := V1_API_RESPONSE{}
 	var status int
@@ -90,6 +91,25 @@ func UpdateUser(c *gin.Context) {
 			response.Message = "Updated user"
 			response.Data = gin.H{"records": result}
 		}
+	}
+	response.Status = status
+	c.JSON(status, response)
+}
+
+// Delete a user
+func DeleteUser(c *gin.Context) {
+	response := V1_API_RESPONSE{}
+	var status int
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
+	result, err := models.DeleteUser(uint(id))
+	if err != nil {
+		status = http.StatusInternalServerError
+		response.Message = "Failed to insert user record."
+		log.Println("Error creating user: ", err.Error())
+	} else {
+		status = http.StatusCreated
+		response.Message = "Deleted user"
+		response.Data = gin.H{"records": result}
 	}
 	response.Status = status
 	c.JSON(status, response)

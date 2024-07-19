@@ -45,6 +45,16 @@ func UpdateUser(u *User) (*int64, error) {
 	return &result.RowsAffected, nil
 }
 
+// Maybe delete a user (if no errors) and returns the number of deleted records
+func DeleteUser(id uint) (*int64, error) {
+	result := db.Delete(&User{}, id)
+	if result.Error != nil {
+		// Return 0 as the ID when no insert was performed
+		return nil, result.Error
+	}
+	return &result.RowsAffected, nil
+}
+
 // Find Users by the given ids; returns a User slice
 func FindUsers(ids []uint) []User {
 	var users []User
