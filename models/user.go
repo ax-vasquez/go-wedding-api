@@ -29,7 +29,6 @@ type User struct {
 func CreateUser(u *User) (int64, error) {
 	result := db.Create(&u)
 	if result.Error != nil {
-		// Return 0 as the ID when no insert was performed
 		return 0, result.Error
 	}
 	return result.RowsAffected, nil
@@ -39,7 +38,6 @@ func CreateUser(u *User) (int64, error) {
 func UpdateUser(u *User) (*int64, error) {
 	result := db.Updates(u)
 	if result.Error != nil {
-		// Return 0 as the ID when no insert was performed
 		return nil, result.Error
 	}
 	return &result.RowsAffected, nil
@@ -47,9 +45,10 @@ func UpdateUser(u *User) (*int64, error) {
 
 // Maybe delete a user (if no errors) and returns the number of deleted records
 func DeleteUser(id uint) (*int64, error) {
+	// Since our models have DeletedAt set, this makes Gorm "soft delete" records on normal delete operations.
+	// We can add .Unscoped() prior to the .Delete() call if we want to permanently-delete them.
 	result := db.Delete(&User{}, id)
 	if result.Error != nil {
-		// Return 0 as the ID when no insert was performed
 		return nil, result.Error
 	}
 	return &result.RowsAffected, nil
