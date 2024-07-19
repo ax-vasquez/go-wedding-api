@@ -28,6 +28,7 @@ All endpoints are prefixed with the current API version route: `/api/v1`
 
 ### `POST`
 
-| Method | Endpoint | Body Fields | Success Response |
-| ------ | -------- | ----------- | ---------------- |
-| `POST` | `/user` | `first_name` (required), `last_name` (required), `email` (required), `is_admin`, `is_going`, `can_invite_others`, `hors_douevres_selection_id`, `entree_selection_id` | `{ "status": 201, "message": "Created new user", "data": { "records": 1 } }` |
+| Method | Endpoint | Parameters | Body Fields | Success Response |
+| ------ | -------- | ---------- | ----------- | ---------------- |
+| `POST` | `/user` | none | `first_name` (required), `last_name` (required), `email` (required), `is_admin`, `is_going`, `can_invite_others`, `hors_douevres_selection_id`, `entree_selection_id` | `{ "status": 201, "message": "Created new user", "data": { "records": 1 } }` |
+| `POST` | `/user/:id/invite-user` | `id` - the inviting user's ID | `first_name` (required), `last_name` (required), `email` (required), `is_admin`, `is_going`, `can_invite_others`, `hors_douevres_selection_id`, `entree_selection_id` | `{ "status": 201, "message": "Created new user", "data": { "records": 1 } }` |

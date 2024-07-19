@@ -32,7 +32,6 @@ func Setup() {
 		&Entree{},
 		&HorsDouevres{},
 		&User{},
-		&UserInvitee{},
 		&UserUserInvitee{})
 
 	if err != nil {
