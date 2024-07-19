@@ -9,9 +9,9 @@ All endpoints are prefixed with the current API version route: `/api/v1`
 
 ### `DELETE`
 
-| Method | Endpoint | Query Parameters | Success Response |
+| Method | Endpoint | Parameters | Success Response |
 | ------ | -------- | ---------------- | ---------------- |
-| `DELETE` | `/user/:id` | `id` (part of route) | `{ "status": 202, "message": "Deleted user", "data": { "records": 1 } }` |
+| `DELETE` | `/user/:id` | `id` | `{ "status": 202, "message": "Deleted user", "data": { "records": 1 } }` |
 
 ### `GET`
 
