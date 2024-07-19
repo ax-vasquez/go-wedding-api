@@ -1,9 +1,14 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 // Entree table
 type Entree struct {
 	gorm.Model
-	OptionName string `json:"option_name"`
+	CreatedAt  time.Time `gorm:"<-:create"`
+	OptionName string    `json:"option_name"`
 }

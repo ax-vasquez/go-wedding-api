@@ -1,6 +1,10 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 // User-UserInvitee relation table
 //
@@ -8,6 +12,7 @@ import "gorm.io/gorm"
 // to link users to their invitees
 type UserUserInvitee struct {
 	gorm.Model
+	CreatedAt time.Time `gorm:"<-:create"`
 	InviterId uint
 	Inviter   User `gorm:"foreignKey:InviterId"`
 	InviteeId uint
