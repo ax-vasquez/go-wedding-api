@@ -12,6 +12,7 @@ All endpoints are prefixed with the current API version route: `/api/v1`
 | Method | Endpoint | Parameters | Success Response |
 | ------ | -------- | ---------------- | ---------------- |
 | `DELETE` | `/user/:id` | `id` | `{ "status": 202, "message": "Deleted user", "data": { "records": 1 } }` |
+| `DELETE` | `/user/:id/invitee/:invitee_id` | `id`, `invitee_id` | `{ "status": 202, "message": "", "data": { "records": 1 } }` |
 
 ### `GET`
 
@@ -19,6 +20,7 @@ All endpoints are prefixed with the current API version route: `/api/v1`
 | ------ | -------- | ---------------- | ---------------- |
 | `GET` | `/ping` | none | `{ "status": 200, "message": "OK", "data": null }` |
 | `GET` | `/users` | `ids=<ID_1>,<ID_2>...` | `{ "status": 200, "message": "", "data": { "users": <MATCHING_USERS> } }` |
+| `GET` | `/user/:id/invitees` | none | `{ "status": 200, "message": "", "data": { "users": <INVITED_USERS_FOR_USER> } }` |
 
 ### `PATCH`
 

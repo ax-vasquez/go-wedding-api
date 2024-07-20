@@ -43,6 +43,10 @@ func FindInviteesForUser(user_id uint) []User {
 	return users
 }
 
+// Delete an invitee
+//
+// This will delete the related records from the user_user_invitees table as well as the invited user from the
+// users table.
 func DeleteInvitee(invitee_id uint) int64 {
 	result := db.Delete(&UserUserInvitee{}, "invitee_id = ?", invitee_id)
 	if result.Error != nil {
