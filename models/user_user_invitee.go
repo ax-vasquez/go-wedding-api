@@ -43,8 +43,12 @@ func FindInviteesForUser(user_id uint) []User {
 	return users
 }
 
-func DeleteInvitee(inviter_id, invitee_id uint) int64 {
-	result := db.Joins("JOIN user_user_invitees ON user_user_invitees.invitee_id = users.id AND user_user_invitees.inviter_id = ? AND user_user_invitees.invitee_id = ?", inviter_id, invitee_id).Delete(&User{})
+func DeleteInvitee(invitee_id uint) int64 {
+	result := db.Delete(&UserUserInvitee{}, "invitee_id = ?", invitee_id)
+	if result.Error != nil {
+		log.Println("Error deleting UserUserInvitee: ", result.Error.Error())
+	}
+	result = db.Delete(&User{}, invitee_id)
 	if result.Error != nil {
 		log.Println("Error deleting UserUserInvitee: ", result.Error.Error())
 	}

@@ -52,11 +52,10 @@ func GetInviteesForUser(c *gin.Context) {
 func DeleteInviteeForUser(c *gin.Context) {
 	response := V1_API_RESPONSE{}
 	var status int
-	inviter_id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
 	invitee_id, _ := strconv.ParseUint(c.Param("invitee_id"), 10, 64)
 	status = http.StatusAccepted
 	response.Status = status
 	response.Data = gin.H{
-		"records": models.DeleteInvitee(uint(inviter_id), uint(invitee_id))}
+		"records": models.DeleteInvitee(uint(invitee_id))}
 	c.JSON(status, response)
 }
