@@ -19,7 +19,7 @@ type UpdateUserInput struct {
 	FirstName               string `json:"first_name"`
 	LastName                string `json:"last_name"`
 	Email                   string `json:"email"`
-	HorsDouevresSelectionId *uint  `json:"hors_douevres_selection_id"`
+	HorsDoeuvresSelectionId *uint  `json:"hors_douevres_selection_id"`
 	EntreeSelectionId       *uint  `json:"entree_selection_id"`
 }
 
@@ -80,7 +80,7 @@ func UpdateUser(c *gin.Context) {
 			FirstName:               input.FirstName,
 			LastName:                input.LastName,
 			Email:                   input.Email,
-			HorsDouevresSelectionId: input.HorsDouevresSelectionId,
+			HorsDoeuvresSelectionId: input.HorsDoeuvresSelectionId,
 			EntreeSelectionId:       input.EntreeSelectionId})
 		if err != nil {
 			status = http.StatusInternalServerError

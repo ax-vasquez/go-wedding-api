@@ -19,8 +19,8 @@ type User struct {
 	FirstName               string        `json:"first_name" binding:"required"`
 	LastName                string        `json:"last_name" binding:"required"`
 	Email                   string        `json:"email" binding:"required"`
-	HorsDouevresSelectionId *uint         `json:"hors_douevres_selection_id"`
-	HorsDouevresSelection   *HorsDouevres `gorm:"foreignKey:HorsDouevresSelectionId"`
+	HorsDoeuvresSelectionId *uint         `json:"hors_douevres_selection_id"`
+	HorsDoeuvresSelection   *HorsDoeuvres `gorm:"foreignKey:HorsDouevresSelectionId"`
 	EntreeSelectionId       *uint         `json:"entree_selection_id"`
 	EntreeSelection         *Entree       `gorm:"foreignKey:EntreeSelectionId"`
 }

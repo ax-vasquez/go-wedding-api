@@ -12,7 +12,6 @@ func paveRoutes() *gin.Engine {
 	{
 		v1.DELETE("/user/:id", controllers.DeleteUser)
 		v1.DELETE("/user/:id/invitee/:invitee_id", controllers.DeleteInviteeForUser)
-		v1.GET("/ping", controllers.Ping)
 		v1.GET("/users", controllers.GetUsers)
 		v1.GET("/user/:id/invitees", controllers.GetInviteesForUser)
 		v1.PATCH("/user", controllers.UpdateUser)

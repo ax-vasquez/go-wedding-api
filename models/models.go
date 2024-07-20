@@ -30,7 +30,7 @@ func Setup() {
 	err = nil
 	err = db.AutoMigrate(
 		&Entree{},
-		&HorsDouevres{},
+		&HorsDoeuvres{},
 		&User{},
 		&UserUserInvitee{})
 
