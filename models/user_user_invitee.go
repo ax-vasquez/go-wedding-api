@@ -54,7 +54,7 @@ func DeleteInvitee(invitee_id uint) int64 {
 	}
 	result = db.Delete(&User{}, invitee_id)
 	if result.Error != nil {
-		log.Println("Error deleting UserUserInvitee: ", result.Error.Error())
+		log.Println("Error deleting invited User: ", result.Error.Error())
 	}
 	return result.RowsAffected
 }
