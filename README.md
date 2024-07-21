@@ -11,6 +11,7 @@ All endpoints are prefixed with the current API version route: `/api/v1`
 
 | Method | Endpoint | Parameters | Success Response |
 | ------ | -------- | ---------------- | ---------------- |
+| `DELETE` | `/horsdoeuvres/:id` | `id` | `{ "status": 202, "message": "Deleted hors doeuvres", "data": { "records": 1 } }` |
 | `DELETE` | `/user/:id` | `id` | `{ "status": 202, "message": "Deleted user", "data": { "records": 1 } }` |
 | `DELETE` | `/user/:id/invitee/:invitee_id` | `id`, `invitee_id` | `{ "status": 202, "message": "", "data": { "records": 1 } }` |
 
@@ -18,7 +19,9 @@ All endpoints are prefixed with the current API version route: `/api/v1`
 
 | Method | Endpoint | Query Parameters | Success Response |
 | ------ | -------- | ---------------- | ---------------- |
+| `GET` | `/horsdoeuvres` | none | `{ "status": 200, "message": "", "data": { "hors_doeuvres": <ALL_HORS_DOEUVRES> } }` |
 | `GET` | `/users` | `ids=<ID_1>,<ID_2>...` | `{ "status": 200, "message": "", "data": { "users": <MATCHING_USERS> } }` |
+| `GET` | `/user/:id/horsdoeuvres` | none | `{ "status": 200, "message": "", "data": { "hors_doeuvres": <USER_HORS_DOEUVRES_SELECTION> } }` |
 | `GET` | `/user/:id/invitees` | none | `{ "status": 200, "message": "", "data": { "users": <INVITED_USERS_FOR_USER> } }` |
 
 ### `PATCH`
@@ -31,6 +34,7 @@ All endpoints are prefixed with the current API version route: `/api/v1`
 
 | Method | Endpoint | Parameters | Body Fields | Success Response |
 | ------ | -------- | ---------- | ----------- | ---------------- |
+| `POST` | `/horsdoeuvres` | none | `option_name` (required) | `{ "status": 201, "message": "Created new hors doeuvres", "data": { "records": 1 } }` |
 | `POST` | `/user` | none | `first_name` (required), `last_name` (required), `email` (required), `is_admin`, `is_going`, `can_invite_others`, `hors_douevres_selection_id`, `entree_selection_id` | `{ "status": 201, "message": "Created new user", "data": { "records": 1 } }` |
 | `POST` | `/user/:id/invite-user` | `id` - the inviting user's ID | `first_name` (required), `last_name` (required), `email` (required), `is_admin`, `is_going`, `can_invite_others`, `hors_douevres_selection_id`, `entree_selection_id` | `{ "status": 201, "message": "Created new user", "data": { "records": 1 } }` |
 

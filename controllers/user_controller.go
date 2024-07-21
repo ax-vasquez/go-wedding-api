@@ -44,12 +44,12 @@ func CreateUser(c *gin.Context) {
 	var input models.User
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
-		response.Message = err.Error()
+		response.Message = "\"first_name\", \"last_name\", and \"email\" are required"
 	} else {
 		result, err := models.CreateUser(&input)
 		if err != nil {
 			status = http.StatusInternalServerError
-			response.Message = "Failed to insert user record."
+			response.Message = "Internal server error"
 			log.Println("Error creating user: ", err.Error())
 		} else {
 			status = http.StatusCreated
@@ -84,7 +84,7 @@ func UpdateUser(c *gin.Context) {
 			EntreeSelectionId:       input.EntreeSelectionId})
 		if err != nil {
 			status = http.StatusInternalServerError
-			response.Message = "Failed to insert user record."
+			response.Message = "Internal server error"
 			log.Println("Error updating user: ", err.Error())
 		} else {
 			status = http.StatusAccepted
@@ -104,8 +104,8 @@ func DeleteUser(c *gin.Context) {
 	result, err := models.DeleteUser(uint(id))
 	if err != nil {
 		status = http.StatusInternalServerError
-		response.Message = "Failed to insert user record."
-		log.Println("Error creating user: ", err.Error())
+		response.Message = "Internal server error"
+		log.Println("Error deleting user: ", err.Error())
 	} else {
 		status = http.StatusAccepted
 		response.Message = "Deleted user"
