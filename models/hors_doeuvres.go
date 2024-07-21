@@ -43,20 +43,11 @@ func CreateHorsDoeuvres(hors_douevres_opt *HorsDoeuvres) (*int64, error) {
 	return &result.RowsAffected, nil
 }
 
-// Maybe update a user (if no errors) and returns the number of inserted records
-func UpdateHorsDoeuvres(u *HorsDoeuvres) (*int64, error) {
-	result := db.Updates(u)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return &result.RowsAffected, nil
-}
-
 // Maybe delete a user (if no errors) and returns the number of deleted records
 func DeleteHorsDoeuvres(id uint) (*int64, error) {
 	// Since our models have DeletedAt set, this makes Gorm "soft delete" records on normal delete operations.
 	// We can add .Unscoped() prior to the .Delete() call if we want to permanently-delete them.
-	result := db.Delete(&User{}, id)
+	result := db.Delete(&HorsDoeuvres{}, id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
