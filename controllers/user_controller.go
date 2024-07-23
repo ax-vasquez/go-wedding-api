@@ -38,15 +38,16 @@ func GetUsers(c *gin.Context) {
 }
 
 // Create a user
-func CreateUser(c *gin.Context) {
+func CreateUsers(c *gin.Context) {
 	response := V1_API_RESPONSE{}
 	var status int
 	var input models.User
+	createUserInput := []models.User{input}
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
 		response.Message = "\"first_name\", \"last_name\", and \"email\" are required"
 	} else {
-		result, err := models.CreateUser(&input)
+		result, err := models.CreateUsers(&createUserInput)
 		if err != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"

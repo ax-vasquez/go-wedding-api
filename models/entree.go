@@ -35,8 +35,8 @@ func FindEntreesForUser(id uint) []Entree {
 }
 
 // Maybe create a user (if no errors) and returns the number of inserted records
-func CreateEntree(entree *Entree) (*int64, error) {
-	result := db.Create(&entree)
+func CreateEntrees(entrees *[]Entree) (*int64, error) {
+	result := db.Create(&entrees)
 	if result.Error != nil {
 		return nil, result.Error
 	}

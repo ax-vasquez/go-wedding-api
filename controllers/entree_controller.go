@@ -46,7 +46,7 @@ func CreateEntree(c *gin.Context) {
 		status = http.StatusBadRequest
 		response.Message = "\"option_name\" is required"
 	} else {
-		result, err := models.CreateEntree(&input)
+		result, err := models.CreateEntrees(&[]models.Entree{input})
 		if err != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"

@@ -23,7 +23,7 @@ func paveRoutes() *gin.Engine {
 		v1.PATCH("/user", controllers.UpdateUser)
 		v1.POST("/entree", controllers.CreateEntree)
 		v1.POST("/horsdoeuvres", controllers.CreateHorsDoeuvres)
-		v1.POST("/user", controllers.CreateUser)
+		v1.POST("/user", controllers.CreateUsers)
 		v1.POST("/user/:id/invite-user", controllers.CreateUserInvitee)
 	}
 

@@ -18,16 +18,16 @@ type User struct {
 	CanInviteOthers         bool          `json:"can_invite_others"`
 	FirstName               string        `json:"first_name" binding:"required"`
 	LastName                string        `json:"last_name" binding:"required"`
-	Email                   string        `json:"email" binding:"required"`
+	Email                   string        `json:"email" gorm:"uniqueIndex" binding:"required"`
 	HorsDoeuvresSelectionId *uint         `json:"hors_doeuvres_selection_id"`
 	HorsDoeuvresSelection   *HorsDoeuvres `gorm:"foreignKey:HorsDoeuvresSelectionId"`
 	EntreeSelectionId       *uint         `json:"entree_selection_id"`
 	EntreeSelection         *Entree       `gorm:"foreignKey:EntreeSelectionId"`
 }
 
-// Maybe create a user (if no errors) and returns the number of inserted records
-func CreateUser(u *User) (*int64, error) {
-	result := db.Create(&u)
+// Maybe create users with given data (if no errors) and returns the number of inserted records
+func CreateUsers(users *[]User) (*int64, error) {
+	result := db.Create(&users)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -36,7 +36,7 @@ func CreateUser(u *User) (*int64, error) {
 
 // Maybe update a user (if no errors) and returns the number of inserted records
 func UpdateUser(u *User) (*int64, error) {
-	result := db.Updates(u)
+	result := db.Updates(&u)
 	if result.Error != nil {
 		return nil, result.Error
 	}

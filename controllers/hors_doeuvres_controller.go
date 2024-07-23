@@ -46,7 +46,7 @@ func CreateHorsDoeuvres(c *gin.Context) {
 		status = http.StatusBadRequest
 		response.Message = "\"option_name\" is required"
 	} else {
-		result, err := models.CreateHorsDoeuvres(&input)
+		result, err := models.CreateHorsDoeuvres(&[]models.HorsDoeuvres{input})
 		if err != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"

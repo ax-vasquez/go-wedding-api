@@ -58,3 +58,14 @@ func DeleteInvitee(invitee_id uint) int64 {
 	}
 	return result.RowsAffected
 }
+
+// Helper to bulk-insert multiple invitee records. Intended for testing, but could
+// have uses elsewhere.
+func CreateUserUserInvitees(u []UserUserInvitee) error {
+	result := db.Create(u)
+	if result.Error != nil {
+		log.Println("Error creating UserUserInvitee record: ", result.Error.Error())
+		return result.Error
+	}
+	return nil
+}

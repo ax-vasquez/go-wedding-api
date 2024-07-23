@@ -35,8 +35,8 @@ func FindHorsDoeuvresForUser(id uint) []HorsDoeuvres {
 }
 
 // Maybe create a user (if no errors) and returns the number of inserted records
-func CreateHorsDoeuvres(hors_douevres_opt *HorsDoeuvres) (*int64, error) {
-	result := db.Create(&hors_douevres_opt)
+func CreateHorsDoeuvres(hors_douevres *[]HorsDoeuvres) (*int64, error) {
+	result := db.Create(&hors_douevres)
 	if result.Error != nil {
 		return nil, result.Error
 	}
