@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"strconv"
 )
 
 func loadTestUsers() error {
@@ -88,7 +89,14 @@ func loadTestHorsDoeuvres() error {
 	return nil
 }
 
+func getIsTestEnv() bool {
+	test_env_str, _ := os.LookupEnv("TEST_ENV")
+	isTestEnv, _ := strconv.ParseBool(test_env_str)
+	return isTestEnv
+}
+
 func checkTestEnv() error {
+	isTestEnv := getIsTestEnv()
 	if !isTestEnv {
 		return errors.New("TEST_ENV was either not found, not defined or set to 'false' - must be set to 'true' for test database operations")
 	}
