@@ -3,17 +3,18 @@ package models
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"os"
 )
 
 func loadTestUsers() error {
 	users := []User{}
 	userInvitees := []User{}
-	userDataFile, err := os.ReadFile("./test-fixtures/users.json")
+	userDataFile, err := os.ReadFile("../test-fixtures/users.json")
 	if err != nil {
 		return errors.New("There was a problem loading test user data from ./test-fixtures/users.json: " + err.Error())
 	}
-	userInviteeDataFile, err := os.ReadFile("./test-fixtures/invitees.json")
+	userInviteeDataFile, err := os.ReadFile("./../test-fixtures/invitees.json")
 	if err != nil {
 		return errors.New("There was a problem loading test user data from ./test-fixtures/invitees.json: " + err.Error())
 	}
@@ -38,7 +39,7 @@ func loadTestUsers() error {
 
 func loadTestUserInviteeRelationships() error {
 	records := []UserUserInvitee{}
-	recordsFile, err := os.ReadFile("./test-fixtures/user_user_invitees.json")
+	recordsFile, err := os.ReadFile("../test-fixtures/user_user_invitees.json")
 	if err != nil {
 		return errors.New("There was a problem loading test user data from ./test-fixtures/user_user_invitees.json: " + err.Error())
 	}
@@ -55,7 +56,7 @@ func loadTestUserInviteeRelationships() error {
 
 func loadTestEntrees() error {
 	records := []Entree{}
-	recordsFile, err := os.ReadFile("./test-fixtures/entrees.json")
+	recordsFile, err := os.ReadFile("../test-fixtures/entrees.json")
 	if err != nil {
 		return errors.New("There was a problem loading test user data from ./test-fixtures/entrees.json: " + err.Error())
 	}
@@ -72,7 +73,7 @@ func loadTestEntrees() error {
 
 func loadTestHorsDoeuvres() error {
 	records := []HorsDoeuvres{}
-	recordsFile, err := os.ReadFile("./test-fixtures/user_user_invitees.json")
+	recordsFile, err := os.ReadFile("../test-fixtures/user_user_invitees.json")
 	if err != nil {
 		return errors.New("There was a problem loading test user data from ./test-fixtures/user_user_invitees.json: " + err.Error())
 	}
@@ -87,21 +88,48 @@ func loadTestHorsDoeuvres() error {
 	return nil
 }
 
-func SeedTestData() error {
+func checkTestEnv() error {
 	if !isTestEnv {
 		return errors.New("TEST_ENV was either not found, not defined or set to 'false' - must be set to 'true' for test database operations")
 	}
-	loadTestUsers()
-	loadTestUserInviteeRelationships()
-	loadTestEntrees()
-	loadTestHorsDoeuvres()
+	return nil
+}
+
+func SeedTestData() {
+	err := checkTestEnv()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	err = loadTestUsers()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	err = loadTestUserInviteeRelationships()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	err = loadTestEntrees()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	err = loadTestHorsDoeuvres()
+	if err != nil {
+		log.Println(err.Error())
+	}
+}
+
+func CreateTestDB() error {
+	checkTestEnv()
+	result := db.Raw("CREATE DATABASE test_db")
+
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }
 
 func DropTestDB() error {
-	if !isTestEnv {
-		return errors.New("TEST_ENV was either not found, not defined or set to 'false' - must be set to 'true' for test database operations")
-	}
+	checkTestEnv()
 	result := db.Raw("DROP DATABASE test_db")
 	if result.Error != nil {
 		return result.Error

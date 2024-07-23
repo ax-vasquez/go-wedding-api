@@ -1,10 +1,11 @@
-package main
+package models
 
 import (
+	"log"
 	"os"
 	"testing"
 
-	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/joho/godotenv"
 )
 
 // Sets up the environment for testing
@@ -20,15 +21,18 @@ import (
 // See https://pkg.go.dev/testing#hdr-Main
 func TestMain(m *testing.M) {
 
+	err := godotenv.Load("../.env")
+	if err != nil {
+		log.Panic("Error loading .env file: ", err.Error())
+	}
 	os.Setenv("TEST_ENV", "true")
-	// 1. Intercept DB configuration
-	// 2. Append "_test" to the DB values (as necessary)
-	// 3. Create seed data (might need to manually-create data, then dump the DB, if able)
+	Setup()
+	SeedTestData()
 
 	// This will be 0 if passing, 1 if failing
 	exitCode := m.Run()
 
-	models.DropTestDB()
+	DropTestDB()
 
 	// Must return status code - if you don't all tests will be marked as "passing" by returning 0 for all tests
 	os.Exit(exitCode)

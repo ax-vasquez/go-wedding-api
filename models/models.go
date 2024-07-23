@@ -13,12 +13,12 @@ import (
 )
 
 var db *gorm.DB
-var test_env_str, _ = os.LookupEnv("TEST_ENV")
-var isTestEnv, _ = strconv.ParseBool(test_env_str)
 
 func Setup() {
 	var err error
 	var db_name string
+	test_env_str, _ := os.LookupEnv("TEST_ENV")
+	isTestEnv, _ := strconv.ParseBool(test_env_str)
 	// TODO: Wire this up to a secure cloud logging solution in a production environment; keep "newLogger" as dev logging solution
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
