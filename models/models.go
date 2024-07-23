@@ -47,6 +47,7 @@ func Setup() {
 	// then reconnect to the database using "test_db" as the database name. This makes all database operations
 	// use the "test_db" database instead of the one specified in your .env file
 	if isTestEnv {
+		fmt.Println("IS TEST")
 		CreateTestDB()
 		dbConnectionString = fmt.Sprintf(
 			"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s",

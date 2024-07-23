@@ -35,6 +35,12 @@ func TestMain(m *testing.M) {
 	// This will be 0 if passing, 1 if failing
 	exitCode := m.Run()
 
+	// Close() is not normally required; however, we need to close the prior connection
+	// so there is no longer a live connection to the test_db (otherwise, we can't DROP
+	// it).
+	conn, _ := db.DB()
+	conn.Close()
+
 	// Re-establish connection to DB using "production" DB name so we can drop the test DB
 	dbConnectionString := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s",

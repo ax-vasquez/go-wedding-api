@@ -128,8 +128,7 @@ func SeedTestData() {
 
 func CreateTestDB() error {
 	checkTestEnv()
-	result := db.Raw("CREATE DATABASE test_db")
-
+	result := db.Exec("CREATE DATABASE test_db")
 	if result.Error != nil {
 		return result.Error
 	}
@@ -138,7 +137,7 @@ func CreateTestDB() error {
 
 func DropTestDB() error {
 	checkTestEnv()
-	result := db.Raw("DROP DATABASE test_db")
+	result := db.Exec("DROP DATABASE test_db")
 	if result.Error != nil {
 		return result.Error
 	}
