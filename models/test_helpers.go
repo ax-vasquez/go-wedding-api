@@ -103,6 +103,7 @@ func checkTestEnv() error {
 	return nil
 }
 
+// Seeds test_db with test data defined in the /test-fixtures directory
 func SeedTestData() {
 	err := checkTestEnv()
 	if err != nil {
@@ -126,6 +127,12 @@ func SeedTestData() {
 	}
 }
 
+// Drops test_db
+//
+// test_db does not exist before or after tests. As a result, the "production"
+// client controls the setup and teardown of the test DB. While the tests
+// are running, the gorm client is configured to run commands on the test_db
+// database.
 func CreateTestDB() error {
 	checkTestEnv()
 	result := db.Exec("CREATE DATABASE test_db")
@@ -135,6 +142,11 @@ func CreateTestDB() error {
 	return nil
 }
 
+// Drops test_db
+//
+// The gorm db connection MUST be connected to a database other than test_db when this is
+// run, otherwise the command will fail since the client is connected to the DB it's trying
+// to drop.
 func DropTestDB() error {
 	checkTestEnv()
 	result := db.Exec("DROP DATABASE test_db")
