@@ -7,6 +7,7 @@ EXPECTED_KEYS=(
     "PGSQL_DBNAME"
     "PGSQL_PORT"
     "PGSQL_TIMEZONE"
+    "CODECOV_TOKEN"
 )
 
 # Check if .env file exists
@@ -38,6 +39,9 @@ do
         elif [ ${key} = "PGSQL_TIMEZONE" ]; then
             echo "Using \"US/Central\" as default value for \"${key}\""
             echo "${key}=US/Central" >> .env
+        else
+            # Write expected keys that don't have defaults to file so user is at least aware of them
+            echo "${key}=" >> .env
         fi
     fi
 done
