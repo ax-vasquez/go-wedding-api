@@ -4,174 +4,224 @@
         "first_name": "Rupinder",
         "last_name": "McNiel",
         "email": "user_1@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 2,
         "first_name": " Boitumelo",
         "last_name": "Lazzari",
         "email": "user_2@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 3,
         "first_name": "Ailbhe",
         "last_name": "Siebert",
         "email": "user_3@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 4,
         "first_name": "Oni",
         "last_name": "Donovan",
         "email": "user_4@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 5,
         "first_name": "Eslem",
         "last_name": "Macauley",
         "email": "user_5@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 6,
         "first_name": "Lyric",
         "last_name": "Dirix",
         "email": "user_6@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 7,
         "first_name": "Ayomide",
         "last_name": "Steinmann",
         "email": "user_7@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 8,
         "first_name": "Loren",
         "last_name": "Nagarkar",
         "email": "user_8@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 9,
         "first_name": "Paget",
         "last_name": "Clay",
         "email": "user_9@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 10,
         "first_name": "Tumelo",
         "last_name": "Marszałek",
         "email": "user_10@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 11,
         "first_name": "Şan",
         "last_name": "Vinković",
         "email": "user_11@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 12,
         "first_name": "Hollis",
         "last_name": "Roth",
         "email": "user_12@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 13,
         "first_name": "Tiyamike",
         "last_name": "Athanasiou",
         "email": "user_13@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 14,
         "first_name": "Munashe",
         "last_name": "Kowalczyk",
         "email": "user_14@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 15,
         "first_name": "Gabi",
         "last_name": "Lundqvist",
         "email": "user_15@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 16,
         "first_name": "Justy",
         "last_name": "Moschella",
         "email": "user_16@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 17,
         "first_name": "Saša",
         "last_name": "Layton",
         "email": "user_17@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 18,
         "first_name": "Ekene",
         "last_name": "Mussolini",
         "email": "user_18@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 19,
         "first_name": "Royal",
         "last_name": "Abraham",
         "email": "user_19@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 20,
         "first_name": "Pushpa",
         "last_name": "Felipe",
         "email": "user_20@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 21,
         "first_name": "Adi",
         "last_name": "Berg",
         "email": "user_21@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 22,
         "first_name": "Efemena",
         "last_name": "Mac Shuibhne",
         "email": "user_22@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 23,
         "first_name": "Itoro",
         "last_name": "Song",
         "email": "user_23@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 24,
         "first_name": "Kayin",
         "last_name": "Timberlake",
         "email": "user_24@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     },
     {
         "ID": 25,
         "first_name": "Nour",
         "last_name": "Scholz",
         "email": "user_25@fakedomain.com",
-        "can_invite_others": true
+        "can_invite_others": true,
+        "entree_selection_id": 1,
+        "hors_doeuvres_selection_id": 1
     }
 ]
