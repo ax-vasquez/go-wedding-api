@@ -55,23 +55,8 @@ func Setup() {
 	// then reconnect to the database using "test_db" as the database name. This makes all database operations
 	// use the "test_db" database instead of the one specified in your .env file
 	if isTestEnv {
-		fmt.Println("IS TEST")
 		CreateTestDB()
-		dbConnectionString = fmt.Sprintf(
-			"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s",
-			os.Getenv("PGSQL_HOST"),
-			os.Getenv("PGSQL_USER"),
-			os.Getenv("PGSQL_PASSWORD"),
-			"test_db",
-			os.Getenv("PGSQL_PORT"),
-			os.Getenv("PGSQL_TIMEZONE"))
-		db, err = gorm.Open(postgres.Open(dbConnectionString), &gorm.Config{
-			Logger: newLogger,
-		})
-		if err != nil {
-			log.Panic("There was a problem connecting to the test database: ", err.Error())
-		}
-		// TODO: More setup and stuff
+		SwitchConnectedDB("test_db")
 	}
 
 	err = nil

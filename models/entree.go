@@ -54,10 +54,14 @@ func CreateEntrees(entrees *[]Entree) (*[]Entree, error) {
 }
 
 // Maybe delete a user (if no errors) and returns the number of deleted records
-func DeleteEntree(id uint) (*int64, error) {
+func DeleteEntree(id uuid.UUID) (*int64, error) {
 	// Since our models have DeletedAt set, this makes Gorm "soft delete" records on normal delete operations.
 	// We can add .Unscoped() prior to the .Delete() call if we want to permanently-delete them.
-	result := db.Delete(&Entree{}, id)
+	result := db.Delete(&Entree{
+		BaseModel: BaseModel{
+			ID: id,
+		},
+	})
 	if result.Error != nil {
 		return nil, result.Error
 	}

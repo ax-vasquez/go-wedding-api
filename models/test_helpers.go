@@ -3,9 +3,13 @@ package models
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func loadTestUsers() error {
@@ -153,5 +157,47 @@ func DropTestDB() error {
 	if result.Error != nil {
 		return result.Error
 	}
+	return nil
+}
+
+// Helper method to switch the underlying DB that the Gorm client is connected to.
+//
+// When switching the connection, DB().Close() MUST be called on the previous connection. This
+// matters most when resetting test_db since it's dropped as part of the reset process. If the
+// connection is not closed before attempting to drop the DB, the operation will fail and indicate
+// there is still an active connection.
+func SwitchConnectedDB(dbName string) error {
+	// Close() is not normally required; however, we need to close the prior connection
+	// so there is no longer a live connection to the test_db (otherwise, we can't DROP
+	// it).
+	conn, err := db.DB()
+	if err != nil {
+		return err
+	}
+
+	conn.Close()
+
+	// Re-establish connection to DB using "production" DB name so we can drop the test DB
+	dbConnectionString := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s",
+		os.Getenv("PGSQL_HOST"),
+		os.Getenv("PGSQL_USER"),
+		os.Getenv("PGSQL_PASSWORD"),
+		dbName,
+		os.Getenv("PGSQL_PORT"),
+		os.Getenv("PGSQL_TIMEZONE"))
+
+	db, err = gorm.Open(postgres.Open(dbConnectionString), &gorm.Config{
+		Logger: newLogger,
+	})
+	if err != nil {
+		log.Panic("There was a problem connecting to the database: ", err.Error())
+		return err
+	}
+	return nil
+}
+
+// Helper method to reset the test DB after operations with side effects have been performed.
+func ResetTestDb() error {
 	return nil
 }

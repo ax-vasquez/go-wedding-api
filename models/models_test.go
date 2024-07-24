@@ -1,14 +1,11 @@
 package models
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"testing"
 
 	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 // Sets up the environment for testing
@@ -34,30 +31,8 @@ func TestMain(m *testing.M) {
 
 	// This will be 0 if passing, 1 if failing
 	exitCode := m.Run()
-
-	// Close() is not normally required; however, we need to close the prior connection
-	// so there is no longer a live connection to the test_db (otherwise, we can't DROP
-	// it).
-	conn, _ := db.DB()
-	conn.Close()
-
-	// Re-establish connection to DB using "production" DB name so we can drop the test DB
-	dbConnectionString := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s",
-		os.Getenv("PGSQL_HOST"),
-		os.Getenv("PGSQL_USER"),
-		os.Getenv("PGSQL_PASSWORD"),
-		os.Getenv("PGSQL_DBNAME"),
-		os.Getenv("PGSQL_PORT"),
-		os.Getenv("PGSQL_TIMEZONE"))
-
-	db, err = gorm.Open(postgres.Open(dbConnectionString), &gorm.Config{
-		Logger: newLogger,
-	})
-	if err != nil {
-		log.Panic("There was a problem connecting to the database: ", err.Error())
-	}
-
+	// Switch back to "prod" DB so we can drop the test DB
+	SwitchConnectedDB(os.Getenv("PGSQL_DBNAME"))
 	DropTestDB()
 
 	// Must return status code - if you don't all tests will be marked as "passing" by returning 0 for all tests
