@@ -7,6 +7,7 @@ import (
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // Get a list of entrees
@@ -16,14 +17,15 @@ import (
 // has been made, yet. If no user ID is specified, then data for all possible Entrees
 // is returned.
 func GetEntrees(c *gin.Context) {
-	id, parseIdErr := strconv.ParseUint(c.Param("id"), 10, 64)
+	idStr := c.Param("id")
+	id, parseIdErr := uuid.Parse(idStr)
 	var response V1_API_RESPONSE
 	var status int
 	var hors_doeuvres []models.Entree
 	if parseIdErr != nil {
 		hors_doeuvres = models.FindEntrees()
 	} else {
-		hors_doeuvres = models.FindEntreesForUser(uint(id))
+		hors_doeuvres = models.FindEntreesForUser(id)
 	}
 	status = http.StatusOK
 	response.Status = status

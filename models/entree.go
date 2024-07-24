@@ -35,7 +35,7 @@ func FindEntreeById(id uuid.UUID) (*Entree, error) {
 }
 
 // Finds entrees for the given user
-func FindEntreesForUser(id uint) []Entree {
+func FindEntreesForUser(id uuid.UUID) []Entree {
 	var entrees []Entree
 	result := db.Joins("JOIN users ON entrees.id = users.entree_selection_id AND users.id = ?", id).Find(&entrees)
 	if result.Error != nil {
