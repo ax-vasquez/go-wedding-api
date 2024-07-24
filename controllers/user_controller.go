@@ -8,19 +8,19 @@ import (
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
+	"github.com/google/uuid"
 )
 
 type UpdateUserInput struct {
-	ID                      uint   `json:"id" binding:"required"`
-	IsAdmin                 bool   `json:"is_admin"`
-	IsGoing                 bool   `json:"is_going"`
-	CanInviteOthers         bool   `json:"can_invite_others"`
-	FirstName               string `json:"first_name"`
-	LastName                string `json:"last_name"`
-	Email                   string `json:"email"`
-	HorsDoeuvresSelectionId *uint  `json:"hors_douevres_selection_id"`
-	EntreeSelectionId       *uint  `json:"entree_selection_id"`
+	ID                      uuid.UUID `json:"id" binding:"required"`
+	IsAdmin                 bool      `json:"is_admin"`
+	IsGoing                 bool      `json:"is_going"`
+	CanInviteOthers         bool      `json:"can_invite_others"`
+	FirstName               string    `json:"first_name"`
+	LastName                string    `json:"last_name"`
+	Email                   string    `json:"email"`
+	HorsDoeuvresSelectionId uuid.UUID `json:"hors_douevres_selection_id"`
+	EntreeSelectionId       uuid.UUID `json:"entree_selection_id"`
 }
 
 func GetUsers(c *gin.Context) {
@@ -72,7 +72,7 @@ func UpdateUser(c *gin.Context) {
 		response.Message = err.Error()
 	} else {
 		result, err := models.UpdateUser(&models.User{
-			Model: gorm.Model{
+			BaseModel: models.BaseModel{
 				ID: input.ID,
 			},
 			IsAdmin:                 input.IsAdmin,

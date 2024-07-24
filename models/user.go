@@ -4,12 +4,12 @@ import (
 	"log"
 	"time"
 
-	"gorm.io/gorm"
+	"github.com/google/uuid"
 )
 
 // User table
 type User struct {
-	gorm.Model
+	BaseModel
 	// We override Gorm's CreatedAt field so we can set the gorm:"<-:create" directive,
 	// which prevents this field from being altered once the record is created
 	CreatedAt               time.Time     `gorm:"<-:create"`
@@ -19,9 +19,9 @@ type User struct {
 	FirstName               string        `json:"first_name" binding:"required"`
 	LastName                string        `json:"last_name" binding:"required"`
 	Email                   string        `json:"email" gorm:"uniqueIndex" binding:"required"`
-	HorsDoeuvresSelectionId *uint         `json:"hors_doeuvres_selection_id"`
+	HorsDoeuvresSelectionId uuid.UUID     `json:"hors_doeuvres_selection_id"`
 	HorsDoeuvresSelection   *HorsDoeuvres `gorm:"foreignKey:HorsDoeuvresSelectionId"`
-	EntreeSelectionId       *uint         `json:"entree_selection_id"`
+	EntreeSelectionId       uuid.UUID     `json:"entree_selection_id"`
 	EntreeSelection         *Entree       `gorm:"foreignKey:EntreeSelectionId"`
 }
 

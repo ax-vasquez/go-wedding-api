@@ -6,10 +6,18 @@ import (
 	"os"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
+
+type BaseModel struct {
+	CreatedAt time.Time      `json:"created_at" gorm:"<-:create"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`
+	ID        uuid.UUID      `json:"id" gorm:"type:uuid;default:gen_random_uuid()"`
+}
 
 var db *gorm.DB
 var newLogger = logger.New(

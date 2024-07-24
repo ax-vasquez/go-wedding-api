@@ -7,6 +7,7 @@ import (
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // Create a user invitee
@@ -14,14 +15,15 @@ func CreateUserInvitee(c *gin.Context) {
 	response := V1_API_RESPONSE{}
 	var status int
 	var input models.User
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
+	idStr := c.Param("id")
+	id, _ := uuid.Parse(idStr)
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
 	} else {
 		// Invited users are considered +1s to wedding guest; they cannot invite others
 		input.CanInviteOthers = false
-		result, err := models.CreateUserInvitee(uint(id), input)
+		result, err := models.CreateUserInvitee(id, input)
 		if err != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error - contact server administrator."

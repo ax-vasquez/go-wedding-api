@@ -2,16 +2,12 @@ package models
 
 import (
 	"log"
-	"time"
-
-	"gorm.io/gorm"
 )
 
 // HorsDouevres table
 type HorsDoeuvres struct {
-	gorm.Model
-	CreatedAt  time.Time `gorm:"<-:create"`
-	OptionName string    `json:"option_name" binding:"required"`
+	BaseModel
+	OptionName string `json:"option_name" binding:"required"`
 }
 
 // Finds all hors doeuvres

@@ -74,17 +74,17 @@ func loadTestEntrees() error {
 
 func loadTestHorsDoeuvres() error {
 	records := []HorsDoeuvres{}
-	recordsFile, err := os.ReadFile("../test-fixtures/user_user_invitees.json")
+	recordsFile, err := os.ReadFile("../test-fixtures/hors_doeuvres.json")
 	if err != nil {
-		return errors.New("There was a problem loading test user data from ./test-fixtures/user_user_invitees.json: " + err.Error())
+		return errors.New("There was a problem loading test user data from ./test-fixtures/hors_doeuvres.json: " + err.Error())
 	}
 	err = json.Unmarshal(recordsFile, &records)
 	if err != nil {
-		return errors.New("There was a problem unmarshaling the JSON from file ./test-fixtures/user_user_invitees.json: " + err.Error())
+		return errors.New("There was a problem unmarshaling the JSON from file ./test-fixtures/hors_doeuvres.json: " + err.Error())
 	}
 	_, err = CreateHorsDoeuvres(&records)
 	if err != nil {
-		return errors.New("There was a problem creating the test user user invitee records: " + err.Error())
+		return errors.New("There was a problem creating the hors doeuvres records: " + err.Error())
 	}
 	return nil
 }
@@ -105,7 +105,15 @@ func checkTestEnv() error {
 
 // Seeds test_db with test data defined in the /test-fixtures directory
 func SeedTestData() {
-	err := checkTestEnv()
+	err := loadTestEntrees()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	err = loadTestHorsDoeuvres()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	err = checkTestEnv()
 	if err != nil {
 		log.Println(err.Error())
 	}
@@ -114,14 +122,6 @@ func SeedTestData() {
 		log.Println(err.Error())
 	}
 	err = loadTestUserInviteeRelationships()
-	if err != nil {
-		log.Println(err.Error())
-	}
-	err = loadTestEntrees()
-	if err != nil {
-		log.Println(err.Error())
-	}
-	err = loadTestHorsDoeuvres()
 	if err != nil {
 		log.Println(err.Error())
 	}
