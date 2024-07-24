@@ -23,8 +23,6 @@ func TestEntrees(t *testing.T) {
 			t.Fatalf("Expected 5 entree records, received: %d", len(entrees))
 		}
 	})
-	// TODO: Fix bug with setup/teardown - INSERT is not working properly for hors doeuvres, which puts the test DB in a bad state.
-	// During the first run (while the bad state is created), this test will fail. After that, the test will pass 100% of the time.
 	t.Run("Can find entrees for user", func(t *testing.T) {
 		id, _ := uuid.Parse("0ad1d80a-329b-4ffe-89c1-87af4d945953")
 		entrees := FindEntreesForUser(id)
