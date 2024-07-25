@@ -3,7 +3,6 @@ package controllers
 import (
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
@@ -42,11 +41,16 @@ func CreateUserInvitee(c *gin.Context) {
 func GetInviteesForUser(c *gin.Context) {
 	response := V1_API_RESPONSE{}
 	var status int
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
+	id, _ := uuid.Parse(c.Param("invitee_id"))
 	status = http.StatusOK
 	response.Status = status
-	response.Data = gin.H{
-		"invitees": models.FindInviteesForUser(uint(id))}
+	data, err := models.FindInviteesForUser(id)
+	if err != nil {
+		status = http.StatusInternalServerError
+	} else {
+		response.Data = gin.H{
+			"invitees": data}
+	}
 	c.JSON(status, response)
 }
 

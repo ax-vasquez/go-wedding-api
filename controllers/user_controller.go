@@ -81,8 +81,8 @@ func UpdateUser(c *gin.Context) {
 			FirstName:               input.FirstName,
 			LastName:                input.LastName,
 			Email:                   input.Email,
-			HorsDoeuvresSelectionId: input.HorsDoeuvresSelectionId,
-			EntreeSelectionId:       input.EntreeSelectionId})
+			HorsDoeuvresSelectionId: &input.HorsDoeuvresSelectionId,
+			EntreeSelectionId:       &input.EntreeSelectionId})
 		if err != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"

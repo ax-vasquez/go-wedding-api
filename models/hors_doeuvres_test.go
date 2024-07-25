@@ -10,7 +10,7 @@ import (
 func TestHorsDoeuvres(t *testing.T) {
 	assert := assert.New(t)
 	t.Run("Can find a hors doeuvres", func(t *testing.T) {
-		id, _ := uuid.Parse(FirstUserIdStr)
+		id, _ := uuid.Parse("3baf970f-1670-4b42-ba81-63168a2f21b8")
 		horsDoeuvres, err := FindHorsDoeuvresById(id)
 		assert.Equal(err, nil)
 		assert.Equal(horsDoeuvres.OptionName, "Crab puff")
