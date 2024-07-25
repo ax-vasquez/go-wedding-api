@@ -12,6 +12,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// Convenience variable to keep easy reference to the UUID of the first user in the test data set ("Rupinder McNiel")
+var FirstUserIdStr = "0ad1d80a-329b-4ffe-89c1-87af4d945953"
+
+// Convenience variable to keep easy reference to the UUID of the first user's invitee in the test data set ("Suman Sousa")
+var FirstUserInviteeIdStr = "007170d7-5633-4a44-9326-ddf9dce5a6ef"
+
+// Convenience variable to keep easy reference to the UUID of the entree in the test data set ("Caprese pasta")
+var FirstEntreeIdStr = "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3"
+
 func loadTestUsers() error {
 	users := []User{}
 	userInvitees := []User{}

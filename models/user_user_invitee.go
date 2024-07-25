@@ -18,17 +18,17 @@ type UserUserInvitee struct {
 // Create user Invitee and return the number of rows affected
 //
 // This inserts a new row in the user_user_invitees table, which facilitates a many-to-many relationship
-// between invitee
-func CreateUserInvitee(inviting_user_id uuid.UUID, invited_user User) (*int64, error) {
+// between invitee.
+func CreateUserInvitee(invitingUserId uuid.UUID, invitedUser User) (*User, error) {
 	result := db.Create(&UserUserInvitee{
-		InviterId: inviting_user_id,
-		Invitee:   invited_user,
-	})
+		InviterId: invitingUserId,
+		Invitee:   invitedUser,
+	}).Find(&invitedUser)
 	if result.Error != nil {
 		log.Println("Error creating UserUserInvitee record: ", result.Error.Error())
 		return nil, result.Error
 	}
-	return &result.RowsAffected, nil
+	return &invitedUser, nil
 }
 
 // Finds all users for the given inviting user ID
@@ -45,16 +45,18 @@ func FindInviteesForUser(user_id uint) []User {
 //
 // This will delete the related records from the user_user_invitees table as well as the invited user from the
 // users table.
-func DeleteInvitee(invitee_id uint) int64 {
+func DeleteInvitee(invitee_id uuid.UUID) (*int64, error) {
 	result := db.Delete(&UserUserInvitee{}, "invitee_id = ?", invitee_id)
 	if result.Error != nil {
 		log.Println("Error deleting UserUserInvitee: ", result.Error.Error())
+		return nil, result.Error
 	}
 	result = db.Delete(&User{}, invitee_id)
 	if result.Error != nil {
 		log.Println("Error deleting invited User: ", result.Error.Error())
+		return nil, result.Error
 	}
-	return result.RowsAffected
+	return &result.RowsAffected, nil
 }
 
 // Helper to bulk-insert multiple invitee records. Intended for testing, but could

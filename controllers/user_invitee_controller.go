@@ -54,10 +54,15 @@ func GetInviteesForUser(c *gin.Context) {
 func DeleteInviteeForUser(c *gin.Context) {
 	response := V1_API_RESPONSE{}
 	var status int
-	invitee_id, _ := strconv.ParseUint(c.Param("invitee_id"), 10, 64)
+	invitee_id, _ := uuid.Parse(c.Param("invitee_id"))
 	status = http.StatusAccepted
 	response.Status = status
-	response.Data = gin.H{
-		"records": models.DeleteInvitee(uint(invitee_id))}
+	result, err := models.DeleteInvitee(invitee_id)
+	if err != nil {
+		status = http.StatusInternalServerError
+	} else {
+		response.Data = gin.H{
+			"records": result}
+	}
 	c.JSON(status, response)
 }
