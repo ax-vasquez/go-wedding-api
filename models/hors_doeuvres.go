@@ -2,6 +2,9 @@ package models
 
 import (
 	"log"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm/clause"
 )
 
 // HorsDouevres table
@@ -20,8 +23,19 @@ func FindHorsDoeuvres() []HorsDoeuvres {
 	return hors_doeuvres
 }
 
+// Find a single hors doeuvres by ID
+func FindHorsDoeuvresById(id uuid.UUID) (*HorsDoeuvres, error) {
+	var entree *HorsDoeuvres
+	result := db.Find(&entree, Entree{BaseModel: BaseModel{ID: id}})
+	if result.Error != nil {
+		log.Println("ERROR: ", result.Error.Error())
+		return nil, result.Error
+	}
+	return entree, nil
+}
+
 // Finds hors doeuvres for the given user
-func FindHorsDoeuvresForUser(id uint) []HorsDoeuvres {
+func FindHorsDoeuvresForUser(id uuid.UUID) []HorsDoeuvres {
 	var hors_doeuvres []HorsDoeuvres
 	result := db.Joins("JOIN users ON hors_doeuvres.id = users.hors_doeuvres_selection_id AND users.id = ?", id).Find(&hors_doeuvres)
 	if result.Error != nil {
@@ -31,16 +45,16 @@ func FindHorsDoeuvresForUser(id uint) []HorsDoeuvres {
 }
 
 // Maybe create a user (if no errors) and returns the number of inserted records
-func CreateHorsDoeuvres(hors_douevres *[]HorsDoeuvres) (*int64, error) {
-	result := db.Create(&hors_douevres)
+func CreateHorsDoeuvres(hors_douevres *[]HorsDoeuvres) (*[]HorsDoeuvres, error) {
+	result := db.Clauses(clause.Returning{}).Select("*").Create(&hors_douevres)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &result.RowsAffected, nil
+	return hors_douevres, nil
 }
 
 // Maybe delete a user (if no errors) and returns the number of deleted records
-func DeleteHorsDoeuvres(id uint) (*int64, error) {
+func DeleteHorsDoeuvres(id uuid.UUID) (*int64, error) {
 	// Since our models have DeletedAt set, this makes Gorm "soft delete" records on normal delete operations.
 	// We can add .Unscoped() prior to the .Delete() call if we want to permanently-delete them.
 	result := db.Delete(&HorsDoeuvres{}, id)

@@ -7,6 +7,7 @@ import (
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // Get a list of hors doeuvres
@@ -16,14 +17,14 @@ import (
 // has been made, yet. If no user ID is specified, then data for all possible HorsDoeuvres
 // is returned.
 func GetHorsDoeuvres(c *gin.Context) {
-	id, parseIdErr := strconv.ParseUint(c.Param("id"), 10, 64)
+	id, parseIdErr := uuid.Parse(c.Param("id"))
 	var response V1_API_RESPONSE
 	var status int
 	var hors_doeuvres []models.HorsDoeuvres
 	if parseIdErr != nil {
 		hors_doeuvres = models.FindHorsDoeuvres()
 	} else {
-		hors_doeuvres = models.FindHorsDoeuvresForUser(uint(id))
+		hors_doeuvres = models.FindHorsDoeuvresForUser(id)
 	}
 	status = http.StatusOK
 	response.Status = status
