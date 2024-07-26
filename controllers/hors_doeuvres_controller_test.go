@@ -47,7 +47,7 @@ func TestHorsDoeuvresController(t *testing.T) {
 		req, err := http.NewRequest("POST", "/api/v1/horsdoeuvres", strings.NewReader(string(horsDoeuvresJson)))
 		router.ServeHTTP(w, req)
 		assert.Equal(nil, err)
-		var responseObj V1_API_RESPONSE_HORS_DOEVRES
+		responseObj := V1_API_RESPONSE_HORS_DOEVRES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Equal(nil, err)
 		assert.Equal(http.StatusCreated, w.Code)
