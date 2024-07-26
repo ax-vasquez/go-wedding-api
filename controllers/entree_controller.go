@@ -26,7 +26,7 @@ type V1_API_RESPONSE_ENTREE struct {
 // is returned.
 func GetEntrees(c *gin.Context) {
 	idStr := c.Param("id")
-	var response V1_API_RESPONSE_ENTREE
+	response := V1_API_RESPONSE_ENTREE{}
 	var status int
 	var entrees []models.Entree
 	if len(idStr) > 0 {

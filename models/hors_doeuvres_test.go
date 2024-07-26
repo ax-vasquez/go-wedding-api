@@ -16,12 +16,14 @@ func TestHorsDoeuvres(t *testing.T) {
 		assert.Equal("Crab puff", horsDoeuvres.OptionName)
 	})
 	t.Run("Can find all hors doeuvres", func(t *testing.T) {
-		horsDoeuvres := FindHorsDoeuvres()
+		horsDoeuvres, err := FindHorsDoeuvres()
+		assert.Equal(nil, err)
 		assert.Equal(5, len(horsDoeuvres))
 	})
 	t.Run("Can find hors doeuvres for user", func(t *testing.T) {
 		id, _ := uuid.Parse(FirstUserIdStr)
-		horsDoeuvres := FindHorsDoeuvresForUser(id)
+		horsDoeuvres, err := FindHorsDoeuvresForUser(id)
+		assert.Equal(nil, err)
 		assert.Equal(1, len(horsDoeuvres))
 		assert.Equal("Crab puff", horsDoeuvres[0].OptionName)
 	})
