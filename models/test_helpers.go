@@ -212,16 +212,11 @@ func SwitchConnectedDB(dbName string) error {
 // Convenvience method to reset the test DB
 func ResetAndConnectToTestDb() {
 	SwitchConnectedDB(os.Getenv("PGSQL_DBNAME"))
-	// defer func() {
-	// 	if r := recover(); r != nil {
-	// 		fmt.Println("Recovered from DROP DATABASE test_db panic (db likely did not exist): ", r)
-	// 	}
-	// }()
 	DropTestDB()
 	CreateTestDB()
+	SwitchConnectedDB("test_db")
 	err := Migrate()
 	if err != nil {
 		log.Panic("There was a problem migrating the schema: ", err.Error())
 	}
-	SwitchConnectedDB("test_db")
 }
