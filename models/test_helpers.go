@@ -12,6 +12,9 @@ import (
 	"gorm.io/gorm"
 )
 
+// Convenience variable used to perform "bad" lookup tests (e.g., ensure querying non-existent data returns an empty result)
+var NilUuid = "00000000-0000-0000-0000-000000000000"
+
 // Convenience variable to keep easy reference to the UUID of the first user in the test data set ("Rupinder McNiel")
 var FirstUserIdStr = "0ad1d80a-329b-4ffe-89c1-87af4d945953"
 

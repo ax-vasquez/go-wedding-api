@@ -32,8 +32,12 @@ A list of useful references used while developing this API.
 
 ### GitHub
 
+#### Repositories
 * [`gin-gonic/gin`](https://github.com/gin-gonic/gin) - _Gin - HTTP web framework written in Go_
 * [`godotenv`](https://github.com/joho/godotenv) - _Go port of Ruby's dotenv library, which loads variables from a `.env` file_
+* [`gin-swagger`](https://github.com/swaggo/gin-swagger) - _gin middleware to automatically generate RESTful API documentation with Swagger 2.0_
+
+#### Issues
 * [How to close connection in V2 (`gorm`)](https://github.com/go-gorm/gorm/issues/3145)
 
 ### StackOverflow

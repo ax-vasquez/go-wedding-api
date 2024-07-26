@@ -3,7 +3,6 @@ package controllers
 import (
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
@@ -24,15 +23,21 @@ type UpdateUserInput struct {
 }
 
 func GetUsers(c *gin.Context) {
-	var userIds []uint
+	var userIds []uuid.UUID
+	var status int
 	userIdStrings := strings.Split(c.Query("ids"), ",")
 	for _, userIdStr := range userIdStrings {
-		userId, _ := strconv.ParseUint(userIdStr, 10, 64)
-		userIds = append(userIds, uint(userId))
+		userId, _ := uuid.Parse(userIdStr)
+		userIds = append(userIds, userId)
 	}
-	users := models.FindUsers(userIds)
-	c.JSON(http.StatusOK, V1_API_RESPONSE{
-		Status: http.StatusOK,
+	users, err := models.FindUsers(userIds)
+	if err != nil {
+		status = http.StatusInternalServerError
+	} else {
+		status = http.StatusOK
+	}
+	c.JSON(status, V1_API_RESPONSE{
+		Status: status,
 		Data: gin.H{
 			"users": users}})
 }
@@ -101,8 +106,8 @@ func UpdateUser(c *gin.Context) {
 func DeleteUser(c *gin.Context) {
 	response := V1_API_RESPONSE{}
 	var status int
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
-	result, err := models.DeleteUser(uint(id))
+	id, _ := uuid.Parse(c.Param("id"))
+	result, err := models.DeleteUser(id)
 	if err != nil {
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error"

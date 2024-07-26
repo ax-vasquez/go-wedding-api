@@ -3,7 +3,6 @@ package controllers
 import (
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
@@ -66,8 +65,8 @@ func CreateHorsDoeuvres(c *gin.Context) {
 func DeleteHorsDoeuvres(c *gin.Context) {
 	response := V1_API_RESPONSE{}
 	var status int
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
-	result, err := models.DeleteUser(uint(id))
+	id, _ := uuid.Parse(c.Param("id"))
+	result, err := models.DeleteHorsDoeuvres(id)
 	if err != nil {
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error"

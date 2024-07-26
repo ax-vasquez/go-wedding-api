@@ -3,7 +3,6 @@ package controllers
 import (
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
@@ -68,8 +67,8 @@ func DeleteEntree(c *gin.Context) {
 	// TODO: Add logic to reject unauthorized requests (and certainly do not deploy until all auth logic is wired up)
 	response := V1_API_RESPONSE{}
 	var status int
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
-	result, err := models.DeleteUser(uint(id))
+	id, _ := uuid.Parse(c.Param("id"))
+	result, err := models.DeleteEntree(id)
 	if err != nil {
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error"

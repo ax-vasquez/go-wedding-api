@@ -26,25 +26,25 @@ type User struct {
 }
 
 // Maybe create users with given data (if no errors) and returns the number of inserted records
-func CreateUsers(users *[]User) (*int64, error) {
+func CreateUsers(users *[]User) (*[]User, error) {
 	result := db.Create(&users)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &result.RowsAffected, nil
+	return users, nil
 }
 
 // Maybe update a user (if no errors) and returns the number of inserted records
-func UpdateUser(u *User) (*int64, error) {
-	result := db.Updates(&u)
+func UpdateUser(u *User) (*User, error) {
+	result := db.Updates(&u).Find(&u)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &result.RowsAffected, nil
+	return u, nil
 }
 
 // Maybe delete a user (if no errors) and returns the number of deleted records
-func DeleteUser(id uint) (*int64, error) {
+func DeleteUser(id uuid.UUID) (*int64, error) {
 	// Since our models have DeletedAt set, this makes Gorm "soft delete" records on normal delete operations.
 	// We can add .Unscoped() prior to the .Delete() call if we want to permanently-delete them.
 	result := db.Delete(&User{}, id)
@@ -55,11 +55,12 @@ func DeleteUser(id uint) (*int64, error) {
 }
 
 // Find Users by the given ids; returns a User slice
-func FindUsers(ids []uint) []User {
+func FindUsers(ids []uuid.UUID) (*[]User, error) {
 	var users []User
 	result := db.Find(&users, ids)
 	if result.Error != nil {
 		log.Println("ERROR: ", result.Error.Error())
+		return nil, result.Error
 	}
-	return users
+	return &users, nil
 }
