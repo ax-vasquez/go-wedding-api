@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -9,6 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
+type EntreeData struct {
+	Entrees []models.Entree `json:"entrees"`
+}
+
+type V1_API_RESPONSE_ENTREE struct {
+	V1_API_RESPONSE
+	Data EntreeData `json:"data"`
+}
 
 // Get a list of entrees
 //
@@ -18,27 +26,26 @@ import (
 // is returned.
 func GetEntrees(c *gin.Context) {
 	idStr := c.Param("id")
-	var response V1_API_RESPONSE
+	var response V1_API_RESPONSE_ENTREE
 	var status int
-	var hors_doeuvres []models.Entree
+	var entrees []models.Entree
 	if len(idStr) > 0 {
 		id, err := uuid.Parse(idStr)
 		if err != nil {
 			status = http.StatusInternalServerError
 		} else {
 			status = http.StatusOK
-			hors_doeuvres, err = models.FindEntreesForUser(id)
+			entrees, err = models.FindEntreesForUser(id)
 			if err != nil {
 				status = http.StatusInternalServerError
 			}
 		}
 	} else {
-		hors_doeuvres = models.FindEntrees()
+		entrees = models.FindEntrees()
 		status = http.StatusOK
 	}
 	response.Status = status
-	response.Data = gin.H{
-		"entrees": hors_doeuvres}
+	response.Data.Entrees = entrees
 	c.JSON(status, response)
 }
 
@@ -49,7 +56,7 @@ func GetEntrees(c *gin.Context) {
 // should be rejected.
 func CreateEntree(c *gin.Context) {
 	// TODO: Add logic to reject unauthorized requests (and certainly do not deploy until all auth logic is wired up)
-	response := V1_API_RESPONSE{}
+	response := V1_API_RESPONSE_ENTREE{}
 	var status int
 	var input models.Entree
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
@@ -64,10 +71,9 @@ func CreateEntree(c *gin.Context) {
 		} else {
 			status = http.StatusCreated
 			response.Message = "Created entree"
-			response.Data = gin.H{"records": result}
+			response.Data.Entrees = *result
 		}
 	}
-	fmt.Println("STATUS IN CONTROLLER: ", status)
 	response.Status = status
 	c.JSON(status, response)
 }
@@ -75,18 +81,20 @@ func CreateEntree(c *gin.Context) {
 // Delete an entree
 func DeleteEntree(c *gin.Context) {
 	// TODO: Add logic to reject unauthorized requests (and certainly do not deploy until all auth logic is wired up)
-	response := V1_API_RESPONSE{}
+	response := V1_API_DELETE_RESPONSE{}
 	var status int
 	id, _ := uuid.Parse(c.Param("id"))
 	result, err := models.DeleteEntree(id)
 	if err != nil {
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error"
-		log.Println("Error deleting hors doeuvres: ", err.Error())
+		log.Println("Error deleting entree: ", err.Error())
 	} else {
 		status = http.StatusAccepted
-		response.Message = "Deleted hors doeuvres"
-		response.Data = gin.H{"records": result}
+		response.Message = "Deleted entree"
+		response.Data = DeleteRecordResponse{
+			DeletedRecords: int(*result),
+		}
 	}
 	response.Status = status
 	c.JSON(status, response)

@@ -44,6 +44,10 @@ A list of useful references used while developing this API.
 #### Issues
 * [How to close connection in V2 (`gorm`)](https://github.com/go-gorm/gorm/issues/3145)
 
+### Reddit
+
+* [`httptest` recorder returns the wrong status](https://www.reddit.com/r/golang/comments/10o654j/httptest_response_recorder_returns_the_wrong/)
+
 ### StackOverflow
 
 * [Using `.env` variables in your `docker-compose.yml` file](https://stackoverflow.com/questions/29377853/how-can-i-use-environment-variables-in-docker-compose)

@@ -8,6 +8,15 @@ type V1_API_RESPONSE struct {
 	Data    gin.H  `json:"data"`
 }
 
+type DeleteRecordResponse struct {
+	DeletedRecords int `json:"deleted_records"`
+}
+
+type V1_API_DELETE_RESPONSE struct {
+	V1_API_RESPONSE
+	Data DeleteRecordResponse `json:"data"`
+}
+
 func paveRoutes() *gin.Engine {
 	r := gin.Default()
 
