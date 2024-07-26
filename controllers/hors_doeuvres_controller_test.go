@@ -24,7 +24,7 @@ func TestHorsDoeuvresController(t *testing.T) {
 		responseObj := V1_API_RESPONSE_HORS_DOEVRES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Equal(nil, err)
-		assert.Equal(1, len(responseObj.Data.HorsDoeuvres))
+		assert.Equal(5, len(responseObj.Data.HorsDoeuvres))
 	})
 	t.Run("GET /api/v1/user/:id/horsdoeuvres", func(t *testing.T) {
 		w := httptest.NewRecorder()
