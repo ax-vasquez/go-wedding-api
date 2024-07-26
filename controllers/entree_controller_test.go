@@ -45,6 +45,7 @@ func TestEntreeController(t *testing.T) {
 			req, err := http.NewRequest("DELETE", routePath, nil)
 			router.ServeHTTP(w, req)
 			assert.Equal(nil, err)
+			assert.Equal(http.StatusAccepted, w.Code)
 			var deleteResponse V1_API_DELETE_RESPONSE
 			err = json.Unmarshal([]byte(w.Body.Bytes()), &deleteResponse)
 			assert.Equal(nil, err)
