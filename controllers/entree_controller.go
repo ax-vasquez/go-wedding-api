@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -17,16 +18,24 @@ import (
 // is returned.
 func GetEntrees(c *gin.Context) {
 	idStr := c.Param("id")
-	id, parseIdErr := uuid.Parse(idStr)
 	var response V1_API_RESPONSE
 	var status int
 	var hors_doeuvres []models.Entree
-	if parseIdErr != nil {
-		hors_doeuvres = models.FindEntrees()
+	if len(idStr) > 0 {
+		id, err := uuid.Parse(idStr)
+		if err != nil {
+			status = http.StatusInternalServerError
+		} else {
+			status = http.StatusOK
+			hors_doeuvres, err = models.FindEntreesForUser(id)
+			if err != nil {
+				status = http.StatusInternalServerError
+			}
+		}
 	} else {
-		hors_doeuvres = models.FindEntreesForUser(id)
+		hors_doeuvres = models.FindEntrees()
+		status = http.StatusOK
 	}
-	status = http.StatusOK
 	response.Status = status
 	response.Data = gin.H{
 		"entrees": hors_doeuvres}
@@ -58,6 +67,7 @@ func CreateEntree(c *gin.Context) {
 			response.Data = gin.H{"records": result}
 		}
 	}
+	fmt.Println("STATUS IN CONTROLLER: ", status)
 	response.Status = status
 	c.JSON(status, response)
 }

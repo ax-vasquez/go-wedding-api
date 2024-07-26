@@ -21,7 +21,8 @@ func TestEntrees(t *testing.T) {
 	})
 	t.Run("Can find entrees for user", func(t *testing.T) {
 		id, _ := uuid.Parse(FirstUserIdStr)
-		entrees := FindEntreesForUser(id)
+		entrees, err := FindEntreesForUser(id)
+		assert.Equal(nil, err)
 		assert.Equal(1, len(entrees))
 		assert.Equal("Caprese pasta", entrees[0].OptionName)
 	})

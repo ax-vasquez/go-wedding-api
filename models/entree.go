@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm/clause"
 )
 
 // Entree table
@@ -35,18 +34,19 @@ func FindEntreeById(id uuid.UUID) (*Entree, error) {
 }
 
 // Finds entrees for the given user
-func FindEntreesForUser(id uuid.UUID) []Entree {
+func FindEntreesForUser(id uuid.UUID) ([]Entree, error) {
 	var entrees []Entree
 	result := db.Joins("JOIN users ON entrees.id = users.entree_selection_id AND users.id = ?", id).Find(&entrees)
 	if result.Error != nil {
 		log.Println("ERROR: ", result.Error.Error())
+		return nil, result.Error
 	}
-	return entrees
+	return entrees, nil
 }
 
 // Maybe create a user (if no errors) and returns the number of inserted records
 func CreateEntrees(entrees *[]Entree) (*[]Entree, error) {
-	result := db.Clauses(clause.Returning{}).Select("*").Create(&entrees)
+	result := db.Create(&entrees).Find(&entrees)
 	if result.Error != nil {
 		return nil, result.Error
 	}

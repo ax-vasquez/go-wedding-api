@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
+	"github.com/ax-vasquez/wedding-site-api/controllers"
 	"github.com/ax-vasquez/wedding-site-api/models"
-	"github.com/ax-vasquez/wedding-site-api/routes"
 	"github.com/joho/godotenv"
 )
 
@@ -14,9 +14,9 @@ func main() {
 	if err != nil {
 		log.Panic("Error loading .env file: ", err.Error())
 	}
-	// Start up the DB (runs AutoMigrate)
 	models.Setup()
-	err = routes.Setup()
+	models.Migrate()
+	err = controllers.SetupRoutes()
 	if err != nil {
 		log.Panic("Encountered an error while setting up routes: ", err.Error())
 	}

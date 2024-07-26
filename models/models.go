@@ -31,6 +31,14 @@ var newLogger = logger.New(
 	},
 )
 
+func Migrate() error {
+	return db.AutoMigrate(
+		&Entree{},
+		&HorsDoeuvres{},
+		&User{},
+		&UserUserInvitee{})
+}
+
 func Setup() {
 	var err error
 	isTestEnv := getIsTestEnv()
@@ -55,18 +63,11 @@ func Setup() {
 	// then reconnect to the database using "test_db" as the database name. This makes all database operations
 	// use the "test_db" database instead of the one specified in your .env file
 	if isTestEnv {
-		CreateTestDB()
-		SwitchConnectedDB("test_db")
-	}
-
-	err = nil
-	err = db.AutoMigrate(
-		&Entree{},
-		&HorsDoeuvres{},
-		&User{},
-		&UserUserInvitee{})
-
-	if err != nil {
-		log.Panic("There was a problem during the database AutoMigrate: ", err.Error())
+		ResetAndConnectToTestDb()
+	} else {
+		err := Migrate()
+		if err != nil {
+			log.Panic("There was a problem migrating the schema: ", err.Error())
+		}
 	}
 }
