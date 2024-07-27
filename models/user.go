@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -40,6 +41,8 @@ func UpdateUser(u *User) (*[]User, error) {
 	if result.Error != nil {
 		return nil, result.Error
 	}
+	// USER IN METHOD:  &{{0001-01-01 00:00:00 +0000 UTC 2024-07-27 16:22:00.478746 -0500 CDT {0001-01-01 00:00:00 +0000 UTC false} 22d20919-c685-423e-a2f5-2352ce90d970} 0001-01-01 00:00:00 +0000 UTC false false false  Circlepants  <nil> <nil> <nil> <nil>}
+	fmt.Println("USER IN METHOD: ", u)
 	res := []User{*u}
 	return &res, nil
 }

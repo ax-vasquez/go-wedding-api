@@ -21,15 +21,15 @@ type V1_API_RESPONSE_USERS struct {
 }
 
 type UpdateUserInput struct {
-	ID                      uuid.UUID `json:"id" binding:"required"`
-	IsAdmin                 bool      `json:"is_admin"`
-	IsGoing                 bool      `json:"is_going"`
-	CanInviteOthers         bool      `json:"can_invite_others"`
-	FirstName               string    `json:"first_name"`
-	LastName                string    `json:"last_name"`
-	Email                   string    `json:"email"`
-	HorsDoeuvresSelectionId uuid.UUID `json:"hors_douevres_selection_id"`
-	EntreeSelectionId       uuid.UUID `json:"entree_selection_id"`
+	ID                      uuid.UUID  `json:"id" binding:"required"`
+	IsAdmin                 bool       `json:"is_admin"`
+	IsGoing                 bool       `json:"is_going"`
+	CanInviteOthers         bool       `json:"can_invite_others"`
+	FirstName               string     `json:"first_name"`
+	LastName                string     `json:"last_name"`
+	Email                   string     `json:"email"`
+	HorsDoeuvresSelectionId *uuid.UUID `json:"hors_douevres_selection_id"`
+	EntreeSelectionId       *uuid.UUID `json:"entree_selection_id"`
 }
 
 func GetUsers(c *gin.Context) {
@@ -37,13 +37,11 @@ func GetUsers(c *gin.Context) {
 	var userIds []uuid.UUID
 	var status int
 	userIdStrings := strings.Split(c.Query("ids"), ",")
-	fmt.Println("IDS: ", userIdStrings)
 	for _, userIdStr := range userIdStrings {
 		userId, _ := uuid.Parse(userIdStr)
 		userIds = append(userIds, userId)
 	}
 	users, err := models.FindUsers(userIds)
-	fmt.Println("USERS: ", users)
 	if err != nil {
 		status = http.StatusInternalServerError
 	} else {
@@ -59,11 +57,11 @@ func CreateUsers(c *gin.Context) {
 	response := V1_API_RESPONSE_USERS{}
 	var status int
 	var input models.User
-	createUserInput := []models.User{input}
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
 		response.Message = "\"first_name\", \"last_name\", and \"email\" are required"
 	} else {
+		createUserInput := []models.User{input}
 		result, err := models.CreateUsers(&createUserInput)
 		if err != nil {
 			status = http.StatusInternalServerError
@@ -88,6 +86,7 @@ func UpdateUser(c *gin.Context) {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
 	} else {
+		fmt.Println("USER IN CONTROLLER: ", input)
 		result, err := models.UpdateUser(&models.User{
 			BaseModel: models.BaseModel{
 				ID: input.ID,
@@ -98,8 +97,8 @@ func UpdateUser(c *gin.Context) {
 			FirstName:               input.FirstName,
 			LastName:                input.LastName,
 			Email:                   input.Email,
-			HorsDoeuvresSelectionId: &input.HorsDoeuvresSelectionId,
-			EntreeSelectionId:       &input.EntreeSelectionId,
+			HorsDoeuvresSelectionId: input.HorsDoeuvresSelectionId,
+			EntreeSelectionId:       input.EntreeSelectionId,
 		})
 		if err != nil {
 			status = http.StatusInternalServerError
