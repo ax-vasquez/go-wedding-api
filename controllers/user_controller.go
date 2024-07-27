@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -36,11 +37,13 @@ func GetUsers(c *gin.Context) {
 	var userIds []uuid.UUID
 	var status int
 	userIdStrings := strings.Split(c.Query("ids"), ",")
+	fmt.Println("IDS: ", userIdStrings)
 	for _, userIdStr := range userIdStrings {
 		userId, _ := uuid.Parse(userIdStr)
 		userIds = append(userIds, userId)
 	}
 	users, err := models.FindUsers(userIds)
+	fmt.Println("USERS: ", users)
 	if err != nil {
 		status = http.StatusInternalServerError
 	} else {
@@ -85,20 +88,18 @@ func UpdateUser(c *gin.Context) {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
 	} else {
-		result, err := models.UpdateUser(&[]models.User{
-			{
-				BaseModel: models.BaseModel{
-					ID: input.ID,
-				},
-				IsAdmin:                 input.IsAdmin,
-				IsGoing:                 input.IsGoing,
-				CanInviteOthers:         input.CanInviteOthers,
-				FirstName:               input.FirstName,
-				LastName:                input.LastName,
-				Email:                   input.Email,
-				HorsDoeuvresSelectionId: &input.HorsDoeuvresSelectionId,
-				EntreeSelectionId:       &input.EntreeSelectionId,
+		result, err := models.UpdateUser(&models.User{
+			BaseModel: models.BaseModel{
+				ID: input.ID,
 			},
+			IsAdmin:                 input.IsAdmin,
+			IsGoing:                 input.IsGoing,
+			CanInviteOthers:         input.CanInviteOthers,
+			FirstName:               input.FirstName,
+			LastName:                input.LastName,
+			Email:                   input.Email,
+			HorsDoeuvresSelectionId: &input.HorsDoeuvresSelectionId,
+			EntreeSelectionId:       &input.EntreeSelectionId,
 		})
 		if err != nil {
 			status = http.StatusInternalServerError
@@ -116,7 +117,7 @@ func UpdateUser(c *gin.Context) {
 
 // Delete a user
 func DeleteUser(c *gin.Context) {
-	response := V1_API_RESPONSE{}
+	response := V1_API_DELETE_RESPONSE{}
 	var status int
 	id, _ := uuid.Parse(c.Param("id"))
 	result, err := models.DeleteUser(id)
@@ -127,7 +128,7 @@ func DeleteUser(c *gin.Context) {
 	} else {
 		status = http.StatusAccepted
 		response.Message = "Deleted user"
-		response.Data = gin.H{"records": result}
+		response.Data.DeletedRecords = int(*result)
 	}
 	response.Status = status
 	c.JSON(status, response)
