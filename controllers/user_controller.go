@@ -10,6 +10,15 @@ import (
 	"github.com/google/uuid"
 )
 
+type UserData struct {
+	Users []models.User `json:"users"`
+}
+
+type V1_API_RESPONSE_USERS struct {
+	V1_API_RESPONSE
+	Data UserData `json:"data"`
+}
+
 type UpdateUserInput struct {
 	ID                      uuid.UUID `json:"id" binding:"required"`
 	IsAdmin                 bool      `json:"is_admin"`
@@ -23,6 +32,7 @@ type UpdateUserInput struct {
 }
 
 func GetUsers(c *gin.Context) {
+	response := V1_API_RESPONSE_USERS{}
 	var userIds []uuid.UUID
 	var status int
 	userIdStrings := strings.Split(c.Query("ids"), ",")
@@ -36,15 +46,14 @@ func GetUsers(c *gin.Context) {
 	} else {
 		status = http.StatusOK
 	}
-	c.JSON(status, V1_API_RESPONSE{
-		Status: status,
-		Data: gin.H{
-			"users": users}})
+	response.Status = status
+	response.Data.Users = *users
+	c.JSON(status, response)
 }
 
 // Create a user
 func CreateUsers(c *gin.Context) {
-	response := V1_API_RESPONSE{}
+	response := V1_API_RESPONSE_USERS{}
 	var status int
 	var input models.User
 	createUserInput := []models.User{input}
@@ -60,7 +69,7 @@ func CreateUsers(c *gin.Context) {
 		} else {
 			status = http.StatusCreated
 			response.Message = "Created new user"
-			response.Data = gin.H{"records": result}
+			response.Data.Users = *result
 		}
 	}
 	response.Status = status
@@ -69,25 +78,28 @@ func CreateUsers(c *gin.Context) {
 
 // Update a user
 func UpdateUser(c *gin.Context) {
-	response := V1_API_RESPONSE{}
+	response := V1_API_RESPONSE_USERS{}
 	var status int
 	var input UpdateUserInput
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
 	} else {
-		result, err := models.UpdateUser(&models.User{
-			BaseModel: models.BaseModel{
-				ID: input.ID,
+		result, err := models.UpdateUser(&[]models.User{
+			{
+				BaseModel: models.BaseModel{
+					ID: input.ID,
+				},
+				IsAdmin:                 input.IsAdmin,
+				IsGoing:                 input.IsGoing,
+				CanInviteOthers:         input.CanInviteOthers,
+				FirstName:               input.FirstName,
+				LastName:                input.LastName,
+				Email:                   input.Email,
+				HorsDoeuvresSelectionId: &input.HorsDoeuvresSelectionId,
+				EntreeSelectionId:       &input.EntreeSelectionId,
 			},
-			IsAdmin:                 input.IsAdmin,
-			IsGoing:                 input.IsGoing,
-			CanInviteOthers:         input.CanInviteOthers,
-			FirstName:               input.FirstName,
-			LastName:                input.LastName,
-			Email:                   input.Email,
-			HorsDoeuvresSelectionId: &input.HorsDoeuvresSelectionId,
-			EntreeSelectionId:       &input.EntreeSelectionId})
+		})
 		if err != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"
@@ -95,7 +107,7 @@ func UpdateUser(c *gin.Context) {
 		} else {
 			status = http.StatusAccepted
 			response.Message = "Updated user"
-			response.Data = gin.H{"records": result}
+			response.Data.Users = *result
 		}
 	}
 	response.Status = status

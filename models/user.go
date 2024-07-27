@@ -35,12 +35,13 @@ func CreateUsers(users *[]User) (*[]User, error) {
 }
 
 // Maybe update a user (if no errors) and returns the number of inserted records
-func UpdateUser(u *User) (*User, error) {
+func UpdateUser(u *User) (*[]User, error) {
 	result := db.Updates(&u).Find(&u)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return u, nil
+	res := []User{*u}
+	return &res, nil
 }
 
 // Maybe delete a user (if no errors) and returns the number of deleted records

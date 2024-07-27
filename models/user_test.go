@@ -27,8 +27,8 @@ func TestUsers(t *testing.T) {
 				ID: firstUserId},
 			FirstName: "Jimmy"})
 		assert.Equal(nil, err)
-		assert.Equal("Jimmy", updateUser.FirstName)
-		assert.Equal("McNiel", updateUser.LastName)
+		assert.Equal("Jimmy", (*updateUser)[0].FirstName)
+		assert.Equal("McNiel", (*updateUser)[0].LastName)
 	})
 	t.Run("Can create a user", func(t *testing.T) {
 		newUsers, err := CreateUsers(&[]User{
