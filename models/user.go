@@ -26,6 +26,11 @@ type User struct {
 	EntreeSelection         *Entree       `gorm:"foreignKey:EntreeSelectionId"`
 }
 
+// Read implements io.Reader.
+func (u User) Read(p []byte) (n int, err error) {
+	panic("unimplemented")
+}
+
 // Maybe create users with given data (if no errors) and returns the number of inserted records
 func CreateUsers(users *[]User) (*[]User, error) {
 	result := db.Create(&users)

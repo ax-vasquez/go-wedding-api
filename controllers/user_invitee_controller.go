@@ -9,9 +9,18 @@ import (
 	"github.com/google/uuid"
 )
 
+type UserInviteeData struct {
+	Invitees []models.User `json:"users"`
+}
+
+type V1_API_RESPONSE_USER_INVITEES struct {
+	V1_API_RESPONSE
+	Data UserInviteeData `json:"data"`
+}
+
 // Create a user invitee
 func CreateUserInvitee(c *gin.Context) {
-	response := V1_API_RESPONSE{}
+	response := V1_API_RESPONSE_USER_INVITEES{}
 	var status int
 	var input models.User
 	idStr := c.Param("id")
@@ -30,7 +39,7 @@ func CreateUserInvitee(c *gin.Context) {
 		} else {
 			status = http.StatusCreated
 			response.Message = "Created user invitee"
-			response.Data = gin.H{"records": result}
+			response.Data.Invitees = []models.User{*result}
 		}
 	}
 	response.Status = status
@@ -39,24 +48,23 @@ func CreateUserInvitee(c *gin.Context) {
 
 // Get all invitees for the given user
 func GetInviteesForUser(c *gin.Context) {
-	response := V1_API_RESPONSE{}
+	response := V1_API_RESPONSE_USER_INVITEES{}
 	var status int
-	id, _ := uuid.Parse(c.Param("invitee_id"))
+	id, _ := uuid.Parse(c.Param("id"))
 	status = http.StatusOK
 	response.Status = status
 	data, err := models.FindInviteesForUser(id)
 	if err != nil {
 		status = http.StatusInternalServerError
 	} else {
-		response.Data = gin.H{
-			"invitees": data}
+		response.Data.Invitees = *data
 	}
 	c.JSON(status, response)
 }
 
 // Delete an invitee for the given user
 func DeleteInviteeForUser(c *gin.Context) {
-	response := V1_API_RESPONSE{}
+	response := V1_API_DELETE_RESPONSE{}
 	var status int
 	invitee_id, _ := uuid.Parse(c.Param("invitee_id"))
 	status = http.StatusAccepted
@@ -65,8 +73,7 @@ func DeleteInviteeForUser(c *gin.Context) {
 	if err != nil {
 		status = http.StatusInternalServerError
 	} else {
-		response.Data = gin.H{
-			"records": result}
+		response.Data.DeletedRecords = int(*result)
 	}
 	c.JSON(status, response)
 }
