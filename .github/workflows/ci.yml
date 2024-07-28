@@ -3,7 +3,7 @@ name: Test and coverage
 on: [push, pull_request]
 
 jobs:
-  build:
+  test-and-codecov:
     runs-on: ubuntu-latest
     env: 
       POSTGRES_DB: ${{ secrets.PGSQL_DBNAME }}
@@ -17,9 +17,9 @@ jobs:
           # Keep parity with whatever version we're using in docker-compose.yml
           image: postgres:16.3
           env:
-            POSTGRES_DB: ${{ env.PGSQL_DBNAME }}
-            POSTGRES_USER: ${{ env.PGSQL_USER }}
-            POSTGRES_PASSWORD: ${{ env.PGSQL_PASSWORD }}
+            POSTGRES_DB: $PGSQL_DBNAME
+            POSTGRES_USER: $PGSQL_USER
+            POSTGRES_PASSWORD: $PGSQL_PASSWORD
           # Set health checks to wait until postgres has started
           options: >-
             --health-cmd pg_isready
@@ -27,7 +27,7 @@ jobs:
             --health-timeout 5s
             --health-retries 5
           ports:
-            - ${{ env.PGSQL_PORT }}:5432
+            - $PGSQL_PORT:5432
     steps:
       - uses: actions/checkout@v2
         with:
