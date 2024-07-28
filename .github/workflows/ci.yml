@@ -7,6 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     services:
         db:
+          - uses: actions/checkout@v2
+          with:
+            fetch-depth: 2
           # Keep parity with whatever version we're using in docker-compose.yml
           image: postgres:16.3
           env:
