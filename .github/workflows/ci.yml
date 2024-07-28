@@ -5,15 +5,19 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: test
+    env: 
+      POSTGRES_DB: ${{ secrets.PGSQL_DBNAME }}
+      POSTGRES_USER: ${{ secrets.PGSQL_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.PGSQL_PASSWORD }}
+      PGSQL_PORT: ${{ secrets.PGSQL_PORT }}
     services:
         db:
           # Keep parity with whatever version we're using in docker-compose.yml
           image: postgres:16.3
           env:
-            POSTGRES_DB: ${{ secrets.PGSQL_DBNAME }}
-            POSTGRES_USER: ${{ secrets.PGSQL_USER }}
-            POSTGRES_PASSWORD: ${{ secrets.PGSQL_PASSWORD }}
+            POSTGRES_DB: ${{ PGSQL_DBNAME }}
+            POSTGRES_USER: ${{ PGSQL_USER }}
+            POSTGRES_PASSWORD: ${{ PGSQL_PASSWORD }}
           # Set health checks to wait until postgres has started
           options: >-
             --health-cmd pg_isready
@@ -21,7 +25,7 @@ jobs:
             --health-timeout 5s
             --health-retries 5
           ports:
-            - ${{ secrets.PGSQL_PORT }}:5432
+            - ${{ PGSQL_PORT }}:5432
     steps:
       - uses: actions/checkout@v2
         with:
