@@ -23,6 +23,10 @@ A list of useful references used while developing this API.
 * [Homepage](https://gorm.io/index.html)
 * [Connecting to the Database - PostgreSQL](https://gorm.io/docs/connecting_to_the_database.html#PostgreSQL)
 
+### PostgreSQL
+
+* [Server start](https://www.postgresql.org/docs/current/server-start.html)
+
 ## Community
 
 ### Blogs
@@ -35,6 +39,10 @@ A list of useful references used while developing this API.
 * [When to use pointers in Go](https://medium.com/@meeusdylan/when-to-use-pointers-in-go-44c15fe04eac)
 
 ### GitHub
+
+#### Documentation
+
+* [Creating PostgreSQL service containers](https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers)
 
 #### Repositories
 * [`gin-gonic/gin`](https://github.com/gin-gonic/gin) - _Gin - HTTP web framework written in Go_
