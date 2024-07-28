@@ -5,11 +5,6 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    env: 
-      POSTGRES_DB: ${{ secrets.PGSQL_DBNAME }}
-      POSTGRES_USER: ${{ secrets.PGSQL_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.PGSQL_PASSWORD }}
-      PGSQL_PORT: ${{ secrets.PGSQL_PORT }}
     services:
         db:
           # Keep parity with whatever version we're using in docker-compose.yml
