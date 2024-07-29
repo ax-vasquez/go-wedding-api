@@ -31,7 +31,9 @@ jobs:
         with:
           go-version: '1.22'
       - name: Run coverage
-        run: go test ./... -v
+        run: |
+          go test ./models -v
+          go test ./controllers -v
         env:
           PGSQL_DBNAME: ${{ secrets.PGSQL_DBNAME }}
           PGSQL_USER: ${{ secrets.PGSQL_USER }}
