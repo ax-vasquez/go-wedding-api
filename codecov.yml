@@ -5,3 +5,6 @@ coverage:
         target: 95%
         threshold: 1%
         base: auto 
+ignore:
+  - "test-fixtures"
+  - "*_test.go"
