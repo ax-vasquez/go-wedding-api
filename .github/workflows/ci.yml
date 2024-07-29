@@ -1,23 +1,23 @@
 name: Test and coverage
 
 on: [push, pull_request]
-  workflow_call:
-    POSTGRES_DB:
-      required: true
-    POSTGRES_USER:
-      required: true
-    POSTGRES_PASSWORD:
-      required: true
-    PGSQL_PORT:
-      required: true
-    PGSQL_TIMEZONE:
-      required: true
-    PGSQL_DBNAME:
-      required: true
 
 jobs:
   test-and-codecov:
     runs-on: ubuntu-latest
+    secrets:
+      POSTGRES_DB:
+        required: true
+      POSTGRES_USER:
+        required: true
+      POSTGRES_PASSWORD:
+        required: true
+      PGSQL_PORT:
+        required: true
+      PGSQL_TIMEZONE:
+        required: true
+      PGSQL_DBNAME:
+        required: true
     services:
         db:
           # Keep parity with whatever version we're using in docker-compose.yml
