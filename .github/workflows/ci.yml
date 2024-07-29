@@ -6,7 +6,7 @@ on: [push, pull_request]
 jobs:
   test-and-codecov:
     runs-on: ubuntu-latest
-    uses: ax-vasquez/wedding-site-api/.github/workflows/load-secrets@unitTesting
+    uses: ax-vasquez/wedding-site-api/.github/workflows/load-secrets.yml@unitTesting
     services:
         db:
           # Keep parity with whatever version we're using in docker-compose.yml
