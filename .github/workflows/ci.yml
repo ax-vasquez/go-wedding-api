@@ -24,8 +24,6 @@ jobs:
           ports:
             - 9920:5432
     steps:
-      - name: Show secrets
-        run: echo "$SECRETS_CONTEXT"
       - uses: actions/checkout@v2
         with:
           fetch-depth: 2
@@ -35,9 +33,9 @@ jobs:
       - name: Run coverage
         run: go test ./... -v
         env:
-          POSTGRES_DB: ${{ secrets.PGSQL_DBNAME }}
-          POSTGRES_USER: ${{ secrets.PGSQL_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.PGSQL_PASSWORD }}
+          PGSQL_DBNAME: ${{ secrets.PGSQL_DBNAME }}
+          PGSQL_USER: ${{ secrets.PGSQL_USER }}
+          PGSQL_PASSWORD: ${{ secrets.PGSQL_PASSWORD }}
           PGSQL_PORT: ${{ secrets.PGSQL_PORT }}
           PGSQL_HOST: ${{ secrets.PGSQL_HOST }}
           PGSQL_TIMEZONE: ${{ secrets.PGSQL_TIMEZONE }}
