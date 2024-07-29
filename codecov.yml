@@ -7,7 +7,5 @@ coverage:
         base: auto 
 ignore:
   - "test-fixtures"
-  - "controllers.go"  # Only contains setup code; not useful to test
-  - "models.go"       # Only contains setup code; not useful to test
   - "*_test.go"
   - "*.sh"
