@@ -2,10 +2,7 @@ name: Test and coverage
 
 on: [push, pull_request]
 
-
 jobs:
-  load-secrets:
-    uses: ax-vasquez/wedding-site-api/.github/workflows/load-secrets.yml@unitTesting
   test-and-codecov:
     runs-on: ubuntu-latest
     secrets: inherit
@@ -24,7 +21,7 @@ jobs:
             --health-timeout 5s
             --health-retries 5
           ports:
-            - ${{ secrets.PGSQL_PORT }}:5432
+            - 9920:5432
     steps:
       - uses: actions/checkout@v2
         with:
