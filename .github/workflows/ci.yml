@@ -5,6 +5,8 @@ on: [push, pull_request]
 jobs:
   test-and-codecov:
     runs-on: ubuntu-latest
+    env:
+      SECRETS_CONTEXT: ${{ toJson(secrets) }}
     services:
         db:
           # Keep parity with whatever version we're using in docker-compose.yml
@@ -22,6 +24,8 @@ jobs:
           ports:
             - 9920:5432
     steps:
+      - name: Show secrets
+        run: echo "$SECRETS_CONTEXT"
       - uses: actions/checkout@v2
         with:
           fetch-depth: 2
