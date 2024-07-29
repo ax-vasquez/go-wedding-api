@@ -2,10 +2,11 @@ name: Test and coverage
 
 on: [push, pull_request]
 
+
 jobs:
   test-and-codecov:
     runs-on: ubuntu-latest
-    secrets: inherit
+    uses: ax-vasquez/wedding-site-api/.github/workflows/load-secrets
     services:
         db:
           # Keep parity with whatever version we're using in docker-compose.yml
