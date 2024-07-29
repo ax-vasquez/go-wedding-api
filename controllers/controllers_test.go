@@ -12,7 +12,7 @@ import (
 func TestMain(m *testing.M) {
 	err := godotenv.Load("../.env")
 	if err != nil {
-		log.Panic("Error loading .env file: ", err.Error())
+		log.Println("WARNING! Could not load .env file; application will continue to run with the assumption that needed variables are present in the environment.")
 	}
 	os.Setenv("TEST_ENV", "true")
 	models.Setup()
