@@ -4,9 +4,11 @@ on: [push, pull_request]
 
 
 jobs:
+  load-secrets:
+    uses: ax-vasquez/wedding-site-api/.github/workflows/load-secrets.yml@unitTesting
   test-and-codecov:
     runs-on: ubuntu-latest
-    uses: ax-vasquez/wedding-site-api/.github/workflows/load-secrets.yml@unitTesting
+    secrets: inherit
     services:
         db:
           # Keep parity with whatever version we're using in docker-compose.yml
