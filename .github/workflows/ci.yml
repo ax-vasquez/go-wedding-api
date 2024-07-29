@@ -30,15 +30,16 @@ jobs:
           go-version: '1.22'
       - name: Run coverage
         run: go test ./... -v
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          verbose: true
         env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
           POSTGRES_DB: ${{ secrets.PGSQL_DBNAME }}
           POSTGRES_USER: ${{ secrets.PGSQL_USER }}
           POSTGRES_PASSWORD: ${{ secrets.PGSQL_PASSWORD }}
           PGSQL_PORT: ${{ secrets.PGSQL_PORT }}
           PGSQL_HOST: ${{ secrets.PGSQL_HOST }}
           PGSQL_TIMEZONE: ${{ secrets.PGSQL_TIMEZONE }}
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
