@@ -32,8 +32,8 @@ jobs:
           go-version: '1.22'
       - name: Run coverage
         run: |
-          go test ./models -v
-          go test ./controllers -v
+          go test ./models -v  -race -coverprofile=coverage.out -covermode=atomic
+          go test ./controllers -v  -race -coverprofile=coverage.out -covermode=atomic
         env:
           PGSQL_DBNAME: ${{ secrets.PGSQL_DBNAME }}
           PGSQL_USER: ${{ secrets.PGSQL_USER }}
@@ -42,7 +42,7 @@ jobs:
           PGSQL_HOST: ${{ secrets.PGSQL_HOST }}
           PGSQL_TIMEZONE: ${{ secrets.PGSQL_TIMEZONE }}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v4.0.1
         with:
           verbose: true
         env:
