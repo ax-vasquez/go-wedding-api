@@ -38,6 +38,19 @@ func TestEntreeController(t *testing.T) {
 		assert.Equal(nil, err)
 		assert.Equal(1, len(responseObj.Data.Entrees))
 	})
+	t.Run("GET /api/v1/entrees/:id - bad ID returns all entrees", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		// Pass a junk, non-UUID value in the route
+		routePath := fmt.Sprintf("/api/v1/user/%s/entrees", "asdf")
+		req, err := http.NewRequest("GET", routePath, nil)
+		router.ServeHTTP(w, req)
+		assert.Equal(nil, err)
+		assert.Equal(http.StatusOK, w.Code)
+		responseObj := V1_API_RESPONSE_ENTREE{}
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+		assert.Equal(nil, err)
+		assert.Equal(5, len(responseObj.Data.Entrees))
+	})
 	t.Run("POST /api/v1/entree", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		testEntree := models.Entree{
