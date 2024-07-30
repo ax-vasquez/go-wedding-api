@@ -86,7 +86,6 @@ func DeleteEntree(c *gin.Context) {
 	if err != nil {
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error"
-		log.Println("Error deleting entree: ", err.Error())
 	} else {
 		status = http.StatusAccepted
 		response.Message = "Deleted entree"

@@ -61,4 +61,22 @@ func TestUserInviteeController(t *testing.T) {
 			assert.Equal(1, deleteResponse.Data.DeletedRecords)
 		})
 	})
+	t.Run("POST /api/v1/user/:id/invite-user - bad ID", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		routePath := fmt.Sprintf("/api/v1/user/%s/invite-user", "asdf")
+		testInvitee := models.User{
+			FirstName: "Minerva",
+			LastName:  "Mertens",
+			Email:     "op_healz@ooo.world",
+		}
+		testInviteeJson, _ := json.Marshal(testInvitee)
+		req, err := http.NewRequest("POST", routePath, strings.NewReader(string(testInviteeJson)))
+		router.ServeHTTP(w, req)
+		assert.Equal(nil, err)
+		assert.Equal(http.StatusBadRequest, w.Code)
+		responseObj := V1_API_RESPONSE_USER_INVITEES{}
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+		assert.Equal(nil, err)
+		assert.Equal(0, len(responseObj.Data.Invitees))
+	})
 }

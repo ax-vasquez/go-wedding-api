@@ -29,16 +29,12 @@ func GetHorsDoeuvres(c *gin.Context) {
 	var response V1_API_RESPONSE_HORS_DOEVRES
 	var status int
 	var horsDoeuvres []models.HorsDoeuvres
-	if len(idStr) > 0 {
-		id, err := uuid.Parse(idStr)
+	id, err := uuid.Parse(idStr)
+	if err == nil {
+		status = http.StatusOK
+		horsDoeuvres, err = models.FindHorsDoeuvresForUser(id)
 		if err != nil {
 			status = http.StatusInternalServerError
-		} else {
-			status = http.StatusOK
-			horsDoeuvres, err = models.FindHorsDoeuvresForUser(id)
-			if err != nil {
-				status = http.StatusInternalServerError
-			}
 		}
 	} else {
 		var err error

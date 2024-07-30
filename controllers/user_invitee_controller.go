@@ -24,24 +24,29 @@ func CreateUserInvitee(c *gin.Context) {
 	var status int
 	var input models.User
 	idStr := c.Param("id")
-	id, _ := uuid.Parse(idStr)
-	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
+	id, err := uuid.Parse(idStr)
+	if err != nil {
 		status = http.StatusBadRequest
-		response.Message = err.Error()
 	} else {
-		// Invited users are considered +1s to wedding guest; they cannot invite others
-		input.CanInviteOthers = false
-		result, err := models.CreateUserInvitee(id, input)
-		if err != nil {
-			status = http.StatusInternalServerError
-			response.Message = "Internal server error - contact server administrator."
-			log.Println("Error creating user invitee: ", err.Error())
+		if err := c.ShouldBindBodyWithJSON(&input); err != nil {
+			status = http.StatusBadRequest
+			response.Message = err.Error()
 		} else {
-			status = http.StatusCreated
-			response.Message = "Created user invitee"
-			response.Data.Invitees = []models.User{*result}
+			// Invited users are considered +1s to wedding guest; they cannot invite others
+			input.CanInviteOthers = false
+			result, err := models.CreateUserInvitee(id, input)
+			if err != nil {
+				status = http.StatusInternalServerError
+				response.Message = "Internal server error - contact server administrator."
+				log.Println("Error creating user invitee: ", err.Error())
+			} else {
+				status = http.StatusCreated
+				response.Message = "Created user invitee"
+				response.Data.Invitees = []models.User{*result}
+			}
 		}
 	}
+
 	response.Status = status
 	c.JSON(status, response)
 }
@@ -50,14 +55,18 @@ func CreateUserInvitee(c *gin.Context) {
 func GetInviteesForUser(c *gin.Context) {
 	response := V1_API_RESPONSE_USER_INVITEES{}
 	var status int
-	id, _ := uuid.Parse(c.Param("id"))
-	status = http.StatusOK
-	response.Status = status
-	data, err := models.FindInviteesForUser(id)
+	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
-		status = http.StatusInternalServerError
+
 	} else {
-		response.Data.Invitees = *data
+		status = http.StatusOK
+		response.Status = status
+		data, err := models.FindInviteesForUser(id)
+		if err != nil {
+			status = http.StatusInternalServerError
+		} else {
+			response.Data.Invitees = *data
+		}
 	}
 	c.JSON(status, response)
 }
