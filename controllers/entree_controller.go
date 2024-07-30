@@ -26,20 +26,18 @@ type V1_API_RESPONSE_ENTREE struct {
 // is returned.
 func GetEntrees(c *gin.Context) {
 	idStr := c.Param("id")
+	id, err := uuid.Parse(idStr)
 	response := V1_API_RESPONSE_ENTREE{}
 	var status int
 	var entrees []models.Entree
-	if len(idStr) > 0 {
-		id, err := uuid.Parse(idStr)
+	// If no error occurred, the parse was successful, meaning a UUID was found and results will be filtered for the given user
+	if err == nil {
+		status = http.StatusOK
+		entrees, err = models.FindEntreesForUser(id)
 		if err != nil {
 			status = http.StatusInternalServerError
-		} else {
-			status = http.StatusOK
-			entrees, err = models.FindEntreesForUser(id)
-			if err != nil {
-				status = http.StatusInternalServerError
-			}
 		}
+		// If an error occurred, we ignore it and assume it's because there was no ID in the path - all results will be returned
 	} else {
 		entrees = models.FindEntrees()
 		status = http.StatusOK
