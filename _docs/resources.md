@@ -14,10 +14,18 @@ A list of useful references used while developing this API.
 
 * [`Makefile` documentation](https://www.gnu.org/software/make/manual/make.html)
 
+### Golang
+
+* [`defer`, `panic` and `recover`](https://go.dev/blog/defer-panic-and-recover)
+
 ### Gorm
 
 * [Homepage](https://gorm.io/index.html)
 * [Connecting to the Database - PostgreSQL](https://gorm.io/docs/connecting_to_the_database.html#PostgreSQL)
+
+### PostgreSQL
+
+* [Server start](https://www.postgresql.org/docs/current/server-start.html)
 
 ## Community
 
@@ -32,8 +40,21 @@ A list of useful references used while developing this API.
 
 ### GitHub
 
+#### Documentation
+
+* [Creating PostgreSQL service containers](https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers)
+
+#### Repositories
 * [`gin-gonic/gin`](https://github.com/gin-gonic/gin) - _Gin - HTTP web framework written in Go_
 * [`godotenv`](https://github.com/joho/godotenv) - _Go port of Ruby's dotenv library, which loads variables from a `.env` file_
+* [`gin-swagger`](https://github.com/swaggo/gin-swagger) - _gin middleware to automatically generate RESTful API documentation with Swagger 2.0_
+
+#### Issues
+* [How to close connection in V2 (`gorm`)](https://github.com/go-gorm/gorm/issues/3145)
+
+### Reddit
+
+* [`httptest` recorder returns the wrong status](https://www.reddit.com/r/golang/comments/10o654j/httptest_response_recorder_returns_the_wrong/)
 
 ### StackOverflow
 
@@ -42,3 +63,9 @@ A list of useful references used while developing this API.
 * [Create a file using a `Makefile`](https://stackoverflow.com/questions/2667789/how-to-create-a-file-using-makefile)
 * [Test naming conventions in Golang](https://stackoverflow.com/questions/15148331/test-naming-conventions-in-golang)
 * [Project structure recommendations for Golang Gin projects](https://stackoverflow.com/questions/57024470/folder-structure-and-package-naming-convention-for-a-rest-api-develop-in-gin-fra)
+* [When to use `os.Exit()` and `os.Panic()`](https://stackoverflow.com/questions/28472922/when-to-use-os-exit-and-panic) (short answer: _not often_)
+* [Using UUID in Golang/Gorm](https://stackoverflow.com/questions/36486511/how-do-you-do-uuid-in-golangs-gorm)
+
+### YouTube
+
+* [Improve Your Go Tests with TestMain](https://www.youtube.com/watch?v=MAdwtwHzGP4)

@@ -1,52 +1,68 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
+	"github.com/google/uuid"
 )
 
+type UserData struct {
+	Users []models.User `json:"users"`
+}
+
+type V1_API_RESPONSE_USERS struct {
+	V1_API_RESPONSE
+	Data UserData `json:"data"`
+}
+
 type UpdateUserInput struct {
-	ID                      uint   `json:"id" binding:"required"`
-	IsAdmin                 bool   `json:"is_admin"`
-	IsGoing                 bool   `json:"is_going"`
-	CanInviteOthers         bool   `json:"can_invite_others"`
-	FirstName               string `json:"first_name"`
-	LastName                string `json:"last_name"`
-	Email                   string `json:"email"`
-	HorsDoeuvresSelectionId *uint  `json:"hors_douevres_selection_id"`
-	EntreeSelectionId       *uint  `json:"entree_selection_id"`
+	ID                      uuid.UUID  `json:"id" binding:"required"`
+	IsAdmin                 bool       `json:"is_admin"`
+	IsGoing                 bool       `json:"is_going"`
+	CanInviteOthers         bool       `json:"can_invite_others"`
+	FirstName               string     `json:"first_name"`
+	LastName                string     `json:"last_name"`
+	Email                   string     `json:"email"`
+	HorsDoeuvresSelectionId *uuid.UUID `json:"hors_douevres_selection_id"`
+	EntreeSelectionId       *uuid.UUID `json:"entree_selection_id"`
 }
 
 func GetUsers(c *gin.Context) {
-	var userIds []uint
+	response := V1_API_RESPONSE_USERS{}
+	var userIds []uuid.UUID
+	var status int
 	userIdStrings := strings.Split(c.Query("ids"), ",")
 	for _, userIdStr := range userIdStrings {
-		userId, _ := strconv.ParseUint(userIdStr, 10, 64)
-		userIds = append(userIds, uint(userId))
+		userId, _ := uuid.Parse(userIdStr)
+		userIds = append(userIds, userId)
 	}
-	users := models.FindUsers(userIds)
-	c.JSON(http.StatusOK, V1_API_RESPONSE{
-		Status: http.StatusOK,
-		Data: gin.H{
-			"users": users}})
+	users, err := models.FindUsers(userIds)
+	if err != nil {
+		status = http.StatusInternalServerError
+	} else {
+		status = http.StatusOK
+	}
+	response.Status = status
+	response.Data.Users = *users
+	c.JSON(status, response)
 }
 
 // Create a user
-func CreateUser(c *gin.Context) {
-	response := V1_API_RESPONSE{}
+func CreateUsers(c *gin.Context) {
+	response := V1_API_RESPONSE_USERS{}
 	var status int
 	var input models.User
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
 		response.Message = "\"first_name\", \"last_name\", and \"email\" are required"
 	} else {
-		result, err := models.CreateUser(&input)
+		createUserInput := []models.User{input}
+		result, err := models.CreateUsers(&createUserInput)
 		if err != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"
@@ -54,7 +70,7 @@ func CreateUser(c *gin.Context) {
 		} else {
 			status = http.StatusCreated
 			response.Message = "Created new user"
-			response.Data = gin.H{"records": result}
+			response.Data.Users = *result
 		}
 	}
 	response.Status = status
@@ -63,15 +79,16 @@ func CreateUser(c *gin.Context) {
 
 // Update a user
 func UpdateUser(c *gin.Context) {
-	response := V1_API_RESPONSE{}
+	response := V1_API_RESPONSE_USERS{}
 	var status int
 	var input UpdateUserInput
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
 	} else {
+		fmt.Println("USER IN CONTROLLER: ", input)
 		result, err := models.UpdateUser(&models.User{
-			Model: gorm.Model{
+			BaseModel: models.BaseModel{
 				ID: input.ID,
 			},
 			IsAdmin:                 input.IsAdmin,
@@ -81,7 +98,8 @@ func UpdateUser(c *gin.Context) {
 			LastName:                input.LastName,
 			Email:                   input.Email,
 			HorsDoeuvresSelectionId: input.HorsDoeuvresSelectionId,
-			EntreeSelectionId:       input.EntreeSelectionId})
+			EntreeSelectionId:       input.EntreeSelectionId,
+		})
 		if err != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"
@@ -89,7 +107,7 @@ func UpdateUser(c *gin.Context) {
 		} else {
 			status = http.StatusAccepted
 			response.Message = "Updated user"
-			response.Data = gin.H{"records": result}
+			response.Data.Users = *result
 		}
 	}
 	response.Status = status
@@ -98,10 +116,10 @@ func UpdateUser(c *gin.Context) {
 
 // Delete a user
 func DeleteUser(c *gin.Context) {
-	response := V1_API_RESPONSE{}
+	response := V1_API_DELETE_RESPONSE{}
 	var status int
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
-	result, err := models.DeleteUser(uint(id))
+	id, _ := uuid.Parse(c.Param("id"))
+	result, err := models.DeleteUser(id)
 	if err != nil {
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error"
@@ -109,7 +127,7 @@ func DeleteUser(c *gin.Context) {
 	} else {
 		status = http.StatusAccepted
 		response.Message = "Deleted user"
-		response.Data = gin.H{"records": result}
+		response.Data.DeletedRecords = int(*result)
 	}
 	response.Status = status
 	c.JSON(status, response)

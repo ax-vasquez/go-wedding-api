@@ -2,19 +2,17 @@ package models
 
 import (
 	"log"
-	"time"
 
-	"gorm.io/gorm"
+	"github.com/google/uuid"
 )
 
 // Entree table
 type Entree struct {
-	gorm.Model
-	CreatedAt  time.Time `gorm:"<-:create"`
-	OptionName string    `json:"option_name" binding:"required"`
+	BaseModel
+	OptionName string `json:"option_name" binding:"required"`
 }
 
-// Finds all hors doeuvres
+// Finds all entrees
 func FindEntrees() []Entree {
 	var entrees []Entree
 	result := db.Find(&entrees)
@@ -24,30 +22,46 @@ func FindEntrees() []Entree {
 	return entrees
 }
 
-// Finds hors doeuvres for the given user
-func FindEntreesForUser(id uint) []Entree {
+// Find a single entree by ID
+func FindEntreeById(id uuid.UUID) (*Entree, error) {
+	var entree *Entree
+	result := db.Find(&entree, Entree{BaseModel: BaseModel{ID: id}})
+	if result.Error != nil {
+		log.Println("ERROR: ", result.Error.Error())
+		return nil, result.Error
+	}
+	return entree, nil
+}
+
+// Finds entrees for the given user
+func FindEntreesForUser(id uuid.UUID) ([]Entree, error) {
 	var entrees []Entree
 	result := db.Joins("JOIN users ON entrees.id = users.entree_selection_id AND users.id = ?", id).Find(&entrees)
 	if result.Error != nil {
 		log.Println("ERROR: ", result.Error.Error())
+		return nil, result.Error
 	}
-	return entrees
+	return entrees, nil
 }
 
 // Maybe create a user (if no errors) and returns the number of inserted records
-func CreateEntree(entree *Entree) (*int64, error) {
-	result := db.Create(&entree)
+func CreateEntrees(entrees *[]Entree) (*[]Entree, error) {
+	result := db.Create(&entrees)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &result.RowsAffected, nil
+	return entrees, nil
 }
 
 // Maybe delete a user (if no errors) and returns the number of deleted records
-func DeleteEntree(id uint) (*int64, error) {
+func DeleteEntree(id uuid.UUID) (*int64, error) {
 	// Since our models have DeletedAt set, this makes Gorm "soft delete" records on normal delete operations.
 	// We can add .Unscoped() prior to the .Delete() call if we want to permanently-delete them.
-	result := db.Delete(&Entree{}, id)
+	result := db.Delete(&Entree{
+		BaseModel: BaseModel{
+			ID: id,
+		},
+	})
 	if result.Error != nil {
 		return nil, result.Error
 	}

@@ -2,59 +2,81 @@ package models
 
 import (
 	"log"
-	"time"
 
-	"gorm.io/gorm"
+	"github.com/google/uuid"
 )
 
 // User-UserInvitee relation table
 type UserUserInvitee struct {
-	gorm.Model
-	CreatedAt time.Time `gorm:"<-:create"`
-	InviterId uint      `gorm:"index" json:"inviter_id" binding:"required"`
+	BaseModel
+	InviterId uuid.UUID `gorm:"index" json:"inviter_id" binding:"required"`
 	Inviter   User      `gorm:"foreignKey:InviterId"`
-	InviteeId uint      `gorm:"index" json:"invitee_id" binding:"required"`
+	InviteeId uuid.UUID `gorm:"index" json:"invitee_id" binding:"required"`
 	Invitee   User      `gorm:"foreignKey:InviteeId"`
 }
 
 // Create user Invitee and return the number of rows affected
 //
 // This inserts a new row in the user_user_invitees table, which facilitates a many-to-many relationship
-// between invitee
-func CreateUserInvitee(inviting_user_id uint, invited_user User) (*int64, error) {
-	result := db.Create(&UserUserInvitee{
-		InviterId: inviting_user_id,
-		Invitee:   invited_user,
+// between invitee.
+func CreateUserInvitee(invitingUserId uuid.UUID, invitedUser User) (*User, error) {
+	result := db.Create(&invitedUser)
+	if result.Error != nil {
+		log.Println("Error creating base user record: ", result.Error.Error())
+		return nil, result.Error
+	}
+	result = db.Create(&UserUserInvitee{
+		InviterId: invitingUserId,
+		InviteeId: invitedUser.ID,
 	})
 	if result.Error != nil {
 		log.Println("Error creating UserUserInvitee record: ", result.Error.Error())
 		return nil, result.Error
 	}
-	return &result.RowsAffected, nil
+	return &invitedUser, nil
 }
 
 // Finds all users for the given inviting user ID
-func FindInviteesForUser(user_id uint) []User {
-	var users []User
-	result := db.Joins("JOIN user_user_invitees ON user_user_invitees.invitee_id = users.id AND user_user_invitees.inviter_id = ?", user_id).Find(&users)
+func FindInviteesForUser(userId uuid.UUID) (*[]User, error) {
+	var users *[]User
+	result := db.Joins("JOIN user_user_invitees ON user_user_invitees.invitee_id = users.id AND user_user_invitees.inviter_id = ?", userId).Find(&users)
 	if result.Error != nil {
 		log.Println("Error querying for UserUserInvitee: ", result.Error.Error())
+		return nil, result.Error
 	}
-	return users
+	return users, nil
 }
 
 // Delete an invitee
 //
 // This will delete the related records from the user_user_invitees table as well as the invited user from the
 // users table.
-func DeleteInvitee(invitee_id uint) int64 {
-	result := db.Delete(&UserUserInvitee{}, "invitee_id = ?", invitee_id)
+func DeleteInvitee(inviteeId uuid.UUID) (*int64, error) {
+	result := db.Delete(&UserUserInvitee{}, "invitee_id = ?", inviteeId)
 	if result.Error != nil {
 		log.Println("Error deleting UserUserInvitee: ", result.Error.Error())
+		return nil, result.Error
 	}
-	result = db.Delete(&User{}, invitee_id)
+	result = db.Delete(&User{}, inviteeId)
 	if result.Error != nil {
 		log.Println("Error deleting invited User: ", result.Error.Error())
+		return nil, result.Error
 	}
-	return result.RowsAffected
+	return &result.RowsAffected, nil
+}
+
+// Helper to bulk-insert multiple invitee records for users (inviter and invitee) that already exist in the database.
+//
+// This method is currently only used for testing purposes, and as a result, is intentionally not covered
+// by any testing logic. Since this method requires the corresponding invitee User record to already exist,
+// it's not useful in normal application usage. It's only useful when moving large sets of pre-existing data
+// around such as when hydrating a test database with fake data. It's possible this may be useful later if
+// we move data between providers, but that use is far removed from our current needs.
+func CreateUserUserInvitees(u []UserUserInvitee) error {
+	result := db.Create(u)
+	if result.Error != nil {
+		log.Println("Error creating UserUserInvitee record: ", result.Error.Error())
+		return result.Error
+	}
+	return nil
 }
