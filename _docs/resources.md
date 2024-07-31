@@ -37,6 +37,7 @@ A list of useful references used while developing this API.
 * [Makefile tutorial](https://makefiletutorial.com/)
 * [How to create a controller](https://letsgo-framework.github.io/guides/controllers.html#how-to-create-a-controller)
 * [When to use pointers in Go](https://medium.com/@meeusdylan/when-to-use-pointers-in-go-44c15fe04eac)
+* [Go in production **(Soundcloud's standard practices)**](http://peter.bourgon.org/go-in-production)
 
 ### GitHub
 
@@ -65,6 +66,7 @@ A list of useful references used while developing this API.
 * [Project structure recommendations for Golang Gin projects](https://stackoverflow.com/questions/57024470/folder-structure-and-package-naming-convention-for-a-rest-api-develop-in-gin-fra)
 * [When to use `os.Exit()` and `os.Panic()`](https://stackoverflow.com/questions/28472922/when-to-use-os-exit-and-panic) (short answer: _not often_)
 * [Using UUID in Golang/Gorm](https://stackoverflow.com/questions/36486511/how-do-you-do-uuid-in-golangs-gorm)
+* [Separating unit tests and integration tests in Go](https://stackoverflow.com/questions/25965584/separating-unit-tests-and-integration-tests-in-go)
 
 ### YouTube
 
