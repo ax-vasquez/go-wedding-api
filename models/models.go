@@ -41,6 +41,11 @@ func Migrate() error {
 
 func Setup() {
 	var err error
+	useMocks := getIsMockEnv()
+	if useMocks {
+		// TODO: wire up mocked DB connection
+		return
+	}
 	isTestEnv := getIsTestEnv()
 	// TODO: Wire this up to a secure cloud logging solution in a production environment; keep "newLogger" as dev logging solution
 	dbConnectionString := fmt.Sprintf(
