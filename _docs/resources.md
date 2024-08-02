@@ -67,6 +67,7 @@ A list of useful references used while developing this API.
 * [When to use `os.Exit()` and `os.Panic()`](https://stackoverflow.com/questions/28472922/when-to-use-os-exit-and-panic) (short answer: _not often_)
 * [Using UUID in Golang/Gorm](https://stackoverflow.com/questions/36486511/how-do-you-do-uuid-in-golangs-gorm)
 * [Separating unit tests and integration tests in Go](https://stackoverflow.com/questions/25965584/separating-unit-tests-and-integration-tests-in-go)
+* [Mock functions in Go](https://stackoverflow.com/questions/19167970/mock-functions-in-go)
 
 ### YouTube
 

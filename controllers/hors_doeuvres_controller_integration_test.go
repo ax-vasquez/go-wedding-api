@@ -57,7 +57,7 @@ func TestHorsDoeuvresController(t *testing.T) {
 		assert.NotEmpty(responseObj.Data.HorsDoeuvres[0].ID)
 		assert.NotEqual(models.NilUuid, responseObj.Data.HorsDoeuvres[0].ID)
 		assert.Equal("Bacon Bits", responseObj.Data.HorsDoeuvres[0].OptionName)
-		t.Run("DELETE hors doeuvres", func(t *testing.T) {
+		t.Run("DELETE /api/v1/horsdoeuvres/:id", func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// Route needs to be generated since the ID of the record to delete is embedded within the route itself
 			routePath := fmt.Sprintf("/api/v1/horsdoeuvres/%s", responseObj.Data.HorsDoeuvres[0].ID)
