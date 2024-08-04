@@ -29,7 +29,7 @@ func TestEntreeControllerUnit(t *testing.T) {
 		assert.Equal(nil, err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 	})
-	t.Run("GET /api/v1/entrees/:id - internal server error", func(t *testing.T) {
+	t.Run("GET /api/v1/user/:id/entrees - internal server error", func(t *testing.T) {
 		mock.ExpectQuery(regexp.QuoteMeta(`SELECT "entrees"."created_at","entrees"."updated_at","entrees"."deleted_at","entrees"."id","entrees"."option_name" FROM "entrees" JOIN users ON entrees.id = users.entree_selection_id AND users.id = $1 WHERE "entrees"."deleted_at" IS NULL`)).WithArgs(models.NilUuid).WillReturnError(fmt.Errorf("arbitrary database error"))
 
 		route := fmt.Sprintf("/api/v1/user/%s/entrees", models.NilUuid)
