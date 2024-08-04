@@ -9,3 +9,11 @@ ignore:
   - "test-fixtures"
   - "*_test.go"
   - "*.sh"
+
+flags:
+  unit:
+    paths:
+      - ./**/*_unit_test.go
+  integration:
+    paths:
+      - ./**/*_integration_test.go
