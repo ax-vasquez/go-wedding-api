@@ -21,7 +21,6 @@ func TestEntreeControllerUnit(t *testing.T) {
 	assert := assert.New(t)
 	router := paveRoutes()
 	t.Run("GET /api/v1/entrees - internal server error", func(t *testing.T) {
-
 		mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "entrees" WHERE "entrees"."deleted_at" IS NULL`)).WillReturnError(fmt.Errorf("arbitrary database error"))
 
 		w := httptest.NewRecorder()
