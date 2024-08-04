@@ -19,7 +19,7 @@ func TestEntrees(t *testing.T) {
 		assert.Equal("Caprese pasta", entree.OptionName)
 	})
 	t.Run("Can find all possible entrees", func(t *testing.T) {
-		entrees := FindEntrees()
+		entrees, _ := FindEntrees()
 		assert.Equal(5, len(entrees))
 	})
 	t.Run("Can find entrees for user", func(t *testing.T) {
