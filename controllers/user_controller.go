@@ -59,7 +59,7 @@ func CreateUsers(c *gin.Context) {
 	var input models.User
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
-		response.Message = "\"first_name\", \"last_name\", and \"email\" are required"
+		response.Message = err.Error()
 	} else {
 		createUserInput := []models.User{input}
 		result, err := models.CreateUsers(&createUserInput)
