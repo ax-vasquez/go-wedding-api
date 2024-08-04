@@ -13,13 +13,14 @@ type Entree struct {
 }
 
 // Finds all entrees
-func FindEntrees() []Entree {
+func FindEntrees() ([]Entree, error) {
 	var entrees []Entree
 	result := db.Find(&entrees)
 	if result.Error != nil {
 		log.Println("ERROR: ", result.Error.Error())
+		return nil, result.Error
 	}
-	return entrees
+	return entrees, nil
 }
 
 // Find a single entree by ID

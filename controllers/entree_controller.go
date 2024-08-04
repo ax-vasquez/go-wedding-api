@@ -39,8 +39,12 @@ func GetEntrees(c *gin.Context) {
 		}
 		// If an error occurred, we ignore it and assume it's because there was no ID in the path - all results will be returned
 	} else {
-		entrees = models.FindEntrees()
-		status = http.StatusOK
+		entrees, err = models.FindEntrees()
+		if err != nil {
+			status = http.StatusInternalServerError
+		} else {
+			status = http.StatusOK
+		}
 	}
 	response.Status = status
 	response.Data.Entrees = entrees

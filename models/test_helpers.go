@@ -112,7 +112,7 @@ func getIsTestEnv() bool {
 }
 
 func getIsMockEnv() bool {
-	test_env_str, _ := os.LookupEnv("USE_MOCK")
+	test_env_str, _ := os.LookupEnv("USE_MOCK_DB")
 	isTestEnv, _ := strconv.ParseBool(test_env_str)
 	return isTestEnv
 }
