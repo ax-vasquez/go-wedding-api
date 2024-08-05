@@ -38,6 +38,7 @@ A list of useful references used while developing this API.
 * [How to create a controller](https://letsgo-framework.github.io/guides/controllers.html#how-to-create-a-controller)
 * [When to use pointers in Go](https://medium.com/@meeusdylan/when-to-use-pointers-in-go-44c15fe04eac)
 * [Go in production **(Soundcloud's standard practices)**](http://peter.bourgon.org/go-in-production)
+* [Go thread management](https://blog.stackademic.com/deep-dive-into-go-runtime-advanced-thread-management-explained-fd5c97b4daa4)
 
 ### GitHub
 
@@ -68,6 +69,7 @@ A list of useful references used while developing this API.
 * [Using UUID in Golang/Gorm](https://stackoverflow.com/questions/36486511/how-do-you-do-uuid-in-golangs-gorm)
 * [Separating unit tests and integration tests in Go](https://stackoverflow.com/questions/25965584/separating-unit-tests-and-integration-tests-in-go)
 * [Mock functions in Go](https://stackoverflow.com/questions/19167970/mock-functions-in-go)
+* [Golang defaults to running tests concurrently in separate Goroutines](https://stackoverflow.com/questions/24375966/does-go-test-run-unit-tests-concurrently)
 
 ### YouTube
 
