@@ -57,7 +57,9 @@ func Setup() (*sql.DB, sqlmock.Sqlmock, error) {
 			Conn:                 mockDb,
 			PreferSimpleProtocol: true,
 		})
-		db, err = gorm.Open(dialector, &gorm.Config{})
+		db, err = gorm.Open(dialector, &gorm.Config{
+			Logger: newLogger,
+		})
 		return mockDb, mock, err
 	}
 	isTestEnv := getIsTestEnv()
@@ -71,9 +73,7 @@ func Setup() (*sql.DB, sqlmock.Sqlmock, error) {
 		os.Getenv("PGSQL_PORT"),
 		os.Getenv("PGSQL_TIMEZONE"))
 
-	db, err = gorm.Open(postgres.Open(dbConnectionString), &gorm.Config{
-		Logger: newLogger,
-	})
+	db, err = gorm.Open(postgres.Open(dbConnectionString), &gorm.Config{})
 	if err != nil {
 		log.Panic("There was a problem connecting to the database: ", err.Error())
 	}

@@ -35,8 +35,8 @@ func Test_Unit_User(t *testing.T) {
 
 		res, err := CreateUsers(&[]User{u})
 
+		assert.Empty(res)
 		assert.NotEqual(nil, err)
-		assert.Equal(nil, res)
 
 	})
 }

@@ -6,16 +6,26 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestUserController(t *testing.T) {
+	err := godotenv.Load("../.env")
+	if err != nil {
+		log.Println("WARNING! Could not load .env file; application will continue to run with the assumption that needed variables are present in the environment.")
+	}
+	os.Setenv("TEST_ENV", "true")
+	models.Setup()
+	models.SeedTestData()
 	assert := assert.New(t)
 	router := paveRoutes()
 	t.Run("GET /api/v1/users", func(t *testing.T) {
