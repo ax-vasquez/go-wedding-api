@@ -4,13 +4,23 @@
 package models
 
 import (
+	"log"
+	"os"
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestEntrees(t *testing.T) {
+	err := godotenv.Load("../.env")
+	if err != nil {
+		log.Println("WARNING! Could not load .env file; application will continue to run with the assumption that needed variables are present in the environment.")
+	}
+	os.Setenv("TEST_ENV", "true")
+	Setup()
+	SeedTestData()
 	assert := assert.New(t)
 	t.Run("Can find a single entree", func(t *testing.T) {
 		id, _ := uuid.Parse("f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3")
