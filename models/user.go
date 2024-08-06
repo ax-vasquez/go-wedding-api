@@ -73,7 +73,7 @@ func SetCanInviteOthers(u *User) error {
 //
 // See: https://gorm.io/docs/update.html#Updates-multiple-columns
 func UpdateUser(u *User) error {
-	result := db.Model(&u).Updates(&u)
+	result := db.Model(&u).Clauses(clause.Returning{}).Updates(&u)
 	if result.Error != nil {
 		return result.Error
 	}
