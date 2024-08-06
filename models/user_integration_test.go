@@ -25,20 +25,24 @@ func TestUsers(t *testing.T) {
 		assert.Empty(result)
 	})
 	t.Run("Can update a user", func(t *testing.T) {
-		updateUser, err := UpdateUser(&User{
+		updateUser := &User{
 			BaseModel: BaseModel{
 				ID: firstUserId},
-			FirstName: "Jimmy"})
+			FirstName: "Jimmy"}
+		err := UpdateUser(updateUser)
 		assert.Equal(nil, err)
-		assert.Equal("Jimmy", (*updateUser)[0].FirstName)
-		assert.Equal("McNiel", (*updateUser)[0].LastName)
+		assert.NotEmpty(updateUser.ID)
+		assert.NotEqual(NilUuid, updateUser.ID)
+		assert.Equal("Jimmy", updateUser.FirstName)
+		assert.Equal("McNiel", updateUser.LastName)
 	})
 	t.Run("Can create a user", func(t *testing.T) {
-		newUsers, err := CreateUsers(&[]User{
+		newUsers := &[]User{
 			{
 				FirstName: "Glizzy",
 				LastName:  "Gobbler",
-				Email:     "gg@gobblez.lol"}})
+				Email:     "gg@gobblez.lol"}}
+		err := CreateUsers(newUsers)
 		assert.Equal(nil, err)
 		assert.NotEmpty((*newUsers)[0].ID)
 		assert.NotEqual(NilUuid, (*newUsers)[0].ID)

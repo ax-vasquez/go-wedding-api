@@ -23,6 +23,9 @@ func TestMain(m *testing.M) {
 
 	// This will be 0 if passing, 1 if failing
 	exitCode := m.Run()
+	// Switch back to "prod" DB so we can drop the test DB
+	models.SwitchConnectedDB(os.Getenv("PGSQL_DBNAME"))
+	models.DropTestDB()
 
 	// Must return status code - if you don't all tests will be marked as "passing" by returning 0 for all tests
 	os.Exit(exitCode)

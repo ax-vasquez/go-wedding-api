@@ -22,3 +22,20 @@ To run the integration tests locally, run the following command from the root of
 go test -tags=integration ./... -v
 ```
 * Runs all `*_test.go` files with the `integration` build tag
+
+## Unit Tests
+
+Since most of the logic in this repository is comprised of relatively-straightforward implementations of `gin` and `gorm`, there 
+isn't a whole lot of custom logic to test.
+
+As a result, the unit tests are primarily geared towards testing error conditions, which are difficult to emulate in a working database
+connection (such as that used by the integration tests).
+
+> NOTE: If custom logic _is_ added, it will surely need to be covered by testing; CodeCov integration should prevent merging if requisite 
+> coverage is not met.
+
+### Running unit tests
+
+```sh
+go test -tags=unit ./... -v
+```

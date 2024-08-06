@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -62,7 +61,7 @@ func CreateUsers(c *gin.Context) {
 		response.Message = err.Error()
 	} else {
 		createUserInput := []models.User{input}
-		result, err := models.CreateUsers(&createUserInput)
+		err := models.CreateUsers(&createUserInput)
 		if err != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"
@@ -70,7 +69,7 @@ func CreateUsers(c *gin.Context) {
 		} else {
 			status = http.StatusCreated
 			response.Message = "Created new user"
-			response.Data.Users = *result
+			response.Data.Users = createUserInput
 		}
 	}
 	response.Status = status
@@ -86,8 +85,7 @@ func UpdateUser(c *gin.Context) {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
 	} else {
-		fmt.Println("USER IN CONTROLLER: ", input)
-		result, err := models.UpdateUser(&models.User{
+		u := &models.User{
 			BaseModel: models.BaseModel{
 				ID: input.ID,
 			},
@@ -99,16 +97,33 @@ func UpdateUser(c *gin.Context) {
 			Email:                   input.Email,
 			HorsDoeuvresSelectionId: input.HorsDoeuvresSelectionId,
 			EntreeSelectionId:       input.EntreeSelectionId,
-		})
-		if err != nil {
+		}
+		updateErr := models.UpdateUser(u)
+		setAdminErr := models.SetAdminPrivileges(u)
+		setCanInviteErr := models.SetCanInviteOthers(u)
+		setIsGoingErr := models.SetIsGoing(u)
+		if updateErr != nil || setAdminErr != nil || setCanInviteErr != nil || setIsGoingErr != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"
-			log.Println("Error updating user: ", err.Error())
-		} else {
-			status = http.StatusAccepted
-			response.Message = "Updated user"
-			response.Data.Users = *result
+			response.Status = status
+			c.JSON(status, response)
+			if updateErr != nil {
+				log.Println("Error updating user: ", updateErr.Error())
+			}
+			if setAdminErr != nil {
+				log.Println("Error updating user: ", setAdminErr.Error())
+			}
+			if setCanInviteErr != nil {
+				log.Println("Error updating user: ", setCanInviteErr.Error())
+			}
+			if setIsGoingErr != nil {
+				log.Println("Error updating user: ", setIsGoingErr.Error())
+			}
+			return
 		}
+		status = http.StatusAccepted
+		response.Message = "Updated user"
+		response.Data.Users = []models.User{*u}
 	}
 	response.Status = status
 	c.JSON(status, response)

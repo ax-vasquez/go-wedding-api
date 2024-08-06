@@ -45,11 +45,11 @@ func loadTestUsers() error {
 	if err != nil {
 		return errors.New("There was a problem unmarshaling the JSON from file ./test-fixtures/invitees.json: " + err.Error())
 	}
-	_, err = CreateUsers(&users)
+	err = CreateUsers(&users)
 	if err != nil {
 		return errors.New("There was a problem creating test user records: " + err.Error())
 	}
-	_, err = CreateUsers(&userInvitees)
+	err = CreateUsers(&userInvitees)
 	if err != nil {
 		return errors.New("There was a problem creating test user invitee records: " + err.Error())
 	}
