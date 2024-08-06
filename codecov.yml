@@ -9,7 +9,7 @@ ignore:
   - "test-fixtures"
   - "*_test.go"
   - "*.sh"
-  - "test_helpers.go"
+  - "models/test_helpers.go"
 
 flags:
   unit:
