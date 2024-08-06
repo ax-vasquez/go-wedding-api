@@ -1,7 +1,6 @@
 package models
 
 import (
-	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -96,7 +95,6 @@ func FindUsers(ids []uuid.UUID) (*[]User, error) {
 	var users []User
 	result := db.Find(&users, ids)
 	if result.Error != nil {
-		log.Println("ERROR: ", result.Error.Error())
 		return nil, result.Error
 	}
 	return &users, nil
