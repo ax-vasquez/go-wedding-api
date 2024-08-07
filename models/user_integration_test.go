@@ -15,13 +15,13 @@ func TestUsers(t *testing.T) {
 	firstUserId, _ := uuid.Parse(FirstUserIdStr)
 	t.Run("Can find users", func(t *testing.T) {
 		matchingUsers, err := FindUsers([]uuid.UUID{firstUserId})
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		assert.Equal("Rupinder", (*matchingUsers)[0].FirstName)
 	})
 	t.Run("Returns an empty result when no user is found", func(t *testing.T) {
 		id, _ := uuid.Parse(NilUuid)
 		result, err := FindUsers([]uuid.UUID{id})
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		assert.Empty(result)
 	})
 	t.Run("Can update a user", func(t *testing.T) {
@@ -30,7 +30,7 @@ func TestUsers(t *testing.T) {
 				ID: firstUserId},
 			FirstName: "Jimmy"}
 		err := UpdateUser(updateUser)
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		assert.NotEmpty(updateUser.ID)
 		assert.NotEqual(NilUuid, updateUser.ID)
 		assert.Equal("Jimmy", updateUser.FirstName)
@@ -43,13 +43,13 @@ func TestUsers(t *testing.T) {
 				LastName:  "Gobbler",
 				Email:     "gg@gobblez.lol"}}
 		err := CreateUsers(newUsers)
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		assert.NotEmpty((*newUsers)[0].ID)
 		assert.NotEqual(NilUuid, (*newUsers)[0].ID)
 		assert.Equal("Glizzy", (*newUsers)[0].FirstName)
 		t.Run("Can delete a user", func(t *testing.T) {
 			result, err := DeleteUser((*newUsers)[0].ID)
-			assert.Equal(nil, err)
+			assert.Nil(err)
 			assert.Equal(1, int(*result))
 		})
 	})

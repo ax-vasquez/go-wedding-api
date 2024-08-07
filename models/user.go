@@ -1,6 +1,7 @@
 package models
 
 import (
+	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -29,6 +30,7 @@ type User struct {
 func CreateUsers(users *[]User) error {
 	result := db.Create(&users)
 	if result.Error != nil {
+		log.Println("ERROR IN METHOD: ", result.Error.Error())
 		return result.Error
 	}
 	return nil

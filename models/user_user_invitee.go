@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm/clause"
 )
 
 // User-UserInvitee relation table
@@ -19,11 +20,11 @@ type UserUserInvitee struct {
 //
 // This inserts a new row in the user_user_invitees table, which facilitates a many-to-many relationship
 // between invitee.
-func CreateUserInvitee(invitingUserId uuid.UUID, invitedUser User) (*User, error) {
-	result := db.Create(&invitedUser)
+func CreateUserInvitee(invitingUserId uuid.UUID, invitedUser User) error {
+	result := db.Model(&invitedUser).Clauses(clause.Returning{}).Create(&invitedUser)
 	if result.Error != nil {
 		log.Println("Error creating base user record: ", result.Error.Error())
-		return nil, result.Error
+		return result.Error
 	}
 	result = db.Create(&UserUserInvitee{
 		InviterId: invitingUserId,
@@ -31,14 +32,14 @@ func CreateUserInvitee(invitingUserId uuid.UUID, invitedUser User) (*User, error
 	})
 	if result.Error != nil {
 		log.Println("Error creating UserUserInvitee record: ", result.Error.Error())
-		return nil, result.Error
+		return result.Error
 	}
-	return &invitedUser, nil
+	return nil
 }
 
 // Finds all users for the given inviting user ID
-func FindInviteesForUser(userId uuid.UUID) (*[]User, error) {
-	var users *[]User
+func FindInviteesForUser(userId uuid.UUID) ([]User, error) {
+	var users []User
 	result := db.Joins("JOIN user_user_invitees ON user_user_invitees.invitee_id = users.id AND user_user_invitees.inviter_id = ?", userId).Find(&users)
 	if result.Error != nil {
 		log.Println("Error querying for UserUserInvitee: ", result.Error.Error())

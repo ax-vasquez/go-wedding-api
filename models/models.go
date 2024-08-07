@@ -57,7 +57,9 @@ func Setup() (*sql.DB, sqlmock.Sqlmock, error) {
 			Conn:                 mockDb,
 			PreferSimpleProtocol: true,
 		})
-		db, err = gorm.Open(dialector, &gorm.Config{})
+		db, err = gorm.Open(dialector, &gorm.Config{
+			Logger: newLogger,
+		})
 		return mockDb, mock, err
 	}
 	isTestEnv := getIsTestEnv()

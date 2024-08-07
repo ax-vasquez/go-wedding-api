@@ -15,7 +15,7 @@ func TestUserUserInvitee(t *testing.T) {
 	firstUserUuid, _ := uuid.Parse(FirstUserIdStr)
 	t.Run("Can find invitees for user", func(t *testing.T) {
 		invitees, err := FindInviteesForUser(firstUserUuid)
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		assert.NotEmpty(invitees)
 		assert.Equal("Suman", (*invitees)[0].FirstName)
 	})
@@ -25,12 +25,12 @@ func TestUserUserInvitee(t *testing.T) {
 			LastName:  "McTesterson",
 			Email:     "a@b.com",
 		})
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		assert.NotEmpty(invitee.ID)
 		assert.Equal("Billy", invitee.FirstName)
 		t.Run("Can delete an invitee", func(t *testing.T) {
 			result, err := DeleteInvitee(invitee.ID)
-			assert.Equal(nil, err)
+			assert.Nil(err)
 			assert.Equal(1, int(*result))
 		})
 	})

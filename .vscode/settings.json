@@ -1,6 +1,7 @@
 {
     "go.buildFlags": [
-        "-tags=unit,integration",
+        "-tags=unit",
+        "-v"
     ],
-    "go.testTags": "unit,integration",
+    "go.testTags": "unit",
 }
