@@ -83,7 +83,7 @@ func loadTestEntrees() error {
 	if err != nil {
 		return errors.New("There was a problem unmarshaling the JSON from file ./test-fixtures/entrees.json: " + err.Error())
 	}
-	_, err = CreateEntrees(&records)
+	err = CreateEntrees(&records)
 	if err != nil {
 		return errors.New("There was a problem creating the test entree records: " + err.Error())
 	}
