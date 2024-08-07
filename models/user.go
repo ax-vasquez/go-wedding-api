@@ -1,7 +1,6 @@
 package models
 
 import (
-	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -30,7 +29,6 @@ type User struct {
 func CreateUsers(users *[]User) error {
 	result := db.Create(&users)
 	if result.Error != nil {
-		log.Println("ERROR IN METHOD: ", result.Error.Error())
 		return result.Error
 	}
 	return nil
@@ -47,7 +45,7 @@ func SetAdminPrivileges(u *User) error {
 
 // Set is_going for user
 func SetIsGoing(u *User) error {
-	result := db.Model(&u).Clauses(clause.Returning{}).Select("is_going").Updates(&u)
+	result := db.Model(&u).Select("is_going").Updates(&u)
 	if result.Error != nil {
 		return result.Error
 	}

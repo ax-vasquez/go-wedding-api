@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"os"
 	"regexp"
-	"strings"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,10 +18,17 @@ func Test_Unit_User(t *testing.T) {
 	_, mock, _ := Setup()
 	assert := assert.New(t)
 	u := User{
-		FirstName: "Booples",
-		LastName:  "McFadden",
-		Email:     "fake@email.place",
+		BaseModel: BaseModel{
+			ID: uuid.New(),
+		},
+		IsAdmin:         true,
+		CanInviteOthers: true,
+		IsGoing:         true,
+		FirstName:       "Booples",
+		LastName:        "McFadden",
+		Email:           "fake@email.place",
 	}
+	errMsg := "arbitrary database error"
 	t.Run("create users - database error returns error", func(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectQuery(
@@ -37,60 +44,79 @@ func Test_Unit_User(t *testing.T) {
 			u.Email,
 			nil,
 			nil,
-		).WillReturnError(fmt.Errorf("arbitrary database error"))
+		).WillReturnError(fmt.Errorf(errMsg))
+		mock.ExpectRollback()
 		mock.ExpectCommit()
 
 		users := &[]User{u}
 		err := CreateUsers(users)
 
 		assert.NotNil(err)
-		// TODO: Figure out why there is extra text stemming from this mocked error: "; call to Rollback transaction, was not expected, next expectation is: ExpectedCommit => expecting transaction Commit"
-		assert.True(strings.Contains(err.Error(), "arbitrary database error"))
+		assert.Equal(err.Error(), errMsg)
 
 	})
 	t.Run("update user - database error returns error", func(t *testing.T) {
+		mock.ExpectBegin()
 		mock.ExpectQuery(
 			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"first_name"=$2,"last_name"=$3,"email"=$4 WHERE "users"."deleted_at" IS NULL AND "id" = $5`)).WithArgs(
 			AnyTime{},
 			u.FirstName,
 			u.LastName,
 			u.Email,
-			NilUuid,
-		).WillReturnError(fmt.Errorf("arbitrary database error"))
+			u.ID,
+		).WillReturnError(fmt.Errorf(errMsg))
+		mock.ExpectRollback()
+		mock.ExpectCommit()
 
 		err := UpdateUser(&u)
+
 		assert.NotNil(err)
+		assert.Equal(err.Error(), errMsg)
 	})
 	t.Run("set is_admin for user - database error returns error", func(t *testing.T) {
-		mock.ExpectQuery(
-			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_admin"=false WHERE "users"."deleted_at" IS NULL AND "id" = $2`)).WithArgs(
+		mock.ExpectBegin()
+		mock.ExpectExec(
+			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_admin"=$2 WHERE "users"."deleted_at" IS NULL AND "id" = $3`)).WithArgs(
 			AnyTime{},
-			NilUuid,
+			u.IsAdmin,
+			u.ID,
 		).WillReturnError(fmt.Errorf("arbitrary database error"))
+		mock.ExpectRollback()
+		mock.ExpectCommit()
 
-		err := UpdateUser(&u)
+		err := SetAdminPrivileges(&u)
 
 		assert.NotNil(err)
+		assert.Equal(err.Error(), errMsg)
 	})
 	t.Run("set can_invite_others for user - database error returns error", func(t *testing.T) {
-		mock.ExpectQuery(
-			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"can_invite_others"=false WHERE "users"."deleted_at" IS NULL AND "id" = $2`)).WithArgs(
+		mock.ExpectBegin()
+		mock.ExpectExec(
+			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"can_invite_others"=$2 WHERE "users"."deleted_at" IS NULL AND "id" = $3`)).WithArgs(
 			AnyTime{},
-			NilUuid,
+			u.CanInviteOthers,
+			u.ID,
 		).WillReturnError(fmt.Errorf("arbitrary database error"))
+		mock.ExpectRollback()
+		mock.ExpectCommit()
 
-		err := UpdateUser(&u)
+		err := SetCanInviteOthers(&u)
 
 		assert.NotNil(err)
+		assert.Equal(err.Error(), errMsg)
 	})
 	t.Run("set is_going for user - database error returns error", func(t *testing.T) {
-		mock.ExpectQuery(
-			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_going"=false WHERE "users"."deleted_at" IS NULL AND "id" = $2`)).WithArgs(
+		mock.ExpectBegin()
+		mock.ExpectExec(
+			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_going"=$2 WHERE "users"."deleted_at" IS NULL AND "id" = $3`)).WithArgs(
 			AnyTime{},
-			NilUuid,
+			u.IsGoing,
+			u.ID,
 		).WillReturnError(fmt.Errorf("arbitrary database error"))
+		mock.ExpectRollback()
+		mock.ExpectCommit()
 
-		err := UpdateUser(&u)
+		err := SetIsGoing(&u)
 
 		assert.NotNil(err)
 	})
