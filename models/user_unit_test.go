@@ -59,8 +59,11 @@ func Test_Unit_User(t *testing.T) {
 	t.Run("update user - database error returns error", func(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"first_name"=$2,"last_name"=$3,"email"=$4 WHERE "users"."deleted_at" IS NULL AND "id" = $5`)).WithArgs(
+			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_admin"=$2,"is_going"=$3,"can_invite_others"=$4,"first_name"=$5,"last_name"=$6,"email"=$7 WHERE "users"."deleted_at" IS NULL AND "id" = $8 RETURNING *`)).WithArgs(
 			AnyTime{},
+			u.IsAdmin,
+			u.IsGoing,
+			u.CanInviteOthers,
 			u.FirstName,
 			u.LastName,
 			u.Email,
