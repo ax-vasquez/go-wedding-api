@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm/clause"
 )
 
 // User-UserInvitee relation table
@@ -13,22 +12,17 @@ type UserUserInvitee struct {
 	InviterId uuid.UUID `gorm:"index" json:"inviter_id" binding:"required"`
 	Inviter   User      `gorm:"foreignKey:InviterId"`
 	InviteeId uuid.UUID `gorm:"index" json:"invitee_id" binding:"required"`
-	Invitee   User      `gorm:"foreignKey:InviteeId"`
+	Invitee   *User     `gorm:"foreignKey:InviteeId"`
 }
 
 // Create user Invitee and return the number of rows affected
 //
 // This inserts a new row in the user_user_invitees table, which facilitates a many-to-many relationship
 // between invitee.
-func CreateUserInvitee(invitingUserId uuid.UUID, invitedUser User) error {
-	result := db.Model(&invitedUser).Clauses(clause.Returning{}).Create(&invitedUser)
-	if result.Error != nil {
-		log.Println("Error creating base user record: ", result.Error.Error())
-		return result.Error
-	}
-	result = db.Create(&UserUserInvitee{
+func CreateUserInvitee(invitingUserId uuid.UUID, invitedUser *User) error {
+	result := db.Create(&UserUserInvitee{
 		InviterId: invitingUserId,
-		InviteeId: invitedUser.ID,
+		Invitee:   invitedUser,
 	})
 	if result.Error != nil {
 		log.Println("Error creating UserUserInvitee record: ", result.Error.Error())

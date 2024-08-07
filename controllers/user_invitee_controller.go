@@ -34,7 +34,7 @@ func CreateUserInvitee(c *gin.Context) {
 		} else {
 			// Invited users are considered +1s to wedding guest; they cannot invite others
 			invitee.CanInviteOthers = false
-			err := models.CreateUserInvitee(id, invitee)
+			err := models.CreateUserInvitee(id, &invitee)
 			if err != nil {
 				status = http.StatusInternalServerError
 				response.Message = "Internal server error - contact server administrator."
