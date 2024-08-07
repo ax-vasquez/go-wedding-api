@@ -31,13 +31,14 @@ func Test_HorsDoeuvresModel_Integration(t *testing.T) {
 		assert.Equal("Crab puff", horsDoeuvres[0].OptionName)
 	})
 	t.Run("Can create an hors doeuvres", func(t *testing.T) {
-		horsDoeuvresResult, err := CreateHorsDoeuvres(&[]HorsDoeuvres{{
+		horsDoeuvres := []HorsDoeuvres{{
 			OptionName: "Cornflakes",
-		}})
+		}}
+		err := CreateHorsDoeuvres(&horsDoeuvres)
 		assert.Equal(nil, err)
-		assert.NotEmpty((*horsDoeuvresResult)[0].ID)
+		assert.NotEmpty(horsDoeuvres[0].ID)
 		t.Run("Can delete an hors doeuvres", func(t *testing.T) {
-			id := (*horsDoeuvresResult)[0].ID
+			id := horsDoeuvres[0].ID
 			result, err := DeleteHorsDoeuvres(id)
 			assert.Equal(nil, err)
 			assert.Equal(1, int(*result))
