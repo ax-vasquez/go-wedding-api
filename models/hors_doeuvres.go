@@ -33,9 +33,9 @@ func FindHorsDoeuvresForUser(id uuid.UUID) ([]HorsDoeuvres, error) {
 }
 
 // Maybe create a user (if no errors) and returns the number of inserted records
-func CreateHorsDoeuvres(hors_douevres *[]HorsDoeuvres) (*[]HorsDoeuvres, error) {
-	result := db.Clauses(clause.Returning{}).Select("*").Create(&hors_douevres)
-	return hors_douevres, result.Error
+func CreateHorsDoeuvres(hors_douevres *[]HorsDoeuvres) error {
+	result := db.Clauses(clause.Returning{}).Create(&hors_douevres)
+	return result.Error
 }
 
 // Maybe delete a user (if no errors) and returns the number of deleted records

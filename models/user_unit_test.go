@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_Unit_User(t *testing.T) {
+func Test_UserModel_Unit(t *testing.T) {
 	os.Setenv("USE_MOCK_DB", "true")
 	assert := assert.New(t)
 	u := User{
@@ -28,7 +28,7 @@ func Test_Unit_User(t *testing.T) {
 		Email:           "fake@email.place",
 	}
 	errMsg := "arbitrary database error"
-	t.Run("create users - database error returns error", func(t *testing.T) {
+	t.Run("CreateUsers - database error returns error", func(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
@@ -56,7 +56,7 @@ func Test_Unit_User(t *testing.T) {
 		assert.Equal(errMsg, err.Error())
 
 	})
-	t.Run("update user - database error returns error", func(t *testing.T) {
+	t.Run("UpdateUser - database error returns error", func(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
@@ -78,7 +78,7 @@ func Test_Unit_User(t *testing.T) {
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
 	})
-	t.Run("set is_admin for user - database error returns error", func(t *testing.T) {
+	t.Run("SetAdminPrivileges - database error returns error", func(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
 		mock.ExpectExec(
@@ -86,7 +86,7 @@ func Test_Unit_User(t *testing.T) {
 			AnyTime{},
 			u.IsAdmin,
 			u.ID,
-		).WillReturnError(fmt.Errorf("arbitrary database error"))
+		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
@@ -95,7 +95,7 @@ func Test_Unit_User(t *testing.T) {
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
 	})
-	t.Run("set can_invite_others for user - database error returns error", func(t *testing.T) {
+	t.Run("SetCanInviteOthers - database error returns error", func(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
 		mock.ExpectExec(
@@ -103,7 +103,7 @@ func Test_Unit_User(t *testing.T) {
 			AnyTime{},
 			u.CanInviteOthers,
 			u.ID,
-		).WillReturnError(fmt.Errorf("arbitrary database error"))
+		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
@@ -112,7 +112,7 @@ func Test_Unit_User(t *testing.T) {
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
 	})
-	t.Run("set is_going for user - database error returns error", func(t *testing.T) {
+	t.Run("SetIsGoing - database error returns error", func(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
 		mock.ExpectExec(
@@ -120,7 +120,7 @@ func Test_Unit_User(t *testing.T) {
 			AnyTime{},
 			u.IsGoing,
 			u.ID,
-		).WillReturnError(fmt.Errorf("arbitrary database error"))
+		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 

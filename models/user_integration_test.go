@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUsers(t *testing.T) {
+func Test_UserModel_Integration(t *testing.T) {
 	assert := assert.New(t)
 	firstUserId, _ := uuid.Parse(FirstUserIdStr)
 	t.Run("Can find users", func(t *testing.T) {

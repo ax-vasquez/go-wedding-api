@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserUserInvitee(t *testing.T) {
+func Test_UserUserInvitee_Integration(t *testing.T) {
 	assert := assert.New(t)
 	firstUserUuid, _ := uuid.Parse(FirstUserIdStr)
 	t.Run("Can find invitees for user", func(t *testing.T) {

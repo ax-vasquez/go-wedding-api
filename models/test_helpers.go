@@ -100,7 +100,7 @@ func loadTestHorsDoeuvres() error {
 	if err != nil {
 		return errors.New("There was a problem unmarshaling the JSON from file ./test-fixtures/hors_doeuvres.json: " + err.Error())
 	}
-	_, err = CreateHorsDoeuvres(&records)
+	err = CreateHorsDoeuvres(&records)
 	if err != nil {
 		return errors.New("There was a problem creating the hors doeuvres records: " + err.Error())
 	}

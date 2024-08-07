@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHorsDoeuvres(t *testing.T) {
+func Test_HorsDoeuvresModel_Integration(t *testing.T) {
 	assert := assert.New(t)
 	t.Run("Can find a hors doeuvres", func(t *testing.T) {
 		id, _ := uuid.Parse("3baf970f-1670-4b42-ba81-63168a2f21b8")

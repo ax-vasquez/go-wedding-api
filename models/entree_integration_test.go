@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEntrees(t *testing.T) {
+func Test_EntreeModel_Integration(t *testing.T) {
 	assert := assert.New(t)
 	t.Run("Can find a single entree", func(t *testing.T) {
 		id, _ := uuid.Parse("f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3")
