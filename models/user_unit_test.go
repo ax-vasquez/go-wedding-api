@@ -32,18 +32,19 @@ func Test_Unit_User(t *testing.T) {
 	t.Run("create users - database error returns error", func(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","is_admin","is_going","can_invite_others","first_name","last_name","email","hors_doeuvres_selection_id","entree_selection_id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING "id"`)).WithArgs(
+			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","is_admin","is_going","can_invite_others","first_name","last_name","email","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING "id`)).WithArgs(
 			AnyTime{},
 			AnyTime{},
 			nil,
-			false,
-			false,
-			false,
+			u.IsAdmin,
+			u.IsGoing,
+			u.CanInviteOthers,
 			u.FirstName,
 			u.LastName,
 			u.Email,
-			nil,
-			nil,
+			u.HorsDoeuvresSelectionId,
+			u.EntreeSelectionId,
+			u.ID,
 		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
 		mock.ExpectCommit()
