@@ -17,14 +17,15 @@ func TestUserUserInvitee(t *testing.T) {
 		invitees, err := FindInviteesForUser(firstUserUuid)
 		assert.Nil(err)
 		assert.NotEmpty(invitees)
-		assert.Equal("Suman", (*invitees)[0].FirstName)
+		assert.Equal("Suman", invitees[0].FirstName)
 	})
 	t.Run("Can create user invitee", func(t *testing.T) {
-		invitee, err := CreateUserInvitee(firstUserUuid, User{
+		invitee := User{
 			FirstName: "Billy",
 			LastName:  "McTesterson",
 			Email:     "a@b.com",
-		})
+		}
+		err := CreateUserInvitee(firstUserUuid, &invitee)
 		assert.Nil(err)
 		assert.NotEmpty(invitee.ID)
 		assert.Equal("Billy", invitee.FirstName)
