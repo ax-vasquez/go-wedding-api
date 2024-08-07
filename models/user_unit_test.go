@@ -53,7 +53,7 @@ func Test_Unit_User(t *testing.T) {
 		err := CreateUsers(users)
 
 		assert.NotNil(err)
-		assert.Equal(err.Error(), errMsg)
+		assert.Equal(errMsg, err.Error())
 
 	})
 	t.Run("update user - database error returns error", func(t *testing.T) {
@@ -72,7 +72,7 @@ func Test_Unit_User(t *testing.T) {
 		err := UpdateUser(&u)
 
 		assert.NotNil(err)
-		assert.Equal(err.Error(), errMsg)
+		assert.Equal(errMsg, err.Error())
 	})
 	t.Run("set is_admin for user - database error returns error", func(t *testing.T) {
 		mock.ExpectBegin()
@@ -88,7 +88,7 @@ func Test_Unit_User(t *testing.T) {
 		err := SetAdminPrivileges(&u)
 
 		assert.NotNil(err)
-		assert.Equal(err.Error(), errMsg)
+		assert.Equal(errMsg, err.Error())
 	})
 	t.Run("set can_invite_others for user - database error returns error", func(t *testing.T) {
 		mock.ExpectBegin()
@@ -104,7 +104,7 @@ func Test_Unit_User(t *testing.T) {
 		err := SetCanInviteOthers(&u)
 
 		assert.NotNil(err)
-		assert.Equal(err.Error(), errMsg)
+		assert.Equal(errMsg, err.Error())
 	})
 	t.Run("set is_going for user - database error returns error", func(t *testing.T) {
 		mock.ExpectBegin()
@@ -120,5 +120,6 @@ func Test_Unit_User(t *testing.T) {
 		err := SetIsGoing(&u)
 
 		assert.NotNil(err)
+		assert.Equal(errMsg, err.Error())
 	})
 }
