@@ -37,7 +37,7 @@ func CreateUserInvitee(c *gin.Context) {
 			err := models.CreateUserInvitee(id, &invitee)
 			if err != nil {
 				status = http.StatusInternalServerError
-				response.Message = "Internal server error - contact server administrator."
+				response.Message = "Internal server error"
 				log.Println("Error creating user invitee: ", err.Error())
 			} else {
 				status = http.StatusCreated
@@ -64,6 +64,7 @@ func GetInviteesForUser(c *gin.Context) {
 		data, err := models.FindInviteesForUser(id)
 		if err != nil {
 			status = http.StatusInternalServerError
+			response.Message = "Internal server error"
 		} else {
 			response.Data.Invitees = data
 		}
@@ -81,6 +82,7 @@ func DeleteInviteeForUser(c *gin.Context) {
 	result, err := models.DeleteInvitee(invitee_id)
 	if err != nil {
 		status = http.StatusInternalServerError
+		response.Message = "Internal server error"
 	} else {
 		response.Data.DeletedRecords = int(*result)
 	}
