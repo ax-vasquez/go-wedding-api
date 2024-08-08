@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/ax-vasquez/wedding-site-api/test"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -70,8 +71,8 @@ func Test_EntreeModel_Unit(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectQuery(
 			regexp.QuoteMeta(`INSERT INTO "entrees" ("created_at","updated_at","deleted_at","option_name") VALUES ($1,$2,$3,$4) RETURNING *`)).WithArgs(
-			AnyTime{},
-			AnyTime{},
+			test.AnyTime{},
+			test.AnyTime{},
 			nil,
 			opt.OptionName,
 		).WillReturnError(fmt.Errorf("arbitrary database error"))
@@ -90,7 +91,7 @@ func Test_EntreeModel_Unit(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectExec(
 			regexp.QuoteMeta(`UPDATE "entrees" SET "deleted_at"=$1 WHERE "entrees"."id" = $2 AND "entrees"."deleted_at" IS NULL`)).WithArgs(
-			AnyTime{},
+			test.AnyTime{},
 			someId,
 		).WillReturnError(fmt.Errorf("arbitrary database error"))
 		mock.ExpectRollback()

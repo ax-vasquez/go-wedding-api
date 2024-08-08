@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/ax-vasquez/wedding-site-api/test"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -33,8 +34,8 @@ func Test_UserUserInvitee_Unit(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectQuery(
 			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","is_admin","is_going","can_invite_others","first_name","last_name","email","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) ON CONFLICT DO NOTHING RETURNING "id`)).WithArgs(
-			AnyTime{},
-			AnyTime{},
+			test.AnyTime{},
+			test.AnyTime{},
 			nil,
 			u.IsAdmin,
 			u.IsGoing,
@@ -73,7 +74,7 @@ func Test_UserUserInvitee_Unit(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
 		mock.ExpectExec(regexp.QuoteMeta(`UPDATE "user_user_invitees" SET "deleted_at"=$1 WHERE invitee_id = $2 AND "user_user_invitees"."deleted_at" IS NULL`)).WithArgs(
-			AnyTime{},
+			test.AnyTime{},
 			u.ID,
 		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
@@ -95,8 +96,8 @@ func Test_UserUserInvitee_Unit(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO "user_user_invitees" ("created_at","updated_at","deleted_at","inviter_id","invitee_id") VALUES ($1,$2,$3,$4,$5) RETURNING "id"`)).WithArgs(
-			AnyTime{},
-			AnyTime{},
+			test.AnyTime{},
+			test.AnyTime{},
 			nil,
 			u.ID,
 			uInvs[0].InviteeId,

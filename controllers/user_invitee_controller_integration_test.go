@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserInviteeController(t *testing.T) {
+func Test_UserInviteeController_Integration(t *testing.T) {
 	assert := assert.New(t)
 	router := paveRoutes()
 	t.Run("GET /api/v1/user/:id/invitees", func(t *testing.T) {

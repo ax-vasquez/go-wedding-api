@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEntreeController(t *testing.T) {
+func Test_EntreeController_Integration(t *testing.T) {
 	assert := assert.New(t)
 	router := paveRoutes()
 	t.Run("GET /api/v1/entrees", func(t *testing.T) {

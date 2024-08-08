@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/ax-vasquez/wedding-site-api/test"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -33,8 +34,8 @@ func Test_UserModel_Unit(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectQuery(
 			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","is_admin","is_going","can_invite_others","first_name","last_name","email","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING "id`)).WithArgs(
-			AnyTime{},
-			AnyTime{},
+			test.AnyTime{},
+			test.AnyTime{},
 			nil,
 			u.IsAdmin,
 			u.IsGoing,
@@ -61,7 +62,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectQuery(
 			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_admin"=$2,"is_going"=$3,"can_invite_others"=$4,"first_name"=$5,"last_name"=$6,"email"=$7 WHERE "users"."deleted_at" IS NULL AND "id" = $8 RETURNING *`)).WithArgs(
-			AnyTime{},
+			test.AnyTime{},
 			u.IsAdmin,
 			u.IsGoing,
 			u.CanInviteOthers,
@@ -83,7 +84,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectExec(
 			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_admin"=$2 WHERE "users"."deleted_at" IS NULL AND "id" = $3`)).WithArgs(
-			AnyTime{},
+			test.AnyTime{},
 			u.IsAdmin,
 			u.ID,
 		).WillReturnError(fmt.Errorf(errMsg))
@@ -100,7 +101,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectExec(
 			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"can_invite_others"=$2 WHERE "users"."deleted_at" IS NULL AND "id" = $3`)).WithArgs(
-			AnyTime{},
+			test.AnyTime{},
 			u.CanInviteOthers,
 			u.ID,
 		).WillReturnError(fmt.Errorf(errMsg))
@@ -117,7 +118,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectExec(
 			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_going"=$2 WHERE "users"."deleted_at" IS NULL AND "id" = $3`)).WithArgs(
-			AnyTime{},
+			test.AnyTime{},
 			u.IsGoing,
 			u.ID,
 		).WillReturnError(fmt.Errorf(errMsg))
