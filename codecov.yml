@@ -12,6 +12,7 @@ ignore:
   - "test-fixtures"
   - "*_test.go"
   - "*.sh"
+  - "controllers/controllers.go" # Routes setup
   - "models/test_helpers.go"  # Test helpers specific to DB logic
   - "models/models.go"  # DB setup logic
   - "test"  # Test helpers
