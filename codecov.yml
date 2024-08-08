@@ -12,8 +12,9 @@ ignore:
   - "test-fixtures"
   - "*_test.go"
   - "*.sh"
-  - "models/test_helpers.go"
-  - "test"
+  - "models/test_helpers.go"  # Test helpers specific to DB logic
+  - "models/models.go"  # DB setup logic
+  - "test"  # Test helpers
 
 flags:
   unit:
