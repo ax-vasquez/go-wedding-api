@@ -35,15 +35,22 @@ func GetHorsDoeuvres(c *gin.Context) {
 		horsDoeuvres, err = models.FindHorsDoeuvresForUser(id)
 		if err != nil {
 			status = http.StatusInternalServerError
+			log.Println(err.Error())
+			response.Message = "Internal server error"
+		} else {
+			status = http.StatusOK
 		}
 	} else {
 		var err error
 		horsDoeuvres, err = models.FindHorsDoeuvres()
 		if err != nil {
 			status = http.StatusInternalServerError
+			log.Println(err.Error())
+			response.Message = "Internal server error"
+		} else {
+			status = http.StatusOK
 		}
 	}
-	status = http.StatusOK
 	response.Status = status
 	response.Data = HorsDoeuvresData{
 		HorsDoeuvres: horsDoeuvres,
