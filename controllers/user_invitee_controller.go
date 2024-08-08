@@ -57,10 +57,10 @@ func GetInviteesForUser(c *gin.Context) {
 	var status int
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
-
+		status = http.StatusBadRequest
+		response.Message = err.Error()
 	} else {
 		status = http.StatusOK
-		response.Status = status
 		data, err := models.FindInviteesForUser(id)
 		if err != nil {
 			status = http.StatusInternalServerError
@@ -69,6 +69,7 @@ func GetInviteesForUser(c *gin.Context) {
 			response.Data.Invitees = data
 		}
 	}
+	response.Status = status
 	c.JSON(status, response)
 }
 

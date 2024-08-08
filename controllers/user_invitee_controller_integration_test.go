@@ -31,6 +31,18 @@ func Test_UserInviteeController_Integration(t *testing.T) {
 		assert.Equal(1, len(responseObj.Data.Invitees))
 		assert.Equal("Suman", responseObj.Data.Invitees[0].FirstName)
 	})
+	t.Run("GET /api/v1/user/:id/invitees - bad ID", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		routePath := fmt.Sprintf("/api/v1/user/%s/invitees", "asdf")
+		req, err := http.NewRequest("GET", routePath, nil)
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusBadRequest, w.Code)
+		responseObj := V1_API_RESPONSE_USER_INVITEES{}
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+		assert.Nil(err)
+		assert.Equal(http.StatusBadRequest, responseObj.Status)
+	})
 	t.Run("POST /api/v1/user/:id/invite-user", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		routePath := fmt.Sprintf("/api/v1/user/%s/invite-user", models.FirstUserIdStr)
@@ -73,6 +85,23 @@ func Test_UserInviteeController_Integration(t *testing.T) {
 			Email:     "op_healz@ooo.world",
 		}
 		testInviteeJson, _ := json.Marshal(testInvitee)
+		req, err := http.NewRequest("POST", routePath, strings.NewReader(string(testInviteeJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusBadRequest, w.Code)
+		responseObj := V1_API_RESPONSE_USER_INVITEES{}
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+		assert.Nil(err)
+		assert.Equal(0, len(responseObj.Data.Invitees))
+	})
+	t.Run("POST /api/v1/user/:id/invite-user - bad invitee data", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		routePath := fmt.Sprintf("/api/v1/user/%s/invite-user", models.FirstUserIdStr)
+		// "Bad" invitee data in that the fields will not unmarshal to a User object in the handler
+		badInviteeData := models.Entree{
+			OptionName: "Some Entree",
+		}
+		testInviteeJson, _ := json.Marshal(badInviteeData)
 		req, err := http.NewRequest("POST", routePath, strings.NewReader(string(testInviteeJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
