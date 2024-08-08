@@ -43,11 +43,12 @@ func GetUsers(c *gin.Context) {
 	users, err := models.FindUsers(userIds)
 	if err != nil {
 		status = http.StatusInternalServerError
+		response.Message = "Internal server error"
 	} else {
 		status = http.StatusOK
 	}
 	response.Status = status
-	response.Data.Users = *users
+	response.Data.Users = users
 	c.JSON(status, response)
 }
 

@@ -57,6 +57,40 @@ func Test_UserModel_Unit(t *testing.T) {
 		assert.Equal(errMsg, err.Error())
 
 	})
+	t.Run("FindUsers - database error returns error", func(t *testing.T) {
+		someId := uuid.New()
+		_, mock, _ := Setup()
+		mock.ExpectQuery(
+			regexp.QuoteMeta(`SELECT * FROM "users" WHERE "users"."id" = $1 AND "users"."deleted_at" IS NULL`)).WithArgs(
+			someId,
+		).WillReturnError(fmt.Errorf(errMsg))
+		mock.ExpectRollback()
+		mock.ExpectCommit()
+
+		users, err := FindUsers([]uuid.UUID{someId})
+
+		assert.Empty(users)
+		assert.NotNil(err)
+		assert.Equal(errMsg, err.Error())
+	})
+	t.Run("DeleteUser - database error returns error", func(t *testing.T) {
+		someId := uuid.New()
+		_, mock, _ := Setup()
+		mock.ExpectBegin()
+		mock.ExpectExec(
+			regexp.QuoteMeta(`UPDATE "users" SET "deleted_at"=$1 WHERE "users"."id" = $2 AND "users"."deleted_at" IS NULL`)).WithArgs(
+			test.AnyTime{},
+			someId,
+		).WillReturnError(fmt.Errorf(errMsg))
+		mock.ExpectRollback()
+		mock.ExpectCommit()
+
+		count, err := DeleteUser(someId)
+
+		assert.Zero(count)
+		assert.NotNil(err)
+		assert.Equal(errMsg, err.Error())
+	})
 	t.Run("UpdateUser - database error returns error", func(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()

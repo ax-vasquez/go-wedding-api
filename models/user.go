@@ -91,11 +91,11 @@ func DeleteUser(id uuid.UUID) (*int64, error) {
 }
 
 // Find Users by the given ids; returns a User slice
-func FindUsers(ids []uuid.UUID) (*[]User, error) {
+func FindUsers(ids []uuid.UUID) ([]User, error) {
 	var users []User
 	result := db.Find(&users, ids)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &users, nil
+	return users, nil
 }
