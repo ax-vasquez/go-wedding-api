@@ -30,14 +30,15 @@ func Test_EntreeModel_Integration(t *testing.T) {
 		assert.Equal("Caprese pasta", entrees[0].OptionName)
 	})
 	t.Run("Can create an entree", func(t *testing.T) {
-		entreesResult, err := CreateEntrees(&[]Entree{{
+		entrees := []Entree{{
 			OptionName: "Cap'n Crunch",
-		}})
+		}}
+		err := CreateEntrees(&entrees)
 		assert.Equal(nil, err)
-		assert.Equal("Cap'n Crunch", (*entreesResult)[0].OptionName)
+		assert.Equal("Cap'n Crunch", entrees[0].OptionName)
 		// Embedded test so we can easily-target the new record and delete it as part of the next test
 		t.Run("Can delete an entree", func(t *testing.T) {
-			id := (*entreesResult)[0].ID
+			id := entrees[0].ID
 			result, err := DeleteEntree(id)
 			assert.Equal(nil, err)
 			assert.Equal(1, int(*result))
