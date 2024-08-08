@@ -16,7 +16,7 @@ func Test_UserModel_Integration(t *testing.T) {
 	t.Run("Can find users", func(t *testing.T) {
 		matchingUsers, err := FindUsers([]uuid.UUID{firstUserId})
 		assert.Nil(err)
-		assert.Equal("Rupinder", (*matchingUsers)[0].FirstName)
+		assert.Equal("Rupinder", matchingUsers[0].FirstName)
 	})
 	t.Run("Returns an empty result when no user is found", func(t *testing.T) {
 		id, _ := uuid.Parse(NilUuid)
