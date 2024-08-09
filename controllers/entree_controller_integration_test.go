@@ -84,5 +84,20 @@ func Test_EntreeController_Integration(t *testing.T) {
 			assert.Equal(1, deleteResponse.Data.DeletedRecords)
 		})
 	})
-
+	t.Run("POST /api/v1/entree - bad entree data", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		// "Bad" entree data in that the fields will not unmarshal to a Entree object in the handler
+		badEntreeData := models.User{
+			FirstName: "Some Entree",
+		}
+		testInviteeJson, _ := json.Marshal(badEntreeData)
+		req, err := http.NewRequest("POST", "/api/v1/entree", strings.NewReader(string(testInviteeJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusBadRequest, w.Code)
+		responseObj := V1_API_RESPONSE_ENTREE{}
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+		assert.Nil(err)
+		assert.Equal(0, len(responseObj.Data.Entrees))
+	})
 }
