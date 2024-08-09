@@ -52,7 +52,6 @@ func GetUsers(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// Create a user
 func CreateUsers(c *gin.Context) {
 	response := V1_API_RESPONSE_USERS{}
 	var status int
@@ -77,7 +76,6 @@ func CreateUsers(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// Update a user
 func UpdateUser(c *gin.Context) {
 	response := V1_API_RESPONSE_USERS{}
 	var status int
@@ -130,7 +128,6 @@ func UpdateUser(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// Delete a user
 func DeleteUser(c *gin.Context) {
 	response := V1_API_DELETE_RESPONSE{}
 	var status int

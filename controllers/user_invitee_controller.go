@@ -18,7 +18,6 @@ type V1_API_RESPONSE_USER_INVITEES struct {
 	Data UserInviteeData `json:"data"`
 }
 
-// Create a user invitee
 func CreateUserInvitee(c *gin.Context) {
 	response := V1_API_RESPONSE_USER_INVITEES{}
 	var status int
@@ -51,7 +50,6 @@ func CreateUserInvitee(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// Get all invitees for the given user
 func GetInviteesForUser(c *gin.Context) {
 	response := V1_API_RESPONSE_USER_INVITEES{}
 	var status int
@@ -73,7 +71,6 @@ func GetInviteesForUser(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// Delete an invitee for the given user
 func DeleteInviteeForUser(c *gin.Context) {
 	response := V1_API_DELETE_RESPONSE{}
 	var status int

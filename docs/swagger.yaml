@@ -1,0 +1,128 @@
+definitions:
+  controllers.EntreeData:
+    properties:
+      entrees:
+        items:
+          $ref: '#/definitions/models.Entree'
+        type: array
+    type: object
+  controllers.V1_API_RESPONSE_ENTREE:
+    properties:
+      data:
+        $ref: '#/definitions/controllers.EntreeData'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  gin.H:
+    additionalProperties: {}
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  models.Entree:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: string
+      option_name:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - option_name
+    type: object
+info:
+  contact: {}
+paths:
+  /entree:
+    delete:
+      consumes:
+      - application/json
+      description: gets 1 entree if an ID is found in the route, otherwise returns
+        all entrees
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+      summary: gets one or all entrees
+      tags:
+      - entrees
+    get:
+      consumes:
+      - application/json
+      description: gets 1 entree if an ID is found in the route, otherwise returns
+        all entrees
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+      summary: gets one or all entrees
+      tags:
+      - entrees
+    post:
+      consumes:
+      - application/json
+      description: create a new entree
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+      summary: Create entree
+      tags:
+      - entrees
+  /user/{entree_id}/entrees:
+    get:
+      consumes:
+      - application/json
+      description: gets 1 entree if an ID is found in the route, otherwise returns
+        all entrees
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+      summary: gets one or all entrees
+      tags:
+      - entrees
+swagger: "2.0"

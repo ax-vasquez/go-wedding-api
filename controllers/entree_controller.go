@@ -18,12 +18,18 @@ type V1_API_RESPONSE_ENTREE struct {
 	Data EntreeData `json:"data"`
 }
 
-// Get a list of entrees
+// GetEntrees gets one or all entrees
 //
-// If a user ID is specified, then this will return the list of Entrees containing
-// one item (data for the entree they have selected), or zero items if no selection
-// has been made, yet. If no user ID is specified, then data for all possible Entrees
-// is returned.
+//	@Summary      	gets one or all entrees
+//	@Description  	gets 1 entree if an ID is found in the route, otherwise returns all entrees
+//	@Tags         	entrees
+//	@Accept       	json
+//	@Produce      	json
+//	@Success      	200  {object}  V1_API_RESPONSE_ENTREE
+//	@Failure      	500  {object}  V1_API_RESPONSE_ENTREE
+//	@Param 			entree_id  path uuid.UUID true "Entree ID"
+//	@Router       	/entree [get]
+//	@Router       	/user/{entree_id}/entrees [get]
 func GetEntrees(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
@@ -55,11 +61,17 @@ func GetEntrees(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// Controller to handle creating a new entree
+// CreateEntree creates an entree
 //
-// The route that uses this controller must be protected so that
-// only site admins can use this endpoint. All other requests
-// should be rejected.
+//	@Summary      Create entree
+//	@Description  create a new entree
+//	@Tags         entrees
+//	@Accept       json
+//	@Produce      json
+//	@Success      202  {object}  V1_API_RESPONSE_ENTREE
+//	@Failure      400  {object}  V1_API_RESPONSE_ENTREE
+//	@Failure      500  {object}  V1_API_RESPONSE_ENTREE
+//	@Router       /entree [post]
 func CreateEntree(c *gin.Context) {
 	// TODO: Add logic to reject unauthorized requests (and certainly do not deploy until all auth logic is wired up)
 	response := V1_API_RESPONSE_ENTREE{}
@@ -85,7 +97,16 @@ func CreateEntree(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// Delete an entree
+// DeleteEntree deletes an entree
+//
+//	@Summary      gets one or all entrees
+//	@Description  gets 1 entree if an ID is found in the route, otherwise returns all entrees
+//	@Tags         entrees
+//	@Accept       json
+//	@Produce      json
+//	@Success      200  {object}  V1_API_RESPONSE_ENTREE
+//	@Failure      500  {object}  V1_API_RESPONSE_ENTREE
+//	@Router       /entree [delete]
 func DeleteEntree(c *gin.Context) {
 	// TODO: Add logic to reject unauthorized requests (and certainly do not deploy until all auth logic is wired up)
 	response := V1_API_DELETE_RESPONSE{}

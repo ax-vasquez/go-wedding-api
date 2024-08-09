@@ -1,6 +1,13 @@
 package controllers
 
-import "github.com/gin-gonic/gin"
+import (
+	docs "github.com/ax-vasquez/wedding-site-api/docs"
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+)
+
+// @BasePath /api/v1
 
 type V1_API_RESPONSE struct {
 	Status  int    `json:"status"`
@@ -19,7 +26,7 @@ type V1_API_DELETE_RESPONSE struct {
 
 func paveRoutes() *gin.Engine {
 	r := gin.Default()
-
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
 	{
 		v1.DELETE("/entree/:id", DeleteEntree)
@@ -44,5 +51,6 @@ func paveRoutes() *gin.Engine {
 
 func SetupRoutes() error {
 	r := paveRoutes()
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return r.Run()
 }

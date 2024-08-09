@@ -18,12 +18,6 @@ type V1_API_RESPONSE_HORS_DOEVRES struct {
 	Data HorsDoeuvresData `json:"data"`
 }
 
-// Get a list of hors doeuvres
-//
-// If a user ID is specified, then this will return the list of HorsDoeuvres containing
-// one item (data for the hors doeuvres they have selected), or zero items if no selection
-// has been made, yet. If no user ID is specified, then data for all possible HorsDoeuvres
-// is returned.
 func GetHorsDoeuvres(c *gin.Context) {
 	idStr := c.Param("id")
 	var response V1_API_RESPONSE_HORS_DOEVRES
@@ -58,11 +52,6 @@ func GetHorsDoeuvres(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// Controller to handle creating a new hors doeuvres
-//
-// The route that uses this controller must be protected so that
-// only site admins can use this endpoint. All other requests
-// should be rejected.
 func CreateHorsDoeuvres(c *gin.Context) {
 	// TODO: Add logic to reject unauthorized requests (and certainly do not deploy until all auth logic is wired up)
 	response := V1_API_RESPONSE_HORS_DOEVRES{}
@@ -88,7 +77,6 @@ func CreateHorsDoeuvres(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// Delete an hors doeuvres
 func DeleteHorsDoeuvres(c *gin.Context) {
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
