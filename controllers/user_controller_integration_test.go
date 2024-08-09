@@ -76,4 +76,20 @@ func Test_UserController_Integration(t *testing.T) {
 			assert.Equal(1, deleteResponse.Data.DeletedRecords)
 		})
 	})
+	t.Run("POST /api/v1/user - bad user data", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		// "Bad" invitee data in that the fields will not unmarshal to a User object in the handler
+		badInviteeData := models.Entree{
+			OptionName: "Some Entree",
+		}
+		testInviteeJson, _ := json.Marshal(badInviteeData)
+		req, err := http.NewRequest("POST", "/api/v1/user", strings.NewReader(string(testInviteeJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusBadRequest, w.Code)
+		responseObj := V1_API_RESPONSE_USERS{}
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+		assert.Nil(err)
+		assert.Equal(0, len(responseObj.Data.Users))
+	})
 }

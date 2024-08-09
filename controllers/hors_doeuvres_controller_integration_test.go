@@ -71,4 +71,20 @@ func Test_HorsDoeuvresController_Integration(t *testing.T) {
 			assert.Equal(1, deleteResponse.Data.DeletedRecords)
 		})
 	})
+	t.Run("POST /api/v1/horsdoeuvres - bad hors doeuvres data", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		// "Bad" entree data in that the fields will not unmarshal to a Entree object in the handler
+		badHorsDoeuvresData := models.User{
+			FirstName: "Not an hors doeuvres",
+		}
+		testInviteeJson, _ := json.Marshal(badHorsDoeuvresData)
+		req, err := http.NewRequest("POST", "/api/v1/horsdoeuvres", strings.NewReader(string(testInviteeJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusBadRequest, w.Code)
+		responseObj := V1_API_RESPONSE_HORS_DOEVRES{}
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+		assert.Nil(err)
+		assert.Equal(0, len(responseObj.Data.HorsDoeuvres))
+	})
 }
