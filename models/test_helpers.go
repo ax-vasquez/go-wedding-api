@@ -43,11 +43,11 @@ func loadTestUsers() error {
 	if err != nil {
 		return errors.New("There was a problem unmarshaling the JSON from file ./test-fixtures/invitees.json: " + err.Error())
 	}
-	_, err = CreateUsers(&users)
+	err = CreateUsers(&users)
 	if err != nil {
 		return errors.New("There was a problem creating test user records: " + err.Error())
 	}
-	_, err = CreateUsers(&userInvitees)
+	err = CreateUsers(&userInvitees)
 	if err != nil {
 		return errors.New("There was a problem creating test user invitee records: " + err.Error())
 	}
@@ -81,7 +81,7 @@ func loadTestEntrees() error {
 	if err != nil {
 		return errors.New("There was a problem unmarshaling the JSON from file ./test-fixtures/entrees.json: " + err.Error())
 	}
-	_, err = CreateEntrees(&records)
+	err = CreateEntrees(&records)
 	if err != nil {
 		return errors.New("There was a problem creating the test entree records: " + err.Error())
 	}
@@ -98,7 +98,7 @@ func loadTestHorsDoeuvres() error {
 	if err != nil {
 		return errors.New("There was a problem unmarshaling the JSON from file ./test-fixtures/hors_doeuvres.json: " + err.Error())
 	}
-	_, err = CreateHorsDoeuvres(&records)
+	err = CreateHorsDoeuvres(&records)
 	if err != nil {
 		return errors.New("There was a problem creating the hors doeuvres records: " + err.Error())
 	}
@@ -107,6 +107,12 @@ func loadTestHorsDoeuvres() error {
 
 func getIsTestEnv() bool {
 	test_env_str, _ := os.LookupEnv("TEST_ENV")
+	isTestEnv, _ := strconv.ParseBool(test_env_str)
+	return isTestEnv
+}
+
+func getIsMockEnv() bool {
+	test_env_str, _ := os.LookupEnv("USE_MOCK_DB")
 	isTestEnv, _ := strconv.ParseBool(test_env_str)
 	return isTestEnv
 }

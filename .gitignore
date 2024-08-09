@@ -3,3 +3,6 @@ local-data
 
 # .env files
 *.env*
+
+# Coverage reports
+*.out

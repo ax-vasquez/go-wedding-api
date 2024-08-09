@@ -36,11 +36,19 @@ func GetEntrees(c *gin.Context) {
 		entrees, err = models.FindEntreesForUser(id)
 		if err != nil {
 			status = http.StatusInternalServerError
+			log.Println(err.Error())
+			response.Message = "Internal server error"
 		}
 		// If an error occurred, we ignore it and assume it's because there was no ID in the path - all results will be returned
 	} else {
-		entrees = models.FindEntrees()
-		status = http.StatusOK
+		entrees, err = models.FindEntrees()
+		if err != nil {
+			status = http.StatusInternalServerError
+			log.Println(err.Error())
+			response.Message = "Internal server error"
+		} else {
+			status = http.StatusOK
+		}
 	}
 	response.Status = status
 	response.Data.Entrees = entrees
@@ -61,15 +69,16 @@ func CreateEntree(c *gin.Context) {
 		status = http.StatusBadRequest
 		response.Message = "\"option_name\" is required"
 	} else {
-		result, err := models.CreateEntrees(&[]models.Entree{input})
+		entrees := []models.Entree{input}
+		err := models.CreateEntrees(&entrees)
 		if err != nil {
 			status = http.StatusInternalServerError
+			log.Println(err.Error())
 			response.Message = "Internal server error"
-			log.Println("Error inserting entrees record: ", err.Error())
 		} else {
 			status = http.StatusCreated
 			response.Message = "Created entree"
-			response.Data.Entrees = *result
+			response.Data.Entrees = entrees
 		}
 	}
 	response.Status = status

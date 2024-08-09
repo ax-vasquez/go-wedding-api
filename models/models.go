@@ -1,11 +1,13 @@
 package models
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
 	"time"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -39,8 +41,27 @@ func Migrate() error {
 		&UserUserInvitee{})
 }
 
-func Setup() {
+func Setup() (*sql.DB, sqlmock.Sqlmock, error) {
 	var err error
+	useMocks := getIsMockEnv()
+	// When using mocks, intercept DB setup and return early with a mock instance to work with in unit tests
+	if useMocks {
+		mockDb, mock, err := sqlmock.New()
+		if err != nil {
+			log.Panic("There was a problem creating the mock DB: ", err.Error())
+		}
+
+		dialector := postgres.New(postgres.Config{
+			DSN:                  "sqlmock_db_0",
+			DriverName:           "postgres",
+			Conn:                 mockDb,
+			PreferSimpleProtocol: true,
+		})
+		db, err = gorm.Open(dialector, &gorm.Config{
+			Logger: newLogger,
+		})
+		return mockDb, mock, err
+	}
 	isTestEnv := getIsTestEnv()
 	// TODO: Wire this up to a secure cloud logging solution in a production environment; keep "newLogger" as dev logging solution
 	dbConnectionString := fmt.Sprintf(
@@ -70,4 +91,5 @@ func Setup() {
 			log.Panic("There was a problem migrating the schema: ", err.Error())
 		}
 	}
+	return nil, nil, err
 }

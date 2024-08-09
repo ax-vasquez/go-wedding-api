@@ -1,3 +1,6 @@
+//go:build integration
+// +build integration
+
 package controllers
 
 import (
@@ -12,18 +15,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEntreeController(t *testing.T) {
+func Test_EntreeController_Integration(t *testing.T) {
 	assert := assert.New(t)
 	router := paveRoutes()
 	t.Run("GET /api/v1/entrees", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req, err := http.NewRequest("GET", "/api/v1/entrees", nil)
 		router.ServeHTTP(w, req)
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		assert.Equal(http.StatusOK, w.Code)
 		responseObj := V1_API_RESPONSE_ENTREE{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		assert.Equal(5, len(responseObj.Data.Entrees))
 	})
 	t.Run("GET /api/v1/entrees/:id", func(t *testing.T) {
@@ -31,11 +34,11 @@ func TestEntreeController(t *testing.T) {
 		routePath := fmt.Sprintf("/api/v1/user/%s/entrees", models.FirstUserIdStr)
 		req, err := http.NewRequest("GET", routePath, nil)
 		router.ServeHTTP(w, req)
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		assert.Equal(http.StatusOK, w.Code)
 		responseObj := V1_API_RESPONSE_ENTREE{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		assert.Equal(1, len(responseObj.Data.Entrees))
 	})
 	t.Run("GET /api/v1/entrees/:id - bad ID returns all entrees", func(t *testing.T) {
@@ -44,11 +47,11 @@ func TestEntreeController(t *testing.T) {
 		routePath := fmt.Sprintf("/api/v1/user/%s/entrees", "asdf")
 		req, err := http.NewRequest("GET", routePath, nil)
 		router.ServeHTTP(w, req)
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		assert.Equal(http.StatusOK, w.Code)
 		responseObj := V1_API_RESPONSE_ENTREE{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		assert.Equal(5, len(responseObj.Data.Entrees))
 	})
 	t.Run("POST /api/v1/entree", func(t *testing.T) {
@@ -59,10 +62,10 @@ func TestEntreeController(t *testing.T) {
 		entreeJson, _ := json.Marshal(testEntree)
 		req, err := http.NewRequest("POST", "/api/v1/entree", strings.NewReader(string(entreeJson)))
 		router.ServeHTTP(w, req)
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		var responseObj V1_API_RESPONSE_ENTREE
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
-		assert.Equal(nil, err)
+		assert.Nil(err)
 		assert.Equal(http.StatusCreated, w.Code)
 		assert.NotEmpty(responseObj.Data.Entrees[0].ID)
 		assert.NotEqual(models.NilUuid, responseObj.Data.Entrees[0].ID)
@@ -73,13 +76,28 @@ func TestEntreeController(t *testing.T) {
 			routePath := fmt.Sprintf("/api/v1/entree/%s", responseObj.Data.Entrees[0].ID)
 			req, err := http.NewRequest("DELETE", routePath, nil)
 			router.ServeHTTP(w, req)
-			assert.Equal(nil, err)
+			assert.Nil(err)
 			assert.Equal(http.StatusAccepted, w.Code)
 			var deleteResponse V1_API_DELETE_RESPONSE
 			err = json.Unmarshal([]byte(w.Body.Bytes()), &deleteResponse)
-			assert.Equal(nil, err)
+			assert.Nil(err)
 			assert.Equal(1, deleteResponse.Data.DeletedRecords)
 		})
 	})
-
+	t.Run("POST /api/v1/entree - bad entree data", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		// "Bad" entree data in that the fields will not unmarshal to a Entree object in the handler
+		badEntreeData := models.User{
+			FirstName: "Some Entree",
+		}
+		testInviteeJson, _ := json.Marshal(badEntreeData)
+		req, err := http.NewRequest("POST", "/api/v1/entree", strings.NewReader(string(testInviteeJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusBadRequest, w.Code)
+		responseObj := V1_API_RESPONSE_ENTREE{}
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+		assert.Nil(err)
+		assert.Equal(0, len(responseObj.Data.Entrees))
+	})
 }

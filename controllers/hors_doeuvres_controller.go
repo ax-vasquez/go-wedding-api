@@ -35,15 +35,22 @@ func GetHorsDoeuvres(c *gin.Context) {
 		horsDoeuvres, err = models.FindHorsDoeuvresForUser(id)
 		if err != nil {
 			status = http.StatusInternalServerError
+			log.Println(err.Error())
+			response.Message = "Internal server error"
+		} else {
+			status = http.StatusOK
 		}
 	} else {
 		var err error
 		horsDoeuvres, err = models.FindHorsDoeuvres()
 		if err != nil {
 			status = http.StatusInternalServerError
+			log.Println(err.Error())
+			response.Message = "Internal server error"
+		} else {
+			status = http.StatusOK
 		}
 	}
-	status = http.StatusOK
 	response.Status = status
 	response.Data = HorsDoeuvresData{
 		HorsDoeuvres: horsDoeuvres,
@@ -65,7 +72,8 @@ func CreateHorsDoeuvres(c *gin.Context) {
 		status = http.StatusBadRequest
 		response.Message = "\"option_name\" is required"
 	} else {
-		result, err := models.CreateHorsDoeuvres(&[]models.HorsDoeuvres{input})
+		horsDoeuvres := []models.HorsDoeuvres{input}
+		err := models.CreateHorsDoeuvres(&horsDoeuvres)
 		if err != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"
@@ -73,7 +81,7 @@ func CreateHorsDoeuvres(c *gin.Context) {
 		} else {
 			status = http.StatusCreated
 			response.Message = "Created new hors doeuvres"
-			response.Data.HorsDoeuvres = *result
+			response.Data.HorsDoeuvres = horsDoeuvres
 		}
 	}
 	response.Status = status

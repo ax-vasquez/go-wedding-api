@@ -12,33 +12,28 @@ type UserUserInvitee struct {
 	InviterId uuid.UUID `gorm:"index" json:"inviter_id" binding:"required"`
 	Inviter   User      `gorm:"foreignKey:InviterId"`
 	InviteeId uuid.UUID `gorm:"index" json:"invitee_id" binding:"required"`
-	Invitee   User      `gorm:"foreignKey:InviteeId"`
+	Invitee   *User     `gorm:"foreignKey:InviteeId"`
 }
 
 // Create user Invitee and return the number of rows affected
 //
 // This inserts a new row in the user_user_invitees table, which facilitates a many-to-many relationship
 // between invitee.
-func CreateUserInvitee(invitingUserId uuid.UUID, invitedUser User) (*User, error) {
-	result := db.Create(&invitedUser)
-	if result.Error != nil {
-		log.Println("Error creating base user record: ", result.Error.Error())
-		return nil, result.Error
-	}
-	result = db.Create(&UserUserInvitee{
+func CreateUserInvitee(invitingUserId uuid.UUID, invitedUser *User) error {
+	result := db.Create(&UserUserInvitee{
 		InviterId: invitingUserId,
-		InviteeId: invitedUser.ID,
+		Invitee:   invitedUser,
 	})
 	if result.Error != nil {
 		log.Println("Error creating UserUserInvitee record: ", result.Error.Error())
-		return nil, result.Error
+		return result.Error
 	}
-	return &invitedUser, nil
+	return nil
 }
 
 // Finds all users for the given inviting user ID
-func FindInviteesForUser(userId uuid.UUID) (*[]User, error) {
-	var users *[]User
+func FindInviteesForUser(userId uuid.UUID) ([]User, error) {
+	var users []User
 	result := db.Joins("JOIN user_user_invitees ON user_user_invitees.invitee_id = users.id AND user_user_invitees.inviter_id = ?", userId).Find(&users)
 	if result.Error != nil {
 		log.Println("Error querying for UserUserInvitee: ", result.Error.Error())

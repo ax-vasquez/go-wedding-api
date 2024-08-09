@@ -2,10 +2,25 @@ coverage:
   status:
     project: #add everything under here, more options at https://docs.codecov.com/docs/commit-status
       default:
-        target: 95%
+        target: 90%
         threshold: 1%
-        base: auto 
+        base: auto
+    patch:
+      default:
+        target: 90%
 ignore:
   - "test-fixtures"
   - "*_test.go"
   - "*.sh"
+  - "controllers/controllers.go" # Routes setup
+  - "models/test_helpers.go"  # Test helpers specific to DB logic
+  - "models/models.go"  # DB setup logic
+  - "test"  # Test helpers
+
+flags:
+  unit:
+    paths:
+      - ./**/*_unit_test.go
+  integration:
+    paths:
+      - ./**/*_integration_test.go

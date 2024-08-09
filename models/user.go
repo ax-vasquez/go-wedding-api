@@ -1,11 +1,10 @@
 package models
 
 import (
-	"fmt"
-	"log"
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm/clause"
 )
 
 // User table
@@ -26,30 +25,58 @@ type User struct {
 	EntreeSelection         *Entree       `gorm:"foreignKey:EntreeSelectionId"`
 }
 
-// Read implements io.Reader.
-func (u User) Read(p []byte) (n int, err error) {
-	panic("unimplemented")
-}
-
 // Maybe create users with given data (if no errors) and returns the number of inserted records
-func CreateUsers(users *[]User) (*[]User, error) {
+func CreateUsers(users *[]User) error {
 	result := db.Create(&users)
 	if result.Error != nil {
-		return nil, result.Error
+		return result.Error
 	}
-	return users, nil
+	return nil
+}
+
+// Set is_admin for user
+func SetAdminPrivileges(u *User) error {
+	result := db.Model(&u).Select("is_admin").Updates(&u)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+// Set is_going for user
+func SetIsGoing(u *User) error {
+	result := db.Model(&u).Select("is_going").Updates(&u)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+// Set can_invite_others for user
+func SetCanInviteOthers(u *User) error {
+	result := db.Model(&u).Select("can_invite_others").Updates(&u)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
 
 // Maybe update a user (if no errors) and returns the number of inserted records
-func UpdateUser(u *User) (*[]User, error) {
-	result := db.Updates(&u).Find(&u)
+//
+// The Updates() method will only update non-zero fields. Importantly, this means that
+// you cannot use Updates() to set a boolean field to `false`, unless you either pass
+// the updated fields as a string map, or select the fields you intend to target. However,
+// this will lead to values being overwritten, thus invalidating the purpose of using
+// Updates() in the first place. Use helper methods such as SetAdminPrivileges to set
+// a given boolean field without overwriting unspecified fields.
+//
+// See: https://gorm.io/docs/update.html#Updates-multiple-columns
+func UpdateUser(u *User) error {
+	result := db.Model(&u).Clauses(clause.Returning{}).Updates(&u)
 	if result.Error != nil {
-		return nil, result.Error
+		return result.Error
 	}
-	// USER IN METHOD:  &{{0001-01-01 00:00:00 +0000 UTC 2024-07-27 16:22:00.478746 -0500 CDT {0001-01-01 00:00:00 +0000 UTC false} 22d20919-c685-423e-a2f5-2352ce90d970} 0001-01-01 00:00:00 +0000 UTC false false false  Circlepants  <nil> <nil> <nil> <nil>}
-	fmt.Println("USER IN METHOD: ", u)
-	res := []User{*u}
-	return &res, nil
+	return nil
 }
 
 // Maybe delete a user (if no errors) and returns the number of deleted records
@@ -64,12 +91,11 @@ func DeleteUser(id uuid.UUID) (*int64, error) {
 }
 
 // Find Users by the given ids; returns a User slice
-func FindUsers(ids []uuid.UUID) (*[]User, error) {
+func FindUsers(ids []uuid.UUID) ([]User, error) {
 	var users []User
 	result := db.Find(&users, ids)
 	if result.Error != nil {
-		log.Println("ERROR: ", result.Error.Error())
 		return nil, result.Error
 	}
-	return &users, nil
+	return users, nil
 }

@@ -22,27 +22,27 @@ type V1_API_RESPONSE_USER_INVITEES struct {
 func CreateUserInvitee(c *gin.Context) {
 	response := V1_API_RESPONSE_USER_INVITEES{}
 	var status int
-	var input models.User
+	var invitee models.User
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
 	if err != nil {
 		status = http.StatusBadRequest
 	} else {
-		if err := c.ShouldBindBodyWithJSON(&input); err != nil {
+		if err := c.ShouldBindBodyWithJSON(&invitee); err != nil {
 			status = http.StatusBadRequest
 			response.Message = err.Error()
 		} else {
 			// Invited users are considered +1s to wedding guest; they cannot invite others
-			input.CanInviteOthers = false
-			result, err := models.CreateUserInvitee(id, input)
+			invitee.CanInviteOthers = false
+			err := models.CreateUserInvitee(id, &invitee)
 			if err != nil {
 				status = http.StatusInternalServerError
-				response.Message = "Internal server error - contact server administrator."
+				response.Message = "Internal server error"
 				log.Println("Error creating user invitee: ", err.Error())
 			} else {
 				status = http.StatusCreated
 				response.Message = "Created user invitee"
-				response.Data.Invitees = []models.User{*result}
+				response.Data.Invitees = []models.User{invitee}
 			}
 		}
 	}
@@ -57,17 +57,19 @@ func GetInviteesForUser(c *gin.Context) {
 	var status int
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
-
+		status = http.StatusBadRequest
+		response.Message = err.Error()
 	} else {
 		status = http.StatusOK
-		response.Status = status
 		data, err := models.FindInviteesForUser(id)
 		if err != nil {
 			status = http.StatusInternalServerError
+			response.Message = "Internal server error"
 		} else {
-			response.Data.Invitees = *data
+			response.Data.Invitees = data
 		}
 	}
+	response.Status = status
 	c.JSON(status, response)
 }
 
@@ -81,6 +83,7 @@ func DeleteInviteeForUser(c *gin.Context) {
 	result, err := models.DeleteInvitee(invitee_id)
 	if err != nil {
 		status = http.StatusInternalServerError
+		response.Message = "Internal server error"
 	} else {
 		response.Data.DeletedRecords = int(*result)
 	}
