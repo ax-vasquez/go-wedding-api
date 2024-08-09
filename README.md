@@ -3,6 +3,8 @@
 The API used for our wedding site, built in Go. This is a simple API used to save wedding guest preferences
 and responses using a stack built from scratch.
 
+[![codecov](https://codecov.io/gh/ax-vasquez/wedding-site-api/graph/badge.svg?token=UH5YZFRM35)](https://codecov.io/gh/ax-vasquez/wedding-site-api)
+
 ## Resetting your local database
 
 If you get your database into a weird state, it's often simplest to just delete the database and re-create it. _To be clear, this is only a valid
