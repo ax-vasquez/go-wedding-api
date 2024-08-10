@@ -13,14 +13,26 @@ type HorsDoeuvresData struct {
 	HorsDoeuvres []models.HorsDoeuvres `json:"hors_doeuvres"`
 }
 
-type V1_API_RESPONSE_HORS_DOEVRES struct {
+type V1_API_RESPONSE_HORS_DOEUVRES struct {
 	V1_API_RESPONSE
 	Data HorsDoeuvresData `json:"data"`
 }
 
+// GetHorsDoeuvres gets one or all hors doeuvres
+//
+//	@Summary      creates an hors doeuvres
+//	@Description  Gets the selected hors doeuvres for the given user ID (empty array if no selection has been made), or a list of all available entrees
+//	@Tags         hors doeuvres
+//	@Accept       json
+//	@Produce      json
+//	@Success      200  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Param 		  user_id  path uuid.UUID true "User ID"
+//	@Router       /entree [get]
+//	@Router       /user/{user_id}/horsdoeuvres [get]
 func GetHorsDoeuvres(c *gin.Context) {
 	idStr := c.Param("id")
-	var response V1_API_RESPONSE_HORS_DOEVRES
+	var response V1_API_RESPONSE_HORS_DOEUVRES
 	var status int
 	var horsDoeuvres []models.HorsDoeuvres
 	id, err := uuid.Parse(idStr)
@@ -52,9 +64,19 @@ func GetHorsDoeuvres(c *gin.Context) {
 	c.JSON(status, response)
 }
 
+// CreateHorsDoeuvres creates an hors doeuvres
+//
+//	@Summary      creates an hors doeuvres
+//	@Description  Creates an hors doeuvres and return the new record's data to the caller
+//	@Tags         hors doeuvres
+//	@Accept       json
+//	@Produce      json
+//	@Success      200  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Router       /horsdoeuvres [post]
 func CreateHorsDoeuvres(c *gin.Context) {
 	// TODO: Add logic to reject unauthorized requests (and certainly do not deploy until all auth logic is wired up)
-	response := V1_API_RESPONSE_HORS_DOEVRES{}
+	response := V1_API_RESPONSE_HORS_DOEUVRES{}
 	var status int
 	var input models.HorsDoeuvres
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
@@ -77,6 +99,16 @@ func CreateHorsDoeuvres(c *gin.Context) {
 	c.JSON(status, response)
 }
 
+// DeleteHorsDoeuvres deletes an hors doeuvres
+//
+//	@Summary      deletes an hors doeuvres
+//	@Description  Deletes an hors doeuvres and returns a response to indicate success or failure
+//	@Tags         hors doeuvres
+//	@Accept       json
+//	@Produce      json
+//	@Success      200  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Router       /horsdoeuvres [delete]
 func DeleteHorsDoeuvres(c *gin.Context) {
 	response := V1_API_DELETE_RESPONSE{}
 	var status int

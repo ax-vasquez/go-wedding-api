@@ -27,9 +27,9 @@ type V1_API_RESPONSE_ENTREE struct {
 //	@Produce      	json
 //	@Success      	200  {object}  V1_API_RESPONSE_ENTREE
 //	@Failure      	500  {object}  V1_API_RESPONSE_ENTREE
-//	@Param 			entree_id  path uuid.UUID true "Entree ID"
+//	@Param 			user_id  path uuid.UUID true "User ID"
 //	@Router       	/entree [get]
-//	@Router       	/user/{entree_id}/entrees [get]
+//	@Router       	/user/{user_id}/entrees [get]
 func GetEntrees(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
@@ -64,7 +64,7 @@ func GetEntrees(c *gin.Context) {
 // CreateEntree creates an entree
 //
 //	@Summary      Create entree
-//	@Description  create a new entree
+//	@Description  create a new entree and return the new record's data to the caller
 //	@Tags         entrees
 //	@Accept       json
 //	@Produce      json
@@ -99,8 +99,8 @@ func CreateEntree(c *gin.Context) {
 
 // DeleteEntree deletes an entree
 //
-//	@Summary      gets one or all entrees
-//	@Description  gets 1 entree if an ID is found in the route, otherwise returns all entrees
+//	@Summary      deletes an entree
+//	@Description  Deletes an entree and returns a response to indicate success or failure
 //	@Tags         entrees
 //	@Accept       json
 //	@Produce      json

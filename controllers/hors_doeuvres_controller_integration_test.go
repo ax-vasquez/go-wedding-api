@@ -24,7 +24,7 @@ func Test_HorsDoeuvresController_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusOK, w.Code)
-		responseObj := V1_API_RESPONSE_HORS_DOEVRES{}
+		responseObj := V1_API_RESPONSE_HORS_DOEUVRES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(5, len(responseObj.Data.HorsDoeuvres))
@@ -36,7 +36,7 @@ func Test_HorsDoeuvresController_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusOK, w.Code)
-		responseObj := V1_API_RESPONSE_HORS_DOEVRES{}
+		responseObj := V1_API_RESPONSE_HORS_DOEUVRES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(1, len(responseObj.Data.HorsDoeuvres))
@@ -50,7 +50,7 @@ func Test_HorsDoeuvresController_Integration(t *testing.T) {
 		req, err := http.NewRequest("POST", "/api/v1/horsdoeuvres", strings.NewReader(string(horsDoeuvresJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
-		responseObj := V1_API_RESPONSE_HORS_DOEVRES{}
+		responseObj := V1_API_RESPONSE_HORS_DOEUVRES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(http.StatusCreated, w.Code)
@@ -82,7 +82,7 @@ func Test_HorsDoeuvresController_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, w.Code)
-		responseObj := V1_API_RESPONSE_HORS_DOEVRES{}
+		responseObj := V1_API_RESPONSE_HORS_DOEUVRES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(0, len(responseObj.Data.HorsDoeuvres))

@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/entree": {
             "get": {
-                "description": "gets 1 entree if an ID is found in the route, otherwise returns all entrees",
+                "description": "Gets the selected hors doeuvres for the given user ID (empty array if no selection has been made), or a list of all available entrees",
                 "consumes": [
                     "application/json"
                 ],
@@ -25,26 +25,26 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "entrees"
+                    "hors doeuvres"
                 ],
-                "summary": "gets one or all entrees",
+                "summary": "creates an hors doeuvres",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_ENTREE"
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_ENTREE"
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
                         }
                     }
                 }
             },
             "post": {
-                "description": "create a new entree",
+                "description": "create a new entree and return the new record's data to the caller",
                 "consumes": [
                     "application/json"
                 ],
@@ -77,7 +77,7 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "gets 1 entree if an ID is found in the route, otherwise returns all entrees",
+                "description": "Deletes an entree and returns a response to indicate success or failure",
                 "consumes": [
                     "application/json"
                 ],
@@ -87,7 +87,7 @@ const docTemplate = `{
                 "tags": [
                     "entrees"
                 ],
-                "summary": "gets one or all entrees",
+                "summary": "deletes an entree",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -104,7 +104,63 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/{entree_id}/entrees": {
+        "/horsdoeuvres": {
+            "post": {
+                "description": "Creates an hors doeuvres and return the new record's data to the caller",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hors doeuvres"
+                ],
+                "summary": "creates an hors doeuvres",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes an hors doeuvres and returns a response to indicate success or failure",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hors doeuvres"
+                ],
+                "summary": "deletes an hors doeuvres",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{user_id}/entrees": {
             "get": {
                 "description": "gets 1 entree if an ID is found in the route, otherwise returns all entrees",
                 "consumes": [
@@ -132,6 +188,35 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/{user_id}/horsdoeuvres": {
+            "get": {
+                "description": "Gets the selected hors doeuvres for the given user ID (empty array if no selection has been made), or a list of all available entrees",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hors doeuvres"
+                ],
+                "summary": "creates an hors doeuvres",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -146,11 +231,36 @@ const docTemplate = `{
                 }
             }
         },
+        "controllers.HorsDoeuvresData": {
+            "type": "object",
+            "properties": {
+                "hors_doeuvres": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.HorsDoeuvres"
+                    }
+                }
+            }
+        },
         "controllers.V1_API_RESPONSE_ENTREE": {
             "type": "object",
             "properties": {
                 "data": {
                     "$ref": "#/definitions/controllers.EntreeData"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "controllers.V1_API_RESPONSE_HORS_DOEUVRES": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/controllers.HorsDoeuvresData"
                 },
                 "message": {
                     "type": "string"
@@ -177,6 +287,29 @@ const docTemplate = `{
             }
         },
         "models.Entree": {
+            "type": "object",
+            "required": [
+                "option_name"
+            ],
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "option_name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.HorsDoeuvres": {
             "type": "object",
             "required": [
                 "option_name"

@@ -6,10 +6,26 @@ definitions:
           $ref: '#/definitions/models.Entree'
         type: array
     type: object
+  controllers.HorsDoeuvresData:
+    properties:
+      hors_doeuvres:
+        items:
+          $ref: '#/definitions/models.HorsDoeuvres'
+        type: array
+    type: object
   controllers.V1_API_RESPONSE_ENTREE:
     properties:
       data:
         $ref: '#/definitions/controllers.EntreeData'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  controllers.V1_API_RESPONSE_HORS_DOEUVRES:
+    properties:
+      data:
+        $ref: '#/definitions/controllers.HorsDoeuvresData'
       message:
         type: string
       status:
@@ -41,6 +57,21 @@ definitions:
     required:
     - option_name
     type: object
+  models.HorsDoeuvres:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: string
+      option_name:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - option_name
+    type: object
 info:
   contact: {}
 paths:
@@ -48,8 +79,8 @@ paths:
     delete:
       consumes:
       - application/json
-      description: gets 1 entree if an ID is found in the route, otherwise returns
-        all entrees
+      description: Deletes an entree and returns a response to indicate success or
+        failure
       produces:
       - application/json
       responses:
@@ -61,32 +92,32 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
-      summary: gets one or all entrees
+      summary: deletes an entree
       tags:
       - entrees
     get:
       consumes:
       - application/json
-      description: gets 1 entree if an ID is found in the route, otherwise returns
-        all entrees
+      description: Gets the selected hors doeuvres for the given user ID (empty array
+        if no selection has been made), or a list of all available entrees
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
-      summary: gets one or all entrees
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+      summary: creates an hors doeuvres
       tags:
-      - entrees
+      - hors doeuvres
     post:
       consumes:
       - application/json
-      description: create a new entree
+      description: create a new entree and return the new record's data to the caller
       produces:
       - application/json
       responses:
@@ -105,7 +136,46 @@ paths:
       summary: Create entree
       tags:
       - entrees
-  /user/{entree_id}/entrees:
+  /horsdoeuvres:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes an hors doeuvres and returns a response to indicate success
+        or failure
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+      summary: deletes an hors doeuvres
+      tags:
+      - hors doeuvres
+    post:
+      consumes:
+      - application/json
+      description: Creates an hors doeuvres and return the new record's data to the
+        caller
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+      summary: creates an hors doeuvres
+      tags:
+      - hors doeuvres
+  /user/{user_id}/entrees:
     get:
       consumes:
       - application/json
@@ -125,4 +195,24 @@ paths:
       summary: gets one or all entrees
       tags:
       - entrees
+  /user/{user_id}/horsdoeuvres:
+    get:
+      consumes:
+      - application/json
+      description: Gets the selected hors doeuvres for the given user ID (empty array
+        if no selection has been made), or a list of all available entrees
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+      summary: creates an hors doeuvres
+      tags:
+      - hors doeuvres
 swagger: "2.0"
