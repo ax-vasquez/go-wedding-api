@@ -87,4 +87,17 @@ func Test_HorsDoeuvresController_Integration(t *testing.T) {
 		assert.Nil(err)
 		assert.Equal(0, len(responseObj.Data.HorsDoeuvres))
 	})
+	t.Run("DELETE /api/v1/horsdoeuvres/:id - bad ID", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		// Route needs to be generated since the ID of the record to delete is embedded within the route itself
+		routePath := fmt.Sprintf("/api/v1/horsdoeuvres/%s", "asdf")
+		req, err := http.NewRequest("DELETE", routePath, nil)
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusBadRequest, w.Code)
+		var deleteResponse V1_API_DELETE_RESPONSE
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &deleteResponse)
+		assert.Nil(err)
+		assert.Equal(0, deleteResponse.Data.DeletedRecords)
+	})
 }

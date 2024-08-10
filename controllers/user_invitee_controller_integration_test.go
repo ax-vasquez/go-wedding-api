@@ -63,9 +63,9 @@ func Test_UserInviteeController_Integration(t *testing.T) {
 		assert.NotEmpty(responseObj.Data.Invitees[0].ID)
 		assert.NotEqual(models.NilUuid, responseObj.Data.Invitees[0].ID)
 		assert.Equal("Finn", responseObj.Data.Invitees[0].FirstName)
-		t.Run("DELETE /api/v1/user/:id/invitee/:invitee_id", func(t *testing.T) {
+		t.Run("DELETE /api/v1/invitee/:invitee_id", func(t *testing.T) {
 			w := httptest.NewRecorder()
-			routePath := fmt.Sprintf("/api/v1/user/%s/invitee/%s", models.FirstUserIdStr, responseObj.Data.Invitees[0].ID)
+			routePath := fmt.Sprintf("/api/v1/invitee/%s", responseObj.Data.Invitees[0].ID)
 			req, err := http.NewRequest("DELETE", routePath, strings.NewReader(string(testInviteeJson)))
 			router.ServeHTTP(w, req)
 			assert.Nil(err)
@@ -110,5 +110,17 @@ func Test_UserInviteeController_Integration(t *testing.T) {
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(0, len(responseObj.Data.Invitees))
+	})
+	t.Run("DELETE /api/v1/user/:invitee_id - bad ID", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		routePath := fmt.Sprintf("/api/v1/invitee/%s", "asdf")
+		req, err := http.NewRequest("DELETE", routePath, nil)
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusBadRequest, w.Code)
+		var deleteResponse V1_API_DELETE_RESPONSE
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &deleteResponse)
+		assert.Nil(err)
+		assert.Equal(0, deleteResponse.Data.DeletedRecords)
 	})
 }

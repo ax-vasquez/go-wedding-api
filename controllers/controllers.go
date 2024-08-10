@@ -32,7 +32,7 @@ func paveRoutes() *gin.Engine {
 		v1.DELETE("/entree/:id", DeleteEntree)
 		v1.DELETE("/horsdoeuvres/:id", DeleteHorsDoeuvres)
 		v1.DELETE("/user/:id", DeleteUser)
-		v1.DELETE("/user/:id/invitee/:invitee_id", DeleteInviteeForUser)
+		v1.DELETE("/invitee/:invitee_id", DeleteInviteeForUser)
 		v1.GET("/entrees", GetEntrees)
 		v1.GET("/horsdoeuvres", GetHorsDoeuvres)
 		v1.GET("/users", GetUsers)
