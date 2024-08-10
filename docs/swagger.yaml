@@ -206,9 +206,10 @@ paths:
       - entrees
   /horsdoeuvres:
     delete:
-      description: Deletes an user and returns a response to indicate success or failure
+      description: Deletes an hors doeuvres and returns a response to indicate success
+        or failure
       parameters:
-      - description: User ID
+      - description: Hors Doeuvres ID
         format: uuid
         in: path
         name: id
@@ -229,9 +230,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
-      summary: deletes a user
+      summary: deletes an hors doeuvres
       tags:
-      - user
+      - hors doeuvres
     get:
       description: Gets the selected hors doeuvres for the given user ID (empty array
         if no selection has been made), or a list of all available entrees if no user
@@ -280,6 +281,95 @@ paths:
       summary: creates an hors doeuvres
       tags:
       - hors doeuvres
+  /user:
+    delete:
+      description: Deletes an user and returns a response to indicate success or failure
+      parameters:
+      - description: User ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+      summary: deletes a user
+      tags:
+      - user
+    patch:
+      consumes:
+      - application/json
+      description: Updates a user with the given input
+      parameters:
+      - description: The input user update data (only `id` is required, but is not
+          useful without setting other fields to update)
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+      summary: updates a user
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: Creates a user with the given input and returns an array of user
+        objects, containing the newly-created user
+      parameters:
+      - description: The input user data (only `first_name`, `last_name` and `email`
+          are required)
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+      summary: creates a user
+      tags:
+      - user
   /user/{user_id}/entrees:
     get:
       description: Gets the selected entree for the given user ID (empty array if
@@ -354,67 +444,6 @@ paths:
           schema:
             $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
       summary: gets user(s)
-      tags:
-      - user
-    patch:
-      consumes:
-      - application/json
-      description: Updates a user with the given input
-      parameters:
-      - description: The input user update data (only `id` is required, but is not
-          useful without setting other fields to update)
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/models.User'
-      produces:
-      - application/json
-      responses:
-        "202":
-          description: Accepted
-          schema:
-            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
-      summary: updates a user
-      tags:
-      - user
-    post:
-      consumes:
-      - application/json
-      description: Creates a user with the given input and returns an array of user
-        objects, containing the newly-created user
-      parameters:
-      - description: The input user data (only `first_name`, `last_name` and `email`
-          are required)
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/models.User'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
-      summary: creates a user
       tags:
       - user
 swagger: "2.0"

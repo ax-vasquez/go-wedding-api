@@ -73,7 +73,7 @@ func GetUsers(c *gin.Context) {
 //	@Success      201  {object}  V1_API_RESPONSE_USERS
 //	@Failure      400  {object}  V1_API_RESPONSE_USERS
 //	@Failure      500  {object}  V1_API_RESPONSE_USERS
-//	@Router       /users [post]
+//	@Router       /user [post]
 func CreateUser(c *gin.Context) {
 	response := V1_API_RESPONSE_USERS{}
 	var status int
@@ -109,7 +109,7 @@ func CreateUser(c *gin.Context) {
 //	@Success      202  {object}  V1_API_RESPONSE_USERS
 //	@Failure      400  {object}  V1_API_RESPONSE_USERS
 //	@Failure      500  {object}  V1_API_RESPONSE_USERS
-//	@Router       /users [patch]
+//	@Router       /user [patch]
 func UpdateUser(c *gin.Context) {
 	response := V1_API_RESPONSE_USERS{}
 	var status int
@@ -169,10 +169,10 @@ func UpdateUser(c *gin.Context) {
 //	@Tags         user
 //	@Produce      json
 //	@Param 		  id  path string true "User ID" Format(uuid)
-//	@Success      202  {object}  V1_API_RESPONSE_HORS_DOEUVRES
-//	@Failure      400  {object}  V1_API_RESPONSE_HORS_DOEUVRES
-//	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
-//	@Router       /horsdoeuvres [delete]
+//	@Success      202  {object}  V1_API_RESPONSE_USERS
+//	@Failure      400  {object}  V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  V1_API_RESPONSE_USERS
+//	@Router       /user [delete]
 func DeleteUser(c *gin.Context) {
 	response := V1_API_DELETE_RESPONSE{}
 	var status int

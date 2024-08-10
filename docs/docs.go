@@ -191,19 +191,19 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Deletes an user and returns a response to indicate success or failure",
+                "description": "Deletes an hors doeuvres and returns a response to indicate success or failure",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "hors doeuvres"
                 ],
-                "summary": "deletes a user",
+                "summary": "deletes an hors doeuvres",
                 "parameters": [
                     {
                         "type": "string",
                         "format": "uuid",
-                        "description": "User ID",
+                        "description": "Hors Doeuvres ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -226,6 +226,136 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "post": {
+                "description": "Creates a user with the given input and returns an array of user objects, containing the newly-created user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "creates a user",
+                "parameters": [
+                    {
+                        "description": "The input user data (only ` + "`" + `first_name` + "`" + `, ` + "`" + `last_name` + "`" + ` and ` + "`" + `email` + "`" + ` are required)",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes an user and returns a response to indicate success or failure",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "deletes a user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Updates a user with the given input",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "updates a user",
+                "parameters": [
+                    {
+                        "description": "The input user update data (only ` + "`" + `id` + "`" + ` is required, but is not useful without setting other fields to update)",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
                         }
                     }
                 }
@@ -326,94 +456,6 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Creates a user with the given input and returns an array of user objects, containing the newly-created user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "creates a user",
-                "parameters": [
-                    {
-                        "description": "The input user data (only ` + "`" + `first_name` + "`" + `, ` + "`" + `last_name` + "`" + ` and ` + "`" + `email` + "`" + ` are required)",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.User"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "description": "Updates a user with the given input",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "updates a user",
-                "parameters": [
-                    {
-                        "description": "The input user update data (only ` + "`" + `id` + "`" + ` is required, but is not useful without setting other fields to update)",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.User"
-                        }
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
                         }
