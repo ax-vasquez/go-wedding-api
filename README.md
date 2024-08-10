@@ -3,7 +3,7 @@
 The API used for our wedding site, built in Go. This is a simple API used to save wedding guest preferences
 and responses using a stack built from scratch.
 
-[![codecov](https://codecov.io/gh/ax-vasquez/wedding-site-api/graph/badge.svg?token=UH5YZFRM35)](https://codecov.io/gh/ax-vasquez/wedding-site-api)
+[![codecov](https://codecov.io/gh/ax-vasquez/go-wedding-api/graph/badge.svg?token=UH5YZFRM35)](https://codecov.io/gh/ax-vasquez/go-wedding-api)
 
 ## API Documentation
 
