@@ -101,7 +101,7 @@ func Test_InviteeController_Unit(t *testing.T) {
 
 		w := httptest.NewRecorder()
 		testInviteeJson, _ := json.Marshal(u)
-		routePath := fmt.Sprintf("/api/v1/user/%s/invitee/%s", uuid.New(), u.ID)
+		routePath := fmt.Sprintf("/api/v1/invitee/%s", uuid.New())
 		req, err := http.NewRequest("DELETE", routePath, strings.NewReader(string(testInviteeJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
