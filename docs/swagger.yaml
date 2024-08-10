@@ -1,0 +1,551 @@
+definitions:
+  controllers.EntreeData:
+    properties:
+      entrees:
+        items:
+          $ref: '#/definitions/models.Entree'
+        type: array
+    type: object
+  controllers.HorsDoeuvresData:
+    properties:
+      hors_doeuvres:
+        items:
+          $ref: '#/definitions/models.HorsDoeuvres'
+        type: array
+    type: object
+  controllers.UserData:
+    properties:
+      users:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+    type: object
+  controllers.UserInviteeData:
+    properties:
+      users:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+    type: object
+  controllers.V1_API_RESPONSE_ENTREE:
+    properties:
+      data:
+        $ref: '#/definitions/controllers.EntreeData'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  controllers.V1_API_RESPONSE_HORS_DOEUVRES:
+    properties:
+      data:
+        $ref: '#/definitions/controllers.HorsDoeuvresData'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  controllers.V1_API_RESPONSE_USER_INVITEES:
+    properties:
+      data:
+        $ref: '#/definitions/controllers.UserInviteeData'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  controllers.V1_API_RESPONSE_USERS:
+    properties:
+      data:
+        $ref: '#/definitions/controllers.UserData'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  gin.H:
+    additionalProperties: {}
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  models.Entree:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: string
+      option_name:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - option_name
+    type: object
+  models.HorsDoeuvres:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: string
+      option_name:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - option_name
+    type: object
+  models.User:
+    properties:
+      can_invite_others:
+        type: boolean
+      created_at:
+        type: string
+      createdAt:
+        description: |-
+          We override Gorm's CreatedAt field so we can set the gorm:"<-:create" directive,
+          which prevents this field from being altered once the record is created
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      entree_selection_id:
+        type: string
+      entreeSelection:
+        $ref: '#/definitions/models.Entree'
+      first_name:
+        type: string
+      hors_doeuvres_selection_id:
+        type: string
+      horsDoeuvresSelection:
+        $ref: '#/definitions/models.HorsDoeuvres'
+      id:
+        type: string
+      is_admin:
+        type: boolean
+      is_going:
+        type: boolean
+      last_name:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    type: object
+info:
+  contact: {}
+paths:
+  /entree:
+    delete:
+      description: Deletes an entree and returns a response to indicate success or
+        failure
+      parameters:
+      - description: Entree ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+      summary: deletes an entree
+      tags:
+      - entrees
+    post:
+      consumes:
+      - application/json
+      description: Create a new entree and return the new record's data to the caller
+      parameters:
+      - description: The input entree data (only `option_name` is required)
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.Entree'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+      summary: create entree
+      tags:
+      - entrees
+  /entrees:
+    get:
+      description: Gets the selected entree for the given user ID (empty array if
+        no selection has been made), or a list of all available entrees if no user
+        ID is provided
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+      summary: gets one or all entrees
+      tags:
+      - entrees
+  /horsdoeuvres:
+    delete:
+      description: Deletes an hors doeuvres and returns a response to indicate success
+        or failure
+      parameters:
+      - description: Hors Doeuvres ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+      summary: deletes an hors doeuvres
+      tags:
+      - hors doeuvres
+    get:
+      description: Gets the selected hors doeuvres for the given user ID (empty array
+        if no selection has been made), or a list of all available entrees if no user
+        ID is provided
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+      summary: gets one or all hors doeuvres
+      tags:
+      - hors doeuvres
+    post:
+      consumes:
+      - application/json
+      description: Creates an hors doeuvres and return the new record's data to the
+        caller
+      parameters:
+      - description: The input hors doeuvres data (only `option_name` is required)
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.HorsDoeuvres'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+      summary: creates an hors doeuvres
+      tags:
+      - hors doeuvres
+  /user:
+    delete:
+      description: Deletes an user and returns a response to indicate success or failure
+      parameters:
+      - description: User ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+      summary: deletes a user
+      tags:
+      - user
+    patch:
+      consumes:
+      - application/json
+      description: Updates a user with the given input
+      parameters:
+      - description: The input user update data (only `id` is required, but is not
+          useful without setting other fields to update)
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+      summary: updates a user
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: Creates a user with the given input and returns an array of user
+        objects, containing the newly-created user
+      parameters:
+      - description: The input user data (only `first_name`, `last_name` and `email`
+          are required)
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+      summary: creates a user
+      tags:
+      - user
+  /user/{inviter_id}/invitee/{invitee_id}:
+    delete:
+      description: Deletes an invitee for the given user
+      parameters:
+      - description: Invitee search by inviting user ID
+        format: uuid
+        in: path
+        name: inviter_id
+        required: true
+        type: string
+      - description: Invitee search by inviting user ID
+        format: uuid
+        in: path
+        name: invitee_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+      summary: deletes an invitee for the given user
+      tags:
+      - user invitee
+  /user/{user_id}/entrees:
+    get:
+      description: Gets the selected entree for the given user ID (empty array if
+        no selection has been made), or a list of all available entrees if no user
+        ID is provided
+      parameters:
+      - description: User ID
+        format: uuid
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_ENTREE'
+      summary: gets one or all entrees
+      tags:
+      - entrees
+  /user/{user_id}/horsdoeuvres:
+    get:
+      description: Gets the selected hors doeuvres for the given user ID (empty array
+        if no selection has been made), or a list of all available entrees if no user
+        ID is provided
+      parameters:
+      - description: User ID
+        format: uuid
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES'
+      summary: gets one or all hors doeuvres
+      tags:
+      - hors doeuvres
+  /user/{user_id}/invite-user:
+    post:
+      description: Invites a user for ght given user
+      parameters:
+      - description: Inviting user ID
+        format: uuid
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+      summary: invite a user
+      tags:
+      - user invitee
+  /user/{user_id}/invitees:
+    get:
+      description: Gets invitee user data for users invited by the given inviter ID
+      parameters:
+      - description: Invitee search by inviting user ID
+        format: uuid
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+      summary: gets invitees for user
+      tags:
+      - user invitee
+  /users:
+    get:
+      description: Gets user(s) by the ID(s) in the request query string, `?ids=`
+      parameters:
+      - description: user search by id
+        format: uuid
+        in: path
+        name: ids
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+      summary: gets user(s)
+      tags:
+      - user
+swagger: "2.0"
