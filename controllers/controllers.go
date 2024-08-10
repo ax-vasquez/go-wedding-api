@@ -42,7 +42,7 @@ func paveRoutes() *gin.Engine {
 		v1.PATCH("/user", UpdateUser)
 		v1.POST("/entree", CreateEntree)
 		v1.POST("/horsdoeuvres", CreateHorsDoeuvres)
-		v1.POST("/user", CreateUsers)
+		v1.POST("/user", CreateUser)
 		v1.POST("/user/:id/invite-user", CreateUserInvitee)
 	}
 

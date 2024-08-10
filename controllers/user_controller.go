@@ -31,6 +31,16 @@ type UpdateUserInput struct {
 	EntreeSelectionId       *uuid.UUID `json:"entree_selection_id"`
 }
 
+// GetUsers gets user(s) by ID(s)
+//
+//	@Summary      gets user(s)
+//	@Description  Gets user(s) by the ID(s) in the request query string, `?ids=`
+//	@Tags         user
+//	@Produce      json
+//	@Success      200  {object}  V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  V1_API_RESPONSE_USERS
+//	@Param 		  ids  path string true "user search by id (UUID)" Format(uuid)
+//	@Router       /users [get]
 func GetUsers(c *gin.Context) {
 	response := V1_API_RESPONSE_USERS{}
 	var userIds []uuid.UUID
@@ -52,7 +62,19 @@ func GetUsers(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-func CreateUsers(c *gin.Context) {
+// CreateUser creates a user
+//
+//	@Summary      creates a user
+//	@Description  Creates a user with the given input and returns an array of user objects, containing the newly-created user
+//	@Tags         user
+//	@Accept       json
+//	@Produce      json
+//	@Param		  data body models.User true "The input user data (only `first_name`, `last_name` and `email` are required)"
+//	@Success      201  {object}  V1_API_RESPONSE_USERS
+//	@Failure      400  {object}  V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  V1_API_RESPONSE_USERS
+//	@Router       /users [post]
+func CreateUser(c *gin.Context) {
 	response := V1_API_RESPONSE_USERS{}
 	var status int
 	var input models.User
@@ -76,6 +98,18 @@ func CreateUsers(c *gin.Context) {
 	c.JSON(status, response)
 }
 
+// UpdateUser updates a user
+//
+//	@Summary      updates a user
+//	@Description  Updates a user with the given input
+//	@Tags         user
+//	@Accept       json
+//	@Produce      json
+//	@Param		  data body models.User true "The input user update data (only `id` is required, but is not useful without setting other fields to update)"
+//	@Success      202  {object}  V1_API_RESPONSE_USERS
+//	@Failure      400  {object}  V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  V1_API_RESPONSE_USERS
+//	@Router       /users [patch]
 func UpdateUser(c *gin.Context) {
 	response := V1_API_RESPONSE_USERS{}
 	var status int
@@ -128,6 +162,17 @@ func UpdateUser(c *gin.Context) {
 	c.JSON(status, response)
 }
 
+// DeleteUser deletes a user
+//
+//	@Summary      deletes a user
+//	@Description  Deletes an user and returns a response to indicate success or failure
+//	@Tags         user
+//	@Produce      json
+//	@Param 		  id  path string true "User ID" Format(uuid)
+//	@Success      202  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Failure      400  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Router       /horsdoeuvres [delete]
 func DeleteUser(c *gin.Context) {
 	response := V1_API_DELETE_RESPONSE{}
 	var status int

@@ -20,15 +20,14 @@ type V1_API_RESPONSE_HORS_DOEUVRES struct {
 
 // GetHorsDoeuvres gets one or all hors doeuvres
 //
-//	@Summary      creates an hors doeuvres
-//	@Description  Gets the selected hors doeuvres for the given user ID (empty array if no selection has been made), or a list of all available entrees
+//	@Summary      gets one or all hors doeuvres
+//	@Description  Gets the selected hors doeuvres for the given user ID (empty array if no selection has been made), or a list of all available entrees if no user ID is provided
 //	@Tags         hors doeuvres
-//	@Accept       json
 //	@Produce      json
 //	@Success      200  {object}  V1_API_RESPONSE_HORS_DOEUVRES
 //	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
-//	@Param 		  user_id  path uuid.UUID true "User ID"
-//	@Router       /entree [get]
+//	@Param 		  user_id  path string true "User ID" Format(uuid)
+//	@Router       /horsdoeuvres [get]
 //	@Router       /user/{user_id}/horsdoeuvres [get]
 func GetHorsDoeuvres(c *gin.Context) {
 	idStr := c.Param("id")
@@ -71,7 +70,9 @@ func GetHorsDoeuvres(c *gin.Context) {
 //	@Tags         hors doeuvres
 //	@Accept       json
 //	@Produce      json
-//	@Success      200  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Param		  data body models.HorsDoeuvres true "The input hors doeuvres data (only `option_name` is required)"
+//	@Success      201  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Failure      400  {object}  V1_API_RESPONSE_HORS_DOEUVRES
 //	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
 //	@Router       /horsdoeuvres [post]
 func CreateHorsDoeuvres(c *gin.Context) {
@@ -104,24 +105,30 @@ func CreateHorsDoeuvres(c *gin.Context) {
 //	@Summary      deletes an hors doeuvres
 //	@Description  Deletes an hors doeuvres and returns a response to indicate success or failure
 //	@Tags         hors doeuvres
-//	@Accept       json
 //	@Produce      json
-//	@Success      200  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Param 		  id  path string true "Hors Doeuvres ID" Format(uuid)
+//	@Success      202  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Failure      400  {object}  V1_API_RESPONSE_HORS_DOEUVRES
 //	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
 //	@Router       /horsdoeuvres [delete]
 func DeleteHorsDoeuvres(c *gin.Context) {
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
-	id, _ := uuid.Parse(c.Param("id"))
-	result, err := models.DeleteHorsDoeuvres(id)
+	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
-		status = http.StatusInternalServerError
-		response.Message = "Internal server error"
-		log.Println("Error deleting hors doeuvres: ", err.Error())
+		status = http.StatusBadRequest
+		response.Message = err.Error()
 	} else {
-		status = http.StatusAccepted
-		response.Message = "Deleted hors doeuvres"
-		response.Data.DeletedRecords = int(*result)
+		result, err := models.DeleteHorsDoeuvres(id)
+		if err != nil {
+			status = http.StatusInternalServerError
+			response.Message = "Internal server error"
+			log.Println("Error deleting hors doeuvres: ", err.Error())
+		} else {
+			status = http.StatusAccepted
+			response.Message = "Deleted hors doeuvres"
+			response.Data.DeletedRecords = int(*result)
+		}
 	}
 	response.Status = status
 	c.JSON(status, response)
