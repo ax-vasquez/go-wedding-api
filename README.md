@@ -9,7 +9,7 @@ and responses using a stack built from scratch.
 
 This project leverages [`gin-swagger`](https://github.com/swaggo/gin-swagger) for its API documentation.
 
-To view the API documentation locally, start the application (`go run main.go`) and navigate to `localhost://8080/swagger/index.html`
+To view the API documentation locally, start the application (`go run main.go`) and navigate to `localhost:8080/swagger/index.html`
 
 ### Generating updating API documentation
 
