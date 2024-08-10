@@ -18,6 +18,17 @@ type V1_API_RESPONSE_USER_INVITEES struct {
 	Data UserInviteeData `json:"data"`
 }
 
+// CreateUserInvitee invites a user
+//
+//	@Summary      invite a user
+//	@Description  Invites a user for ght given user
+//	@Tags         user invitee
+//	@Produce      json
+//	@Success      200  {object}  V1_API_RESPONSE_USER_INVITEES
+//	@Failure      400  {object}  V1_API_RESPONSE_USER_INVITEES
+//	@Failure      500  {object}  V1_API_RESPONSE_USER_INVITEES
+//	@Param 		  user_id  path string true "Inviting user ID" Format(uuid)
+//	@Router       /user/{user_id}/invite-user [post]
 func CreateUserInvitee(c *gin.Context) {
 	response := V1_API_RESPONSE_USER_INVITEES{}
 	var status int
@@ -26,6 +37,7 @@ func CreateUserInvitee(c *gin.Context) {
 	id, err := uuid.Parse(idStr)
 	if err != nil {
 		status = http.StatusBadRequest
+		response.Message = err.Error()
 	} else {
 		if err := c.ShouldBindBodyWithJSON(&invitee); err != nil {
 			status = http.StatusBadRequest
@@ -50,6 +62,17 @@ func CreateUserInvitee(c *gin.Context) {
 	c.JSON(status, response)
 }
 
+// GetInviteesForUser gets invitees for the given user
+//
+//	@Summary      gets invitees for user
+//	@Description  Gets invitee user data for users invited by the given inviter ID
+//	@Tags         user invitee
+//	@Produce      json
+//	@Success      200  {object}  V1_API_RESPONSE_USER_INVITEES
+//	@Failure      400  {object}  V1_API_RESPONSE_USER_INVITEES
+//	@Failure      500  {object}  V1_API_RESPONSE_USER_INVITEES
+//	@Param 		  user_id  path string true "Invitee search by inviting user ID" Format(uuid)
+//	@Router       /user/{user_id}/invitees [get]
 func GetInviteesForUser(c *gin.Context) {
 	response := V1_API_RESPONSE_USER_INVITEES{}
 	var status int
@@ -71,18 +94,34 @@ func GetInviteesForUser(c *gin.Context) {
 	c.JSON(status, response)
 }
 
+// DeleteInviteeForUser deletes an invitee for the given user
+//
+//	@Summary      deletes an invitee for the given user
+//	@Description  Deletes an invitee for the given user
+//	@Tags         user invitee
+//	@Produce      json
+//	@Success      200  {object}  V1_API_RESPONSE_USER_INVITEES
+//	@Failure      500  {object}  V1_API_RESPONSE_USER_INVITEES
+//	@Param 		  inviter_id  path string true "Invitee search by inviting user ID" Format(uuid)
+//	@Param 		  invitee_id  path string true "Invitee search by inviting user ID" Format(uuid)
+//	@Router       /user/{inviter_id}/invitee/{invitee_id} [delete]
 func DeleteInviteeForUser(c *gin.Context) {
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
-	invitee_id, _ := uuid.Parse(c.Param("invitee_id"))
-	status = http.StatusAccepted
-	response.Status = status
-	result, err := models.DeleteInvitee(invitee_id)
+	invitee_id, err := uuid.Parse(c.Param("invitee_id"))
 	if err != nil {
-		status = http.StatusInternalServerError
-		response.Message = "Internal server error"
+		status = http.StatusBadRequest
+		response.Message = err.Error()
 	} else {
-		response.Data.DeletedRecords = int(*result)
+		result, err := models.DeleteInvitee(invitee_id)
+		if err != nil {
+			status = http.StatusInternalServerError
+			response.Message = "Internal server error"
+		} else {
+			status = http.StatusAccepted
+			response.Data.DeletedRecords = int(*result)
+		}
 	}
+	response.Status = status
 	c.JSON(status, response)
 }

@@ -39,7 +39,7 @@ type UpdateUserInput struct {
 //	@Produce      json
 //	@Success      200  {object}  V1_API_RESPONSE_USERS
 //	@Failure      500  {object}  V1_API_RESPONSE_USERS
-//	@Param 		  ids  path string true "user search by id (UUID)" Format(uuid)
+//	@Param 		  ids  path string true "user search by id" Format(uuid)
 //	@Router       /users [get]
 func GetUsers(c *gin.Context) {
 	response := V1_API_RESPONSE_USERS{}

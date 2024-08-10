@@ -361,6 +361,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/{inviter_id}/invitee/{invitee_id}": {
+            "delete": {
+                "description": "Deletes an invitee for the given user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user invitee"
+                ],
+                "summary": "deletes an invitee for the given user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Invitee search by inviting user ID",
+                        "name": "inviter_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Invitee search by inviting user ID",
+                        "name": "invitee_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    }
+                }
+            }
+        },
         "/user/{user_id}/entrees": {
             "get": {
                 "description": "Gets the selected entree for the given user ID (empty array if no selection has been made), or a list of all available entrees if no user ID is provided",
@@ -433,6 +477,90 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/{user_id}/invite-user": {
+            "post": {
+                "description": "Invites a user for ght given user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user invitee"
+                ],
+                "summary": "invite a user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Inviting user ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{user_id}/invitees": {
+            "get": {
+                "description": "Gets invitee user data for users invited by the given inviter ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user invitee"
+                ],
+                "summary": "gets invitees for user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Invitee search by inviting user ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "Gets user(s) by the ID(s) in the request query string, ` + "`" + `?ids=` + "`" + `",
@@ -447,7 +575,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "format": "uuid",
-                        "description": "user search by id (UUID)",
+                        "description": "user search by id",
                         "name": "ids",
                         "in": "path",
                         "required": true
@@ -504,6 +632,17 @@ const docTemplate = `{
                 }
             }
         },
+        "controllers.UserInviteeData": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.User"
+                    }
+                }
+            }
+        },
         "controllers.V1_API_RESPONSE_ENTREE": {
             "type": "object",
             "properties": {
@@ -537,6 +676,20 @@ const docTemplate = `{
             "properties": {
                 "data": {
                     "$ref": "#/definitions/controllers.UserData"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "controllers.V1_API_RESPONSE_USER_INVITEES": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/controllers.UserInviteeData"
                 },
                 "message": {
                     "type": "string"

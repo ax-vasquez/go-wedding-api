@@ -20,6 +20,13 @@ definitions:
           $ref: '#/definitions/models.User'
         type: array
     type: object
+  controllers.UserInviteeData:
+    properties:
+      users:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+    type: object
   controllers.V1_API_RESPONSE_ENTREE:
     properties:
       data:
@@ -33,6 +40,15 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/controllers.HorsDoeuvresData'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  controllers.V1_API_RESPONSE_USER_INVITEES:
+    properties:
+      data:
+        $ref: '#/definitions/controllers.UserInviteeData'
       message:
         type: string
       status:
@@ -370,6 +386,36 @@ paths:
       summary: creates a user
       tags:
       - user
+  /user/{inviter_id}/invitee/{invitee_id}:
+    delete:
+      description: Deletes an invitee for the given user
+      parameters:
+      - description: Invitee search by inviting user ID
+        format: uuid
+        in: path
+        name: inviter_id
+        required: true
+        type: string
+      - description: Invitee search by inviting user ID
+        format: uuid
+        in: path
+        name: invitee_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+      summary: deletes an invitee for the given user
+      tags:
+      - user invitee
   /user/{user_id}/entrees:
     get:
       description: Gets the selected entree for the given user ID (empty array if
@@ -422,11 +468,67 @@ paths:
       summary: gets one or all hors doeuvres
       tags:
       - hors doeuvres
+  /user/{user_id}/invite-user:
+    post:
+      description: Invites a user for ght given user
+      parameters:
+      - description: Inviting user ID
+        format: uuid
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+      summary: invite a user
+      tags:
+      - user invitee
+  /user/{user_id}/invitees:
+    get:
+      description: Gets invitee user data for users invited by the given inviter ID
+      parameters:
+      - description: Invitee search by inviting user ID
+        format: uuid
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+      summary: gets invitees for user
+      tags:
+      - user invitee
   /users:
     get:
       description: Gets user(s) by the ID(s) in the request query string, `?ids=`
       parameters:
-      - description: user search by id (UUID)
+      - description: user search by id
         format: uuid
         in: path
         name: ids
