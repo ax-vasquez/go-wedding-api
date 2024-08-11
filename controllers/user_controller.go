@@ -1,13 +1,16 @@
 package controllers
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/helper"
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator"
 	"github.com/google/uuid"
 )
 
@@ -30,6 +33,70 @@ type UpdateUserInput struct {
 	Email                   string     `json:"email"`
 	HorsDoeuvresSelectionId *uuid.UUID `json:"hors_douevres_selection_id"`
 	EntreeSelectionId       *uuid.UUID `json:"entree_selection_id"`
+}
+
+var validate = validator.New()
+
+// See [jwt-in-gin-doc]
+//
+// [jwt-in-gin-doc]: https://www.golang.company/blog/jwt-authentication-in-golang-using-gin-web-framework
+func Signup() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// TODO: First arg is the context (ctx) - see if this is needed (reference article uses ctx in calls to MongoDB, which we aren't using)
+		var _, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		var response V1_API_RESPONSE_USERS
+		var status int
+
+		var user models.User
+		defer cancel()
+		if err := c.BindJSON(&user); err != nil {
+			status = http.StatusBadRequest
+			response.Status = status
+			response.Message = err.Error()
+			c.JSON(status, response)
+
+			return
+		}
+
+		validationErr := validate.Struct(user)
+		defer cancel()
+		if validationErr != nil {
+			status = http.StatusBadRequest
+			response.Status = status
+			response.Message = validationErr.Error()
+			c.JSON(status, response)
+			return
+		}
+
+		count, err := models.CountUsersByEmail(&user)
+		defer cancel()
+		if err != nil {
+			log.Panic(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error detected while fetching user by email"})
+		}
+
+		password := helper.HashPassword(*user.PasswordHash)
+		user.PasswordHash = &password
+
+		if count > 0 {
+			c.JSON(http.StatusInternalServerError, gin.H{"Error": "The mentioned E-Mail or Phone Number already exists"})
+		}
+
+		token, refreshToken, _ := helper.GenerateAllTokens(user.Email, user.FirstName, user.LastName, user.Role, user.ID.String())
+		user.Token = &token
+		user.RefreshToken = &refreshToken
+		userSlice := []models.User{user}
+		insertErr := models.CreateUsers(&userSlice)
+		if insertErr != nil {
+			msg := "User Details were not Saved"
+			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+			return
+		}
+		response.Data.Users = userSlice
+
+		defer cancel()
+		c.JSON(http.StatusOK, response)
+	}
 }
 
 // GetUsers gets user(s) by ID(s)
@@ -63,9 +130,9 @@ func GetUsers(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// CreateUser creates a user
+// CreateUser create a user
 //
-//	@Summary      creates a user
+//	@Summary      admin-only operation to create a user
 //	@Description  Creates a user with the given input and returns an array of user objects, containing the newly-created user
 //	@Tags         user
 //	@Accept       json
@@ -169,9 +236,9 @@ func UpdateUser(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// DeleteUser deletes a user
+// DeleteUser delete a user
 //
-//	@Summary      deletes a user
+//	@Summary      admin-only operation to delete a user
 //	@Description  Deletes an user and returns a response to indicate success or failure
 //	@Tags         user
 //	@Produce      json

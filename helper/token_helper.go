@@ -10,15 +10,48 @@ import (
 )
 
 type SignedDetails struct {
-	Email      string
-	First_name string
-	Last_name  string
-	Uid        string
-	User_type  string
+	Email     string
+	FirstName string
+	LastName  string
+	Uid       string
+	UserRole  string
 	jwt.StandardClaims
 }
 
 var JWT_SECRET_KEY string = os.Getenv("JWT_SECRET_KEY")
+
+// Generates a token and a refresh token
+func GenerateAllTokens(email string, firstName string, lastName string, role string, uid string) (signedToken string, signedRefreshToken string, err error) {
+	claims := &SignedDetails{
+		Email:     email,
+		FirstName: firstName,
+		LastName:  lastName,
+		Uid:       uid,
+		UserRole:  role,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(24)).Unix(),
+		},
+	}
+
+	refreshClaims := &SignedDetails{
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(168)).Unix(),
+		},
+	}
+
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(JWT_SECRET_KEY))
+	if err != nil {
+		log.Panic(err)
+		return
+	}
+	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(JWT_SECRET_KEY))
+	if err != nil {
+		log.Panic(err)
+		return
+	}
+
+	return token, refreshToken, err
+}
 
 // Converts a plain text password into a hash representation
 func HashPassword(password string) string {

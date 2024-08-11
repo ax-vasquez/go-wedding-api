@@ -12,13 +12,18 @@ type User struct {
 	BaseModel
 	// We override Gorm's CreatedAt field so we can set the gorm:"<-:create" directive,
 	// which prevents this field from being altered once the record is created
-	CreatedAt               time.Time     `gorm:"<-:create"`
-	IsAdmin                 bool          `json:"is_admin"`
-	IsGoing                 bool          `json:"is_going"`
-	CanInviteOthers         bool          `json:"can_invite_others"`
-	FirstName               string        `json:"first_name" binding:"required"`
-	LastName                string        `json:"last_name" binding:"required"`
-	Email                   string        `json:"email" gorm:"uniqueIndex" binding:"required"`
+	CreatedAt time.Time `gorm:"<-:create"`
+	// GUEST, INVITEE or ADMIN
+	Role                    string `json:"role" gorm:"default:GUEST"`
+	IsAdmin                 bool   `json:"is_admin"`
+	IsGoing                 bool   `json:"is_going"`
+	CanInviteOthers         bool   `json:"can_invite_others"`
+	FirstName               string `json:"first_name" binding:"required"`
+	LastName                string `json:"last_name" binding:"required"`
+	Email                   string `json:"email" gorm:"uniqueIndex" binding:"required"`
+	PasswordHash            *string
+	Token                   *string       `json:"token"`
+	RefreshToken            *string       `json:"refresh_token"`
 	HorsDoeuvresSelectionId *uuid.UUID    `json:"hors_doeuvres_selection_id"`
 	HorsDoeuvresSelection   *HorsDoeuvres `gorm:"foreignKey:HorsDoeuvresSelectionId"`
 	EntreeSelectionId       *uuid.UUID    `json:"entree_selection_id"`
@@ -32,6 +37,16 @@ func CreateUsers(users *[]User) error {
 		return result.Error
 	}
 	return nil
+}
+
+// Get the count of users whose email matches that of the given user.
+//
+// This should only return 1 or 0 and is used to check if a user already
+// exists with the given email address.
+func CountUsersByEmail(user *User) (int64, error) {
+	var count int64
+	result := db.Distinct("email").Count(&count).Find(&user)
+	return result.RowsAffected, result.Error
 }
 
 // Set is_admin for user

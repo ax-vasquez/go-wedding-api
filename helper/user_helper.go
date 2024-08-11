@@ -10,7 +10,7 @@ import (
 //
 // If the userType does not match the given role, an error is returned.
 func CheckUserType(c *gin.Context, role string) (err error) {
-	userType := c.GetString("user_type")
+	userType := c.GetString("user_role")
 	err = nil
 
 	if userType != role {
@@ -26,7 +26,7 @@ func CheckUserType(c *gin.Context, role string) (err error) {
 // if the userType is "USER" and if the uid matches userId, [CheckUserType]
 // is called.
 func MatchUserTypeToUid(c *gin.Context, userId string) (err error) {
-	userType := c.GetString("user_type")
+	userType := c.GetString("user_role")
 	uid := c.GetString("uid")
 	err = nil
 
