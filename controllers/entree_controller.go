@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/ax-vasquez/wedding-site-api/helper"
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -37,12 +38,18 @@ func GetEntrees(c *gin.Context) {
 	var entrees []models.Entree
 	// If no error occurred, the parse was successful, meaning a UUID was found and results will be filtered for the given user
 	if err == nil {
-		status = http.StatusOK
-		entrees, err = models.FindEntreesForUser(id)
-		if err != nil {
-			status = http.StatusInternalServerError
-			log.Println(err.Error())
-			response.Message = "Internal server error"
+		// Since we have an ID, we need to check that the user exists before continuing with controller logic.
+		if err := helper.MatchUserTypeToUid(c, id.String()); err != nil {
+			status = http.StatusBadRequest
+			response.Message = err.Error()
+		} else {
+			status = http.StatusOK
+			entrees, err = models.FindEntreesForUser(id)
+			if err != nil {
+				status = http.StatusInternalServerError
+				log.Println(err.Error())
+				response.Message = "Internal server error"
+			}
 		}
 		// If an error occurred, we ignore it and assume it's because there was no ID in the path - all results will be returned
 	} else {
@@ -73,13 +80,18 @@ func GetEntrees(c *gin.Context) {
 //	@Failure      500  {object}  V1_API_RESPONSE_ENTREE
 //	@Router       /entree [post]
 func CreateEntree(c *gin.Context) {
-	// TODO: Add logic to reject unauthorized requests (and certainly do not deploy until all auth logic is wired up)
 	response := V1_API_RESPONSE_ENTREE{}
 	var status int
+	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
+		status = http.StatusUnauthorized
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
 	var input models.Entree
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
-		response.Message = "\"option_name\" is required"
+		response.Message = err.Error()
 	} else {
 		entrees := []models.Entree{input}
 		err := models.CreateEntrees(&entrees)
@@ -108,9 +120,14 @@ func CreateEntree(c *gin.Context) {
 //	@Failure      500  {object}  V1_API_RESPONSE_ENTREE
 //	@Router       /entree [delete]
 func DeleteEntree(c *gin.Context) {
-	// TODO: Add logic to reject unauthorized requests (and certainly do not deploy until all auth logic is wired up)
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
+	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
+		status = http.StatusUnauthorized
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
 	id, _ := uuid.Parse(c.Param("id"))
 	result, err := models.DeleteEntree(id)
 	if err != nil {

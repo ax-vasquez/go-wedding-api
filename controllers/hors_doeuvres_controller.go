@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/ax-vasquez/wedding-site-api/helper"
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -76,9 +77,14 @@ func GetHorsDoeuvres(c *gin.Context) {
 //	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
 //	@Router       /horsdoeuvres [post]
 func CreateHorsDoeuvres(c *gin.Context) {
-	// TODO: Add logic to reject unauthorized requests (and certainly do not deploy until all auth logic is wired up)
 	response := V1_API_RESPONSE_HORS_DOEUVRES{}
 	var status int
+	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
+		status = http.StatusUnauthorized
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
 	var input models.HorsDoeuvres
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
@@ -114,6 +120,12 @@ func CreateHorsDoeuvres(c *gin.Context) {
 func DeleteHorsDoeuvres(c *gin.Context) {
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
+	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
+		status = http.StatusUnauthorized
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		status = http.StatusBadRequest

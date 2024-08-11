@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/ax-vasquez/wedding-site-api/helper"
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -77,6 +78,12 @@ func GetUsers(c *gin.Context) {
 func CreateUser(c *gin.Context) {
 	response := V1_API_RESPONSE_USERS{}
 	var status int
+	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
+		status = http.StatusUnauthorized
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
 	var input models.User
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
@@ -176,6 +183,12 @@ func UpdateUser(c *gin.Context) {
 func DeleteUser(c *gin.Context) {
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
+	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
+		status = http.StatusUnauthorized
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
 	id, _ := uuid.Parse(c.Param("id"))
 	result, err := models.DeleteUser(id)
 	if err != nil {
