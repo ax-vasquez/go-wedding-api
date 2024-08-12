@@ -47,7 +47,7 @@ func Signup() gin.HandlerFunc {
 		var status int
 
 		var user models.User
-		// defer cancel()
+		defer cancel()
 		if err := c.BindJSON(&user); err != nil {
 			status = http.StatusBadRequest
 			response.Status = status
