@@ -23,6 +23,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		BaseModel: BaseModel{
 			ID: uuid.New(),
 		},
+		Role:            "GUEST",
 		IsAdmin:         true,
 		CanInviteOthers: true,
 		IsGoing:         true,
@@ -37,16 +38,20 @@ func Test_UserModel_Unit(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","is_admin","is_going","can_invite_others","first_name","last_name","email","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING "id`)).WithArgs(
+			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","role","is_admin","is_going","can_invite_others","first_name","last_name","email","password_hash","token","refresh_token","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16) RETURNING "id"`)).WithArgs(
 			test.AnyTime{},
 			test.AnyTime{},
 			nil,
+			u.Role,
 			u.IsAdmin,
 			u.IsGoing,
 			u.CanInviteOthers,
 			u.FirstName,
 			u.LastName,
 			u.Email,
+			u.PasswordHash,
+			u.Token,
+			u.RefreshToken,
 			u.HorsDoeuvresSelectionId,
 			u.EntreeSelectionId,
 			u.ID,
@@ -99,8 +104,9 @@ func Test_UserModel_Unit(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_admin"=$2,"is_going"=$3,"can_invite_others"=$4,"first_name"=$5,"last_name"=$6,"email"=$7 WHERE "users"."deleted_at" IS NULL AND "id" = $8 RETURNING *`)).WithArgs(
+			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"role"=$2,"is_admin"=$3,"is_going"=$4,"can_invite_others"=$5,"first_name"=$6,"last_name"=$7,"email"=$8 WHERE "users"."deleted_at" IS NULL AND "id" = $9 RETURNING *`)).WithArgs(
 			test.AnyTime{},
+			u.Role,
 			u.IsAdmin,
 			u.IsGoing,
 			u.CanInviteOthers,

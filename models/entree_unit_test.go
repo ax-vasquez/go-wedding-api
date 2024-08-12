@@ -20,10 +20,10 @@ func Test_EntreeModel_Unit(t *testing.T) {
 	os.Setenv("USE_MOCK_DB", "true")
 	assert := assert.New(t)
 	errMsg := "arbitrary database error"
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 	t.Run("FindEntrees - database error returns error", func(t *testing.T) {
 		_, mock, _ := Setup()
-		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-		defer cancel()
 		mock.ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "entrees" WHERE "entrees"."deleted_at" IS NULL`)).WillReturnError(fmt.Errorf("arbitrary database error"))
 		mock.ExpectRollback()
@@ -37,8 +37,6 @@ func Test_EntreeModel_Unit(t *testing.T) {
 	})
 	t.Run("FindEntreeById - database error returns error", func(t *testing.T) {
 		someId := uuid.New()
-		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-		defer cancel()
 		_, mock, _ := Setup()
 		mock.ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "entrees" WHERE "entrees"."id" = $1 AND "entrees"."deleted_at" IS NULL`)).WithArgs(
@@ -55,8 +53,6 @@ func Test_EntreeModel_Unit(t *testing.T) {
 	})
 	t.Run("FindEntreesForUser - database error returns error", func(t *testing.T) {
 		someId := uuid.New()
-		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-		defer cancel()
 		_, mock, _ := Setup()
 		mock.ExpectQuery(
 			regexp.QuoteMeta(`SELECT "entrees"."created_at","entrees"."updated_at","entrees"."deleted_at","entrees"."id","entrees"."option_name" FROM "entrees" JOIN users ON entrees.id = users.entree_selection_id AND users.id = $1 WHERE "entrees"."deleted_at" IS NULL`)).WithArgs(
@@ -72,8 +68,6 @@ func Test_EntreeModel_Unit(t *testing.T) {
 		assert.Equal(errMsg, err.Error())
 	})
 	t.Run("CreateEntrees - database error returns error", func(t *testing.T) {
-		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-		defer cancel()
 		opt := Entree{
 			OptionName: "Banana Steak",
 		}
@@ -96,8 +90,6 @@ func Test_EntreeModel_Unit(t *testing.T) {
 		assert.Equal(errMsg, err.Error())
 	})
 	t.Run("DeleteEntree - database error returns error", func(t *testing.T) {
-		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-		defer cancel()
 		someId := uuid.New()
 		_, mock, _ := Setup()
 		mock.ExpectBegin()

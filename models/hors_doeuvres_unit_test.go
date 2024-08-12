@@ -20,9 +20,9 @@ func Test_HorsDoeuvresModel_Unit(t *testing.T) {
 	os.Setenv("USE_MOCK_DB", "true")
 	assert := assert.New(t)
 	errMsg := "arbitrary database error"
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 	t.Run("FindHorsDoeuvres - database error returns error", func(t *testing.T) {
-		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-		defer cancel()
 		_, mock, _ := Setup()
 		mock.ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "hors_doeuvres" WHERE "hors_doeuvres"."deleted_at" IS NULL`)).WillReturnError(fmt.Errorf("arbitrary database error"))
@@ -36,8 +36,6 @@ func Test_HorsDoeuvresModel_Unit(t *testing.T) {
 		assert.Equal(errMsg, err.Error())
 	})
 	t.Run("FindHorsDoeuvresById - database error returns error", func(t *testing.T) {
-		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-		defer cancel()
 		someId := uuid.New()
 		_, mock, _ := Setup()
 		mock.ExpectQuery(
@@ -54,8 +52,6 @@ func Test_HorsDoeuvresModel_Unit(t *testing.T) {
 		assert.Equal(errMsg, err.Error())
 	})
 	t.Run("FindHorsDoeuvresForUser - database error returns error", func(t *testing.T) {
-		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-		defer cancel()
 		someId := uuid.New()
 		_, mock, _ := Setup()
 		mock.ExpectQuery(
@@ -72,8 +68,6 @@ func Test_HorsDoeuvresModel_Unit(t *testing.T) {
 		assert.Equal(errMsg, err.Error())
 	})
 	t.Run("CreateHorsDoeuvres - database error returns error", func(t *testing.T) {
-		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-		defer cancel()
 		opt := HorsDoeuvres{
 			OptionName: "Banana Soup",
 		}
@@ -96,8 +90,6 @@ func Test_HorsDoeuvresModel_Unit(t *testing.T) {
 		assert.Equal(errMsg, err.Error())
 	})
 	t.Run("DeleteHorsDoeuvres - database error returns error", func(t *testing.T) {
-		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-		defer cancel()
 		someId := uuid.New()
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
