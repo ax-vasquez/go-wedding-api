@@ -32,8 +32,8 @@ type User struct {
 }
 
 // Maybe create users with given data (if no errors) and returns the number of inserted records
-func CreateUsers(users *[]User) error {
-	result := db.Create(&users)
+func CreateUsers(c context.Context, users *[]User) error {
+	result := db.WithContext(c).Create(&users)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -51,8 +51,8 @@ func CountUsersByEmail(c context.Context, user *User) (int64, error) {
 }
 
 // Set is_admin for user
-func SetAdminPrivileges(u *User) error {
-	result := db.Model(&u).Select("is_admin").Updates(&u)
+func SetAdminPrivileges(c context.Context, u *User) error {
+	result := db.WithContext(c).Model(&u).Select("is_admin").Updates(&u)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -60,8 +60,8 @@ func SetAdminPrivileges(u *User) error {
 }
 
 // Set is_going for user
-func SetIsGoing(u *User) error {
-	result := db.Model(&u).Select("is_going").Updates(&u)
+func SetIsGoing(c context.Context, u *User) error {
+	result := db.WithContext(c).Model(&u).Select("is_going").Updates(&u)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -69,8 +69,8 @@ func SetIsGoing(u *User) error {
 }
 
 // Set can_invite_others for user
-func SetCanInviteOthers(u *User) error {
-	result := db.Model(&u).Select("can_invite_others").Updates(&u)
+func SetCanInviteOthers(c context.Context, u *User) error {
+	result := db.WithContext(c).Model(&u).Select("can_invite_others").Updates(&u)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -87,8 +87,8 @@ func SetCanInviteOthers(u *User) error {
 // a given boolean field without overwriting unspecified fields.
 //
 // See: https://gorm.io/docs/update.html#Updates-multiple-columns
-func UpdateUser(u *User) error {
-	result := db.Model(&u).Clauses(clause.Returning{}).Updates(&u)
+func UpdateUser(c context.Context, u *User) error {
+	result := db.WithContext(c).Model(&u).Clauses(clause.Returning{}).Updates(&u)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -96,10 +96,10 @@ func UpdateUser(u *User) error {
 }
 
 // Maybe delete a user (if no errors) and returns the number of deleted records
-func DeleteUser(id uuid.UUID) (*int64, error) {
+func DeleteUser(c context.Context, id uuid.UUID) (*int64, error) {
 	// Since our models have DeletedAt set, this makes Gorm "soft delete" records on normal delete operations.
 	// We can add .Unscoped() prior to the .Delete() call if we want to permanently-delete them.
-	result := db.Delete(&User{}, id)
+	result := db.WithContext(c).Delete(&User{}, id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -107,9 +107,9 @@ func DeleteUser(id uuid.UUID) (*int64, error) {
 }
 
 // Find Users by the given ids; returns a User slice
-func FindUsers(ids []uuid.UUID) ([]User, error) {
+func FindUsers(c context.Context, ids []uuid.UUID) ([]User, error) {
 	var users []User
-	result := db.Find(&users, ids)
+	result := db.WithContext(c).Find(&users, ids)
 	if result.Error != nil {
 		return nil, result.Error
 	}

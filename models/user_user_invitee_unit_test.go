@@ -4,10 +4,12 @@
 package models
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"regexp"
 	"testing"
+	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/test"
 	"github.com/google/uuid"
@@ -29,6 +31,8 @@ func Test_UserUserInvitee_Unit(t *testing.T) {
 		Email:           "fake@email.place",
 	}
 	errMsg := "arbitrary database error"
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 	t.Run("CreateUserInvitee - database error returns error", func(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
@@ -51,7 +55,7 @@ func Test_UserUserInvitee_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		fakeId, _ := uuid.Parse(NilUuid)
-		err := CreateUserInvitee(fakeId, &u)
+		err := CreateUserInvitee(ctx, fakeId, &u)
 
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
@@ -64,7 +68,7 @@ func Test_UserUserInvitee_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		invitees, err := FindInviteesForUser(u.ID)
+		invitees, err := FindInviteesForUser(ctx, u.ID)
 
 		assert.Empty(invitees)
 		assert.NotNil(err)
@@ -80,7 +84,7 @@ func Test_UserUserInvitee_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		res, err := DeleteInvitee(u.ID)
+		res, err := DeleteInvitee(ctx, u.ID)
 
 		assert.Zero(res)
 		assert.NotNil(err)

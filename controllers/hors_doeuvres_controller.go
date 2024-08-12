@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/helper"
 	"github.com/ax-vasquez/wedding-site-api/models"
@@ -31,6 +33,8 @@ type V1_API_RESPONSE_HORS_DOEUVRES struct {
 //	@Router       /horsdoeuvres [get]
 //	@Router       /user/{user_id}/horsdoeuvres [get]
 func GetHorsDoeuvres(c *gin.Context) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 	idStr := c.Param("id")
 	var response V1_API_RESPONSE_HORS_DOEUVRES
 	var status int
@@ -38,7 +42,7 @@ func GetHorsDoeuvres(c *gin.Context) {
 	id, err := uuid.Parse(idStr)
 	if err == nil {
 		status = http.StatusOK
-		horsDoeuvres, err = models.FindHorsDoeuvresForUser(id)
+		horsDoeuvres, err = models.FindHorsDoeuvresForUser(ctx, id)
 		if err != nil {
 			status = http.StatusInternalServerError
 			log.Println(err.Error())
@@ -48,7 +52,7 @@ func GetHorsDoeuvres(c *gin.Context) {
 		}
 	} else {
 		var err error
-		horsDoeuvres, err = models.FindHorsDoeuvres()
+		horsDoeuvres, err = models.FindHorsDoeuvres(ctx)
 		if err != nil {
 			status = http.StatusInternalServerError
 			log.Println(err.Error())
@@ -77,6 +81,8 @@ func GetHorsDoeuvres(c *gin.Context) {
 //	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
 //	@Router       /horsdoeuvres [post]
 func CreateHorsDoeuvres(c *gin.Context) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 	response := V1_API_RESPONSE_HORS_DOEUVRES{}
 	var status int
 	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
@@ -91,7 +97,7 @@ func CreateHorsDoeuvres(c *gin.Context) {
 		response.Message = "\"option_name\" is required"
 	} else {
 		horsDoeuvres := []models.HorsDoeuvres{input}
-		err := models.CreateHorsDoeuvres(&horsDoeuvres)
+		err := models.CreateHorsDoeuvres(ctx, &horsDoeuvres)
 		if err != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"
@@ -118,6 +124,8 @@ func CreateHorsDoeuvres(c *gin.Context) {
 //	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
 //	@Router       /horsdoeuvres [delete]
 func DeleteHorsDoeuvres(c *gin.Context) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
 	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
@@ -131,7 +139,7 @@ func DeleteHorsDoeuvres(c *gin.Context) {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
 	} else {
-		result, err := models.DeleteHorsDoeuvres(id)
+		result, err := models.DeleteHorsDoeuvres(ctx, id)
 		if err != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"

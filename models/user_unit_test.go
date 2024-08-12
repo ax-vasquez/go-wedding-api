@@ -4,10 +4,12 @@
 package models
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"regexp"
 	"testing"
+	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/test"
 	"github.com/google/uuid"
@@ -29,6 +31,8 @@ func Test_UserModel_Unit(t *testing.T) {
 		Email:           "fake@email.place",
 	}
 	errMsg := "arbitrary database error"
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 	t.Run("CreateUsers - database error returns error", func(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
@@ -51,7 +55,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		users := &[]User{u}
-		err := CreateUsers(users)
+		err := CreateUsers(ctx, users)
 
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
@@ -67,7 +71,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		users, err := FindUsers([]uuid.UUID{someId})
+		users, err := FindUsers(ctx, []uuid.UUID{someId})
 
 		assert.Empty(users)
 		assert.NotNil(err)
@@ -85,7 +89,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		count, err := DeleteUser(someId)
+		count, err := DeleteUser(ctx, someId)
 
 		assert.Zero(count)
 		assert.NotNil(err)
@@ -108,7 +112,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		err := UpdateUser(&u)
+		err := UpdateUser(ctx, &u)
 
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
@@ -125,7 +129,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		err := SetAdminPrivileges(&u)
+		err := SetAdminPrivileges(ctx, &u)
 
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
@@ -142,7 +146,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		err := SetCanInviteOthers(&u)
+		err := SetCanInviteOthers(ctx, &u)
 
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
@@ -159,7 +163,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		err := SetIsGoing(&u)
+		err := SetIsGoing(ctx, &u)
 
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())

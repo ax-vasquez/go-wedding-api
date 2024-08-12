@@ -14,8 +14,9 @@ A list of useful references used while developing this API.
 
 * [`Makefile` documentation](https://www.gnu.org/software/make/manual/make.html)
 
-### Golang
+### Go
 
+* [Effective Go](https://go.dev/doc/effective_go)
 * [`defer`, `panic` and `recover`](https://go.dev/blog/defer-panic-and-recover)
 
 ### Gorm

@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/helper"
 	"github.com/ax-vasquez/wedding-site-api/models"
@@ -31,6 +33,8 @@ type V1_API_RESPONSE_ENTREE struct {
 //	@Router       	/entrees [get]
 //	@Router       	/user/{user_id}/entrees [get]
 func GetEntrees(c *gin.Context) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
 	response := V1_API_RESPONSE_ENTREE{}
@@ -44,7 +48,7 @@ func GetEntrees(c *gin.Context) {
 			response.Message = err.Error()
 		} else {
 			status = http.StatusOK
-			entrees, err = models.FindEntreesForUser(id)
+			entrees, err = models.FindEntreesForUser(ctx, id)
 			if err != nil {
 				status = http.StatusInternalServerError
 				log.Println(err.Error())
@@ -53,7 +57,7 @@ func GetEntrees(c *gin.Context) {
 		}
 		// If an error occurred, we ignore it and assume it's because there was no ID in the path - all results will be returned
 	} else {
-		entrees, err = models.FindEntrees()
+		entrees, err = models.FindEntrees(ctx)
 		if err != nil {
 			status = http.StatusInternalServerError
 			log.Println(err.Error())
@@ -80,6 +84,8 @@ func GetEntrees(c *gin.Context) {
 //	@Failure      500  {object}  V1_API_RESPONSE_ENTREE
 //	@Router       /entree [post]
 func CreateEntree(c *gin.Context) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 	response := V1_API_RESPONSE_ENTREE{}
 	var status int
 	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
@@ -94,7 +100,7 @@ func CreateEntree(c *gin.Context) {
 		response.Message = err.Error()
 	} else {
 		entrees := []models.Entree{input}
-		err := models.CreateEntrees(&entrees)
+		err := models.CreateEntrees(ctx, &entrees)
 		if err != nil {
 			status = http.StatusInternalServerError
 			log.Println(err.Error())
@@ -120,6 +126,8 @@ func CreateEntree(c *gin.Context) {
 //	@Failure      500  {object}  V1_API_RESPONSE_ENTREE
 //	@Router       /entree [delete]
 func DeleteEntree(c *gin.Context) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
 	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
@@ -129,7 +137,7 @@ func DeleteEntree(c *gin.Context) {
 		return
 	}
 	id, _ := uuid.Parse(c.Param("id"))
-	result, err := models.DeleteEntree(id)
+	result, err := models.DeleteEntree(ctx, id)
 	if err != nil {
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error"

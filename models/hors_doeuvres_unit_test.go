@@ -4,10 +4,12 @@
 package models
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"regexp"
 	"testing"
+	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/test"
 	"github.com/google/uuid"
@@ -19,19 +21,23 @@ func Test_HorsDoeuvresModel_Unit(t *testing.T) {
 	assert := assert.New(t)
 	errMsg := "arbitrary database error"
 	t.Run("FindHorsDoeuvres - database error returns error", func(t *testing.T) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
 		_, mock, _ := Setup()
 		mock.ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "hors_doeuvres" WHERE "hors_doeuvres"."deleted_at" IS NULL`)).WillReturnError(fmt.Errorf("arbitrary database error"))
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		horsDoeuvres, err := FindHorsDoeuvres()
+		horsDoeuvres, err := FindHorsDoeuvres(ctx)
 
 		assert.Empty(horsDoeuvres)
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
 	})
 	t.Run("FindHorsDoeuvresById - database error returns error", func(t *testing.T) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
 		someId := uuid.New()
 		_, mock, _ := Setup()
 		mock.ExpectQuery(
@@ -41,13 +47,15 @@ func Test_HorsDoeuvresModel_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		horsDoeuvres, err := FindHorsDoeuvresById(someId)
+		horsDoeuvres, err := FindHorsDoeuvresById(ctx, someId)
 
 		assert.Empty(horsDoeuvres)
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
 	})
 	t.Run("FindHorsDoeuvresForUser - database error returns error", func(t *testing.T) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
 		someId := uuid.New()
 		_, mock, _ := Setup()
 		mock.ExpectQuery(
@@ -57,13 +65,15 @@ func Test_HorsDoeuvresModel_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		horsDoeuvres, err := FindHorsDoeuvresForUser(someId)
+		horsDoeuvres, err := FindHorsDoeuvresForUser(ctx, someId)
 
 		assert.Empty(horsDoeuvres)
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
 	})
 	t.Run("CreateHorsDoeuvres - database error returns error", func(t *testing.T) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
 		opt := HorsDoeuvres{
 			OptionName: "Banana Soup",
 		}
@@ -80,12 +90,14 @@ func Test_HorsDoeuvresModel_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		horsDoeuvres := []HorsDoeuvres{opt}
-		err := CreateHorsDoeuvres(&horsDoeuvres)
+		err := CreateHorsDoeuvres(ctx, &horsDoeuvres)
 
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
 	})
 	t.Run("DeleteHorsDoeuvres - database error returns error", func(t *testing.T) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
 		someId := uuid.New()
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
@@ -97,7 +109,7 @@ func Test_HorsDoeuvresModel_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		_, err := DeleteHorsDoeuvres(someId)
+		_, err := DeleteHorsDoeuvres(ctx, someId)
 
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())

@@ -1,12 +1,14 @@
 package models
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -24,7 +26,7 @@ var FirstUserInviteeIdStr = "007170d7-5633-4a44-9326-ddf9dce5a6ef"
 // Convenience variable to keep easy reference to the UUID of the entree in the test data set ("Caprese pasta")
 var FirstEntreeIdStr = "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3"
 
-func loadTestUsers() error {
+func loadTestUsers(c context.Context) error {
 	users := []User{}
 	userInvitees := []User{}
 	userDataFile, err := os.ReadFile("../test-fixtures/users.json")
@@ -43,11 +45,11 @@ func loadTestUsers() error {
 	if err != nil {
 		return errors.New("There was a problem unmarshaling the JSON from file ./test-fixtures/invitees.json: " + err.Error())
 	}
-	err = CreateUsers(&users)
+	err = CreateUsers(c, &users)
 	if err != nil {
 		return errors.New("There was a problem creating test user records: " + err.Error())
 	}
-	err = CreateUsers(&userInvitees)
+	err = CreateUsers(c, &userInvitees)
 	if err != nil {
 		return errors.New("There was a problem creating test user invitee records: " + err.Error())
 	}
@@ -71,7 +73,7 @@ func loadTestUserInviteeRelationships() error {
 	return nil
 }
 
-func loadTestEntrees() error {
+func loadTestEntrees(c context.Context) error {
 	records := []Entree{}
 	recordsFile, err := os.ReadFile("../test-fixtures/entrees.json")
 	if err != nil {
@@ -81,14 +83,14 @@ func loadTestEntrees() error {
 	if err != nil {
 		return errors.New("There was a problem unmarshaling the JSON from file ./test-fixtures/entrees.json: " + err.Error())
 	}
-	err = CreateEntrees(&records)
+	err = CreateEntrees(c, &records)
 	if err != nil {
 		return errors.New("There was a problem creating the test entree records: " + err.Error())
 	}
 	return nil
 }
 
-func loadTestHorsDoeuvres() error {
+func loadTestHorsDoeuvres(c context.Context) error {
 	records := []HorsDoeuvres{}
 	recordsFile, err := os.ReadFile("../test-fixtures/hors_doeuvres.json")
 	if err != nil {
@@ -98,7 +100,7 @@ func loadTestHorsDoeuvres() error {
 	if err != nil {
 		return errors.New("There was a problem unmarshaling the JSON from file ./test-fixtures/hors_doeuvres.json: " + err.Error())
 	}
-	err = CreateHorsDoeuvres(&records)
+	err = CreateHorsDoeuvres(c, &records)
 	if err != nil {
 		return errors.New("There was a problem creating the hors doeuvres records: " + err.Error())
 	}
@@ -127,11 +129,13 @@ func checkTestEnv() error {
 
 // Seeds test_db with test data defined in the /test-fixtures directory
 func SeedTestData() {
-	err := loadTestEntrees()
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+	err := loadTestEntrees(ctx)
 	if err != nil {
 		log.Println(err.Error())
 	}
-	err = loadTestHorsDoeuvres()
+	err = loadTestHorsDoeuvres(ctx)
 	if err != nil {
 		log.Println(err.Error())
 	}
@@ -139,7 +143,7 @@ func SeedTestData() {
 	if err != nil {
 		log.Println(err.Error())
 	}
-	err = loadTestUsers()
+	err = loadTestUsers(ctx)
 	if err != nil {
 		log.Println(err.Error())
 	}
