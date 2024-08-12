@@ -42,11 +42,12 @@ var validate = validator.New()
 // [jwt-in-gin-doc]: https://www.golang.company/blog/jwt-authentication-in-golang-using-gin-web-framework
 func Signup(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 	var response V1_API_RESPONSE_USERS
 	var status int
 
 	var user models.User
-	defer cancel()
+
 	if err := c.BindJSON(&user); err != nil {
 		status = http.StatusBadRequest
 		response.Status = status
@@ -56,7 +57,6 @@ func Signup(c *gin.Context) {
 	}
 
 	validationErr := validate.Struct(user)
-	defer cancel()
 	if validationErr != nil {
 		status = http.StatusBadRequest
 		response.Status = status
@@ -66,7 +66,6 @@ func Signup(c *gin.Context) {
 	}
 
 	count, err := models.CountUsersByEmail(ctx, &user)
-	defer cancel()
 	if err != nil {
 		log.Panic(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "error detected while fetching user by email"})
@@ -91,7 +90,6 @@ func Signup(c *gin.Context) {
 	}
 	response.Data.Users = userSlice
 
-	defer cancel()
 	c.JSON(http.StatusOK, response)
 }
 
