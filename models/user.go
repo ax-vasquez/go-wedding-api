@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -43,9 +44,9 @@ func CreateUsers(users *[]User) error {
 //
 // This should only return 1 or 0 and is used to check if a user already
 // exists with the given email address.
-func CountUsersByEmail(user *User) (int64, error) {
+func CountUsersByEmail(c context.Context, user *User) (int64, error) {
 	var count int64
-	result := db.Distinct("email").Count(&count).Find(&user)
+	result := db.WithContext(c).Distinct("email").Count(&count).Find(&user)
 	return result.RowsAffected, result.Error
 }
 

@@ -42,19 +42,17 @@ var validate = validator.New()
 // [jwt-in-gin-doc]: https://www.golang.company/blog/jwt-authentication-in-golang-using-gin-web-framework
 func Signup() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO: First arg is the context (ctx) - see if this is needed (reference article uses ctx in calls to MongoDB, which we aren't using)
-		var _, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 		var response V1_API_RESPONSE_USERS
 		var status int
 
 		var user models.User
-		defer cancel()
+		// defer cancel()
 		if err := c.BindJSON(&user); err != nil {
 			status = http.StatusBadRequest
 			response.Status = status
 			response.Message = err.Error()
 			c.JSON(status, response)
-
 			return
 		}
 
@@ -68,7 +66,7 @@ func Signup() gin.HandlerFunc {
 			return
 		}
 
-		count, err := models.CountUsersByEmail(&user)
+		count, err := models.CountUsersByEmail(ctx, &user)
 		defer cancel()
 		if err != nil {
 			log.Panic(err)
