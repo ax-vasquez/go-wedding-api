@@ -71,6 +71,7 @@ A list of useful references used while developing this API.
 * [Mock functions in Go](https://stackoverflow.com/questions/19167970/mock-functions-in-go)
 * [Golang defaults to running tests concurrently in separate Goroutines](https://stackoverflow.com/questions/24375966/does-go-test-run-unit-tests-concurrently)
 * [If you can decode JWT, how are they secure?](https://stackoverflow.com/questions/27301557/if-you-can-decode-jwt-how-are-they-secure)
+* [Use of defer in go](https://stackoverflow.com/questions/47607955/use-of-defer-in-go)
 
 ### YouTube
 
