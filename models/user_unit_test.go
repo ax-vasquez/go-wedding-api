@@ -36,14 +36,12 @@ func Test_UserModel_Unit(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","role","is_admin","is_going","can_invite_others","first_name","last_name","email","password_hash","token","refresh_token","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16) RETURNING "id"`)).WithArgs(
+			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","role","is_going","first_name","last_name","email","password_hash","token","refresh_token","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id"`)).WithArgs(
 			test.AnyTime{},
 			test.AnyTime{},
 			nil,
 			u.Role,
-			true,
 			u.IsGoing,
-			true,
 			u.FirstName,
 			u.LastName,
 			u.Email,
@@ -102,12 +100,10 @@ func Test_UserModel_Unit(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"role"=$2,"is_admin"=$3,"is_going"=$4,"can_invite_others"=$5,"first_name"=$6,"last_name"=$7,"email"=$8 WHERE "users"."deleted_at" IS NULL AND "id" = $9 RETURNING *`)).WithArgs(
+			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"role"=$2,"is_going"=$3,"first_name"=$4,"last_name"=$5,"email"=$6 WHERE "users"."deleted_at" IS NULL AND "id" = $7 RETURNING *`)).WithArgs(
 			test.AnyTime{},
 			u.Role,
-			true,
 			u.IsGoing,
-			true,
 			u.FirstName,
 			u.LastName,
 			u.Email,
