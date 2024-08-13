@@ -2,7 +2,6 @@ package models
 
 import (
 	"context"
-	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm/clause"
@@ -11,24 +10,28 @@ import (
 // User table
 type User struct {
 	BaseModel
-	// We override Gorm's CreatedAt field so we can set the gorm:"<-:create" directive,
-	// which prevents this field from being altered once the record is created
-	CreatedAt time.Time `gorm:"<-:create"`
-	// GUEST, INVITEE or ADMIN
-	Role                    string `json:"role" gorm:"default:GUEST"`
-	IsAdmin                 bool   `json:"is_admin"`
-	IsGoing                 bool   `json:"is_going"`
-	CanInviteOthers         bool   `json:"can_invite_others"`
-	FirstName               string `json:"first_name" binding:"required"`
-	LastName                string `json:"last_name" binding:"required"`
-	Email                   string `json:"email" gorm:"uniqueIndex" binding:"required"`
-	PasswordHash            *string
-	Token                   *string       `json:"token"`
-	RefreshToken            *string       `json:"refresh_token"`
+	// The user's role, which can be "GUEST", "INVITEE" or "ADMIN". Defaults to "GUEST".
+	Role string `json:"role" gorm:"default:GUEST"`
+	// Whether or not the user is attending.
+	IsGoing bool `json:"is_going"`
+	// The user's first name.
+	FirstName string `json:"first_name" binding:"required"`
+	// The user's last name.
+	LastName string `json:"last_name" binding:"required"`
+	// The user's email (must be unique); this field is an index.
+	Email string `json:"email" gorm:"uniqueIndex" binding:"required"`
+	// The hash of the user's password.
+	PasswordHash *string
+	// The user's auth token.
+	Token *string `json:"token"`
+	// The user's auth refresh token.
+	RefreshToken *string `json:"refresh_token"`
+	// The ID of the hors doeuvres the user has selected; is null until the user makes a selection.
 	HorsDoeuvresSelectionId *uuid.UUID    `json:"hors_doeuvres_selection_id"`
 	HorsDoeuvresSelection   *HorsDoeuvres `gorm:"foreignKey:HorsDoeuvresSelectionId"`
-	EntreeSelectionId       *uuid.UUID    `json:"entree_selection_id"`
-	EntreeSelection         *Entree       `gorm:"foreignKey:EntreeSelectionId"`
+	// The ID of the entree the user has selected; is null until the user makes a selection.
+	EntreeSelectionId *uuid.UUID `json:"entree_selection_id"`
+	EntreeSelection   *Entree    `gorm:"foreignKey:EntreeSelectionId"`
 }
 
 // Maybe create users with given data (if no errors) and returns the number of inserted records
@@ -50,27 +53,9 @@ func CountUsersByEmail(c context.Context, user *User) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-// Set is_admin for user
-func SetAdminPrivileges(c context.Context, u *User) error {
-	result := db.WithContext(c).Model(&u).Select("is_admin").Updates(&u)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
-}
-
 // Set is_going for user
 func SetIsGoing(c context.Context, u *User) error {
 	result := db.WithContext(c).Model(&u).Select("is_going").Updates(&u)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
-}
-
-// Set can_invite_others for user
-func SetCanInviteOthers(c context.Context, u *User) error {
-	result := db.WithContext(c).Model(&u).Select("can_invite_others").Updates(&u)
 	if result.Error != nil {
 		return result.Error
 	}

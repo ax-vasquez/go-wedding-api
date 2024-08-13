@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -145,11 +146,13 @@ func GetUsers(c *gin.Context) {
 //	@Failure      500  {object}  V1_API_RESPONSE_USERS
 //	@Router       /user [post]
 func CreateUser(c *gin.Context) {
-	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	var ctx, cancel = context.WithTimeout(c, 100*time.Second)
+	fmt.Println("GIN CTX: ", c)
+	fmt.Println("REQ CTX: ", c.Request.Context())
 	defer cancel()
 	response := V1_API_RESPONSE_USERS{}
 	var status int
-	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
+	if err := helper.CheckUserType(c.Request.Context(), "ADMIN"); err != nil {
 		status = http.StatusUnauthorized
 		response.Status = status
 		c.JSON(status, response)
@@ -202,9 +205,7 @@ func UpdateUser(c *gin.Context) {
 			BaseModel: models.BaseModel{
 				ID: input.ID,
 			},
-			IsAdmin:                 input.IsAdmin,
 			IsGoing:                 input.IsGoing,
-			CanInviteOthers:         input.CanInviteOthers,
 			FirstName:               input.FirstName,
 			LastName:                input.LastName,
 			Email:                   input.Email,
@@ -212,22 +213,14 @@ func UpdateUser(c *gin.Context) {
 			EntreeSelectionId:       input.EntreeSelectionId,
 		}
 		updateErr := models.UpdateUser(ctx, u)
-		setAdminErr := models.SetAdminPrivileges(ctx, u)
-		setCanInviteErr := models.SetCanInviteOthers(ctx, u)
 		setIsGoingErr := models.SetIsGoing(ctx, u)
-		if updateErr != nil || setAdminErr != nil || setCanInviteErr != nil || setIsGoingErr != nil {
+		if updateErr != nil || setIsGoingErr != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"
 			response.Status = status
 			c.JSON(status, response)
 			if updateErr != nil {
 				log.Println("Error updating user: ", updateErr.Error())
-			}
-			if setAdminErr != nil {
-				log.Println("Error updating user: ", setAdminErr.Error())
-			}
-			if setCanInviteErr != nil {
-				log.Println("Error updating user: ", setCanInviteErr.Error())
 			}
 			if setIsGoingErr != nil {
 				log.Println("Error updating user: ", setIsGoingErr.Error())

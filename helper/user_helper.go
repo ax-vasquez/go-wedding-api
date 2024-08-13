@@ -2,15 +2,19 @@ package helper
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/net/context"
 )
 
 // Check if the user type in the context matches the role passed to it as an argument
 //
 // If the userType does not match the given role, an error is returned.
-func CheckUserType(c *gin.Context, role string) (err error) {
-	userType := c.GetString("user_role")
+func CheckUserType(c context.Context, role string) (err error) {
+	fmt.Println("ARASDF: ", c)
+	userType := c.Value("user_role")
+	fmt.Println("ROLE: ", userType)
 	err = nil
 
 	if userType != role {

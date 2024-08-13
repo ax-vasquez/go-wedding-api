@@ -23,13 +23,11 @@ func Test_UserModel_Unit(t *testing.T) {
 		BaseModel: BaseModel{
 			ID: uuid.New(),
 		},
-		Role:            "GUEST",
-		IsAdmin:         true,
-		CanInviteOthers: true,
-		IsGoing:         true,
-		FirstName:       "Booples",
-		LastName:        "McFadden",
-		Email:           "fake@email.place",
+		Role:      "GUEST",
+		IsGoing:   true,
+		FirstName: "Booples",
+		LastName:  "McFadden",
+		Email:     "fake@email.place",
 	}
 	errMsg := "arbitrary database error"
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
@@ -43,9 +41,9 @@ func Test_UserModel_Unit(t *testing.T) {
 			test.AnyTime{},
 			nil,
 			u.Role,
-			u.IsAdmin,
+			true,
 			u.IsGoing,
-			u.CanInviteOthers,
+			true,
 			u.FirstName,
 			u.LastName,
 			u.Email,
@@ -107,9 +105,9 @@ func Test_UserModel_Unit(t *testing.T) {
 			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"role"=$2,"is_admin"=$3,"is_going"=$4,"can_invite_others"=$5,"first_name"=$6,"last_name"=$7,"email"=$8 WHERE "users"."deleted_at" IS NULL AND "id" = $9 RETURNING *`)).WithArgs(
 			test.AnyTime{},
 			u.Role,
-			u.IsAdmin,
+			true,
 			u.IsGoing,
-			u.CanInviteOthers,
+			true,
 			u.FirstName,
 			u.LastName,
 			u.Email,
@@ -119,40 +117,6 @@ func Test_UserModel_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		err := UpdateUser(ctx, &u)
-
-		assert.NotNil(err)
-		assert.Equal(errMsg, err.Error())
-	})
-	t.Run("SetAdminPrivileges - database error returns error", func(t *testing.T) {
-		_, mock, _ := Setup()
-		mock.ExpectBegin()
-		mock.ExpectExec(
-			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_admin"=$2 WHERE "users"."deleted_at" IS NULL AND "id" = $3`)).WithArgs(
-			test.AnyTime{},
-			u.IsAdmin,
-			u.ID,
-		).WillReturnError(fmt.Errorf(errMsg))
-		mock.ExpectRollback()
-		mock.ExpectCommit()
-
-		err := SetAdminPrivileges(ctx, &u)
-
-		assert.NotNil(err)
-		assert.Equal(errMsg, err.Error())
-	})
-	t.Run("SetCanInviteOthers - database error returns error", func(t *testing.T) {
-		_, mock, _ := Setup()
-		mock.ExpectBegin()
-		mock.ExpectExec(
-			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"can_invite_others"=$2 WHERE "users"."deleted_at" IS NULL AND "id" = $3`)).WithArgs(
-			test.AnyTime{},
-			u.CanInviteOthers,
-			u.ID,
-		).WillReturnError(fmt.Errorf(errMsg))
-		mock.ExpectRollback()
-		mock.ExpectCommit()
-
-		err := SetCanInviteOthers(ctx, &u)
 
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
