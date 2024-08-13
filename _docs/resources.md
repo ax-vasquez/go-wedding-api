@@ -40,6 +40,8 @@ A list of useful references used while developing this API.
 * [When to use pointers in Go](https://medium.com/@meeusdylan/when-to-use-pointers-in-go-44c15fe04eac)
 * [Go in production **(Soundcloud's standard practices)**](http://peter.bourgon.org/go-in-production)
 * [Go thread management](https://blog.stackademic.com/deep-dive-into-go-runtime-advanced-thread-management-explained-fd5c97b4daa4)
+* [JWT authentication in Golang](https://www.golang.company/blog/jwt-authentication-in-golang-using-gin-web-framework)
+    * _WARNING: The code samples here appear to be a bit odd - for example, they place many calls to `cancel()` in the `Signup()` method, which doesn't seem to be necessary since you can place the `cancel()` call immediately after the declaration of the context. Another example of an odd code sample is how this resource demonstrates accessing values from the context; they read from the `gin.Context` struct, but that's not the same thing as the request context. Since I am still relatively new to Go, I am not assuming this is incorrect, but done for some reason I am not yet aware of. With that being said, I've adapted code to follow the patterns that seem most appropriate for this project's purpose. I may make further changes later and update this comment._
 
 ### GitHub
 
