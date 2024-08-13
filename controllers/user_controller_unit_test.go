@@ -15,6 +15,7 @@ import (
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/ax-vasquez/wedding-site-api/test"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -29,12 +30,11 @@ func Test_UserController_Unit(t *testing.T) {
 		BaseModel: models.BaseModel{
 			ID: uuid.New(),
 		},
-		IsAdmin:         true,
-		CanInviteOthers: true,
-		IsGoing:         true,
-		FirstName:       "Booples",
-		LastName:        "McFadden",
-		Email:           "fake@email.place",
+		Role:      "GUEST",
+		IsGoing:   true,
+		FirstName: "Booples",
+		LastName:  "McFadden",
+		Email:     "fake@email.place",
 	}
 	t.Run("GET /api/v1/users - internal server error", func(t *testing.T) {
 		_, mock, _ := models.Setup()
@@ -60,16 +60,18 @@ func Test_UserController_Unit(t *testing.T) {
 		_, mock, _ := models.Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","is_admin","is_going","can_invite_others","first_name","last_name","email","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING "id`)).WithArgs(
+			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","role","is_going","first_name","last_name","email","password_hash","token","refresh_token","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id`)).WithArgs(
 			test.AnyTime{},
 			test.AnyTime{},
 			nil,
-			u.IsAdmin,
+			u.Role,
 			u.IsGoing,
-			u.CanInviteOthers,
 			u.FirstName,
 			u.LastName,
 			u.Email,
+			u.PasswordHash,
+			u.Token,
+			u.RefreshToken,
 			u.HorsDoeuvresSelectionId,
 			u.EntreeSelectionId,
 			u.ID,
@@ -79,7 +81,9 @@ func Test_UserController_Unit(t *testing.T) {
 
 		w := httptest.NewRecorder()
 		userJson, _ := json.Marshal(u)
-		req, err := http.NewRequest("POST", "/api/v1/user", strings.NewReader(string(userJson)))
+		adminCtx := gin.CreateTestContextOnly(w, router)
+		adminCtx.Set("user_role", "ADMIN")
+		req, err := http.NewRequestWithContext(adminCtx, "POST", "/api/v1/user", strings.NewReader(string(userJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
@@ -92,11 +96,9 @@ func Test_UserController_Unit(t *testing.T) {
 		_, mock, _ := models.Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_admin"=$2,"is_going"=$3,"can_invite_others"=$4,"first_name"=$5,"last_name"=$6,"email"=$7 WHERE "users"."deleted_at" IS NULL AND "id" = $8 RETURNING *`)).WithArgs(
+			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_going"=$2,"first_name"=$3,"last_name"=$4,"email"=$5 WHERE "users"."deleted_at" IS NULL AND "id" = $6 RETURNING *`)).WithArgs(
 			test.AnyTime{},
-			u.IsAdmin,
 			u.IsGoing,
-			u.CanInviteOthers,
 			u.FirstName,
 			u.LastName,
 			u.Email,
@@ -129,9 +131,11 @@ func Test_UserController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
-		// Route needs to be generated since the ID of the record to delete is embedded within the route itself
+		adminCtx := gin.CreateTestContextOnly(w, router)
+		adminCtx.Set("user_role", "ADMIN")
+
 		routePath := fmt.Sprintf("/api/v1/user/%s", someId)
-		req, err := http.NewRequest("DELETE", routePath, nil)
+		req, err := http.NewRequestWithContext(adminCtx, "DELETE", routePath, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)

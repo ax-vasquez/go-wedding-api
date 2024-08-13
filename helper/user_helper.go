@@ -2,9 +2,7 @@ package helper
 
 import (
 	"errors"
-	"fmt"
 
-	"github.com/gin-gonic/gin"
 	"golang.org/x/net/context"
 )
 
@@ -12,9 +10,7 @@ import (
 //
 // If the userType does not match the given role, an error is returned.
 func CheckUserType(c context.Context, role string) (err error) {
-	fmt.Println("ARASDF: ", c)
 	userType := c.Value("user_role")
-	fmt.Println("ROLE: ", userType)
 	err = nil
 
 	if userType != role {
@@ -29,17 +25,19 @@ func CheckUserType(c context.Context, role string) (err error) {
 // If either contidion is unmet, an error is returned. After checking
 // if the userType is "USER" and if the uid matches userId, [CheckUserType]
 // is called.
-func MatchUserTypeToUid(c *gin.Context, userId string) (err error) {
-	userType := c.GetString("user_role")
-	uid := c.GetString("uid")
+func MatchUserTypeToUid(c context.Context, userId string) (err error) {
+	uid := c.Value("uid")
+	userType := c.Value("user_role")
 	err = nil
 
-	if userType == "USER" && uid != userId {
+	userTypeStr, ok := userType.(string)
+
+	if !ok || uid != userId {
 		err = errors.New("you are not authorised to access this resource")
 		return err
 	}
 
-	err = CheckUserType(c, userType)
+	err = CheckUserType(c, userTypeStr)
 	return err
 }
 

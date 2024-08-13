@@ -15,6 +15,7 @@ import (
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/ax-vasquez/wedding-site-api/test"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -80,8 +81,10 @@ func Test_HorsDoeuvresController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
+		adminCtx := gin.CreateTestContextOnly(w, router)
+		adminCtx.Set("user_role", "ADMIN")
 		horsDoeuvresJson, _ := json.Marshal(testHorsDoeuvres)
-		req, err := http.NewRequest("POST", "/api/v1/horsdoeuvres", strings.NewReader(string(horsDoeuvresJson)))
+		req, err := http.NewRequestWithContext(adminCtx, "POST", "/api/v1/horsdoeuvres", strings.NewReader(string(horsDoeuvresJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
@@ -103,9 +106,11 @@ func Test_HorsDoeuvresController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
+		adminCtx := gin.CreateTestContextOnly(w, router)
+		adminCtx.Set("user_role", "ADMIN")
 		// Route needs to be generated since the ID of the record to delete is embedded within the route itself
 		routePath := fmt.Sprintf("/api/v1/horsdoeuvres/%s", someId)
-		req, err := http.NewRequest("DELETE", routePath, nil)
+		req, err := http.NewRequestWithContext(adminCtx, "DELETE", routePath, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)

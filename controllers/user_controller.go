@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -147,8 +146,6 @@ func GetUsers(c *gin.Context) {
 //	@Router       /user [post]
 func CreateUser(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(c, 100*time.Second)
-	fmt.Println("GIN CTX: ", c)
-	fmt.Println("REQ CTX: ", c.Request.Context())
 	defer cancel()
 	response := V1_API_RESPONSE_USERS{}
 	var status int
@@ -251,7 +248,7 @@ func DeleteUser(c *gin.Context) {
 	defer cancel()
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
-	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
+	if err := helper.CheckUserType(c.Request.Context(), "ADMIN"); err != nil {
 		status = http.StatusUnauthorized
 		response.Status = status
 		c.JSON(status, response)

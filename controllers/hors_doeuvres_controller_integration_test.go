@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -47,7 +48,9 @@ func Test_HorsDoeuvresController_Integration(t *testing.T) {
 			OptionName: "Bacon Bits",
 		}
 		horsDoeuvresJson, _ := json.Marshal(testHorsDoeuvres)
-		req, err := http.NewRequest("POST", "/api/v1/horsdoeuvres", strings.NewReader(string(horsDoeuvresJson)))
+		adminCtx := gin.CreateTestContextOnly(w, router)
+		adminCtx.Set("user_role", "ADMIN")
+		req, err := http.NewRequestWithContext(adminCtx, "POST", "/api/v1/horsdoeuvres", strings.NewReader(string(horsDoeuvresJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		responseObj := V1_API_RESPONSE_HORS_DOEUVRES{}
@@ -59,9 +62,10 @@ func Test_HorsDoeuvresController_Integration(t *testing.T) {
 		assert.Equal("Bacon Bits", responseObj.Data.HorsDoeuvres[0].OptionName)
 		t.Run("DELETE /api/v1/horsdoeuvres/:id", func(t *testing.T) {
 			w := httptest.NewRecorder()
-			// Route needs to be generated since the ID of the record to delete is embedded within the route itself
+			adminCtx := gin.CreateTestContextOnly(w, router)
+			adminCtx.Set("user_role", "ADMIN")
 			routePath := fmt.Sprintf("/api/v1/horsdoeuvres/%s", responseObj.Data.HorsDoeuvres[0].ID)
-			req, err := http.NewRequest("DELETE", routePath, nil)
+			req, err := http.NewRequestWithContext(adminCtx, "DELETE", routePath, nil)
 			router.ServeHTTP(w, req)
 			assert.Nil(err)
 			assert.Equal(http.StatusAccepted, w.Code)
@@ -78,7 +82,9 @@ func Test_HorsDoeuvresController_Integration(t *testing.T) {
 			FirstName: "Not an hors doeuvres",
 		}
 		testInviteeJson, _ := json.Marshal(badHorsDoeuvresData)
-		req, err := http.NewRequest("POST", "/api/v1/horsdoeuvres", strings.NewReader(string(testInviteeJson)))
+		adminCtx := gin.CreateTestContextOnly(w, router)
+		adminCtx.Set("user_role", "ADMIN")
+		req, err := http.NewRequestWithContext(adminCtx, "POST", "/api/v1/horsdoeuvres", strings.NewReader(string(testInviteeJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, w.Code)
@@ -89,9 +95,10 @@ func Test_HorsDoeuvresController_Integration(t *testing.T) {
 	})
 	t.Run("DELETE /api/v1/horsdoeuvres/:id - bad ID", func(t *testing.T) {
 		w := httptest.NewRecorder()
-		// Route needs to be generated since the ID of the record to delete is embedded within the route itself
+		adminCtx := gin.CreateTestContextOnly(w, router)
+		adminCtx.Set("user_role", "ADMIN")
 		routePath := fmt.Sprintf("/api/v1/horsdoeuvres/%s", "asdf")
-		req, err := http.NewRequest("DELETE", routePath, nil)
+		req, err := http.NewRequestWithContext(adminCtx, "DELETE", routePath, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, w.Code)
