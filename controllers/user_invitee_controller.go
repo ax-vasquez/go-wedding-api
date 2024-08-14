@@ -98,23 +98,22 @@ func GetInviteesForUser(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// DeleteInviteeForUser deletes an invitee for the given user
+// DeleteInvitee deletes an invitee
 //
-//	@Summary      deletes an invitee for the given user
-//	@Description  Deletes an invitee for the given user
+//	@Summary      deletes an invitee
+//	@Description  Deletes an invitee
 //	@Tags         user invitee
 //	@Produce      json
 //	@Success      200  {object}  V1_API_RESPONSE_USER_INVITEES
 //	@Failure      500  {object}  V1_API_RESPONSE_USER_INVITEES
-//	@Param 		  inviter_id  path string true "Invitee search by inviting user ID" Format(uuid)
-//	@Param 		  invitee_id  path string true "Invitee search by inviting user ID" Format(uuid)
-//	@Router       /user/{inviter_id}/invitee/{invitee_id} [delete]
-func DeleteInviteeForUser(c *gin.Context) {
+//	@Param 		  id  path string true "User ID of the invitee to delete" Format(uuid)
+//	@Router       /invitee/{id} [delete]
+func DeleteInvitee(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
-	invitee_id, err := uuid.Parse(c.Param("invitee_id"))
+	invitee_id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		status = http.StatusBadRequest
 		response.Message = err.Error()

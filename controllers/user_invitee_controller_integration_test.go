@@ -63,7 +63,7 @@ func Test_UserInviteeController_Integration(t *testing.T) {
 		assert.NotEmpty(responseObj.Data.Invitees[0].ID)
 		assert.NotEqual(models.NilUuid, responseObj.Data.Invitees[0].ID)
 		assert.Equal("Finn", responseObj.Data.Invitees[0].FirstName)
-		t.Run("DELETE /api/v1/invitee/:invitee_id", func(t *testing.T) {
+		t.Run("DELETE /api/v1/invitee/:id", func(t *testing.T) {
 			w := httptest.NewRecorder()
 			routePath := fmt.Sprintf("/api/v1/invitee/%s", responseObj.Data.Invitees[0].ID)
 			req, err := http.NewRequest("DELETE", routePath, strings.NewReader(string(testInviteeJson)))

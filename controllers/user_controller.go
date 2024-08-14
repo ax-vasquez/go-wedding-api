@@ -80,7 +80,9 @@ func Signup(c *gin.Context) {
 	user.PasswordHash = password
 
 	if count > 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{"Error": "The mentioned E-Mail or Phone Number already exists"})
+		response.Status = http.StatusMethodNotAllowed
+		response.Message = "User already exists"
+		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
 
@@ -109,7 +111,8 @@ func Login(c *gin.Context) {
 	var dbUser *models.User
 
 	if err := c.BindJSON(&loginUser); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		response.Message = err.Error()
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 

@@ -24,6 +24,7 @@ func Test_UserController_Integration(t *testing.T) {
 		w := httptest.NewRecorder()
 		routePath := fmt.Sprintf("/api/v1/users?ids=%s", models.FirstUserIdStr)
 		req, err := http.NewRequest("GET", routePath, nil)
+		req.Header.Set("token", "BOOP")
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		responseObj := V1_API_RESPONSE_USERS{}

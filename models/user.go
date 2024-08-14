@@ -46,8 +46,8 @@ func CreateUsers(c context.Context, users *[]User) error {
 // exists with the given email address.
 func CountUsersByEmail(c context.Context, user *User) (int64, error) {
 	var count int64
-	result := db.WithContext(c).Distinct("email").Count(&count).Find(&user)
-	return result.RowsAffected, result.Error
+	result := db.Model(&user).WithContext(c).Distinct("email").Count(&count)
+	return count, result.Error
 }
 
 // Set is_going for user

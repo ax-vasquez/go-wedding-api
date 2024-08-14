@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Authenticate() gin.HandlerFunc {
+func AuthenticateV1() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		clientToken := c.Request.Header.Get("token")

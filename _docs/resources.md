@@ -53,6 +53,7 @@ A list of useful references used while developing this API.
 * [`gin-gonic/gin`](https://github.com/gin-gonic/gin) - _Gin - HTTP web framework written in Go_
 * [`godotenv`](https://github.com/joho/godotenv) - _Go port of Ruby's dotenv library, which loads variables from a `.env` file_
 * [`gin-swagger`](https://github.com/swaggo/gin-swagger) - _gin middleware to automatically generate RESTful API documentation with Swagger 2.0_
+* [`go-oauth2/oauth2`](https://github.com/go-oauth2/oauth2) - _Go OAuth2 server_
 
 #### Issues
 * [How to close connection in V2 (`gorm`)](https://github.com/go-gorm/gorm/issues/3145)
@@ -75,6 +76,7 @@ A list of useful references used while developing this API.
 * [Golang defaults to running tests concurrently in separate Goroutines](https://stackoverflow.com/questions/24375966/does-go-test-run-unit-tests-concurrently)
 * [If you can decode JWT, how are they secure?](https://stackoverflow.com/questions/27301557/if-you-can-decode-jwt-how-are-they-secure)
 * [Use of defer in go](https://stackoverflow.com/questions/47607955/use-of-defer-in-go)
+* [What if JWT is stolen?](https://stackoverflow.com/questions/34259248/what-if-jwt-is-stolen)
 
 ### YouTube
 
