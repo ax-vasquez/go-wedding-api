@@ -76,8 +76,8 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	password := helper.HashPassword(*user.PasswordHash)
-	user.PasswordHash = &password
+	password := helper.HashPassword(user.PasswordHash)
+	user.PasswordHash = password
 
 	if count > 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{"Error": "The mentioned E-Mail or Phone Number already exists"})
@@ -85,8 +85,8 @@ func Signup(c *gin.Context) {
 	}
 
 	token, refreshToken, _ := helper.GenerateAllTokens(user.Email, user.FirstName, user.LastName, user.Role, user.ID.String())
-	user.Token = &token
-	user.RefreshToken = &refreshToken
+	user.Token = token
+	user.RefreshToken = refreshToken
 	userSlice := []models.User{user}
 	insertErr := models.CreateUsers(ctx, &userSlice)
 	if insertErr != nil {
@@ -97,6 +97,47 @@ func Signup(c *gin.Context) {
 	response.Data.Users = userSlice
 
 	c.JSON(http.StatusOK, response)
+}
+
+func Login(c *gin.Context) {
+	var response V1_API_RESPONSE_USERS
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+	// The user details obtained from the request context
+	var loginUser *models.User
+	// The user details stored in the DB for the same user
+	var dbUser *models.User
+
+	if err := c.BindJSON(&loginUser); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := models.FindUser(ctx, dbUser)
+
+	if err != nil {
+		response.Message = "Internal server error"
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+
+	passwordIsValid, msg := helper.VerifyPassword(loginUser.PasswordHash, dbUser.PasswordHash)
+	if !passwordIsValid {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+		return
+	}
+
+	token, refreshToken, _ := helper.GenerateAllTokens(dbUser.Email, dbUser.FirstName, dbUser.LastName, dbUser.Role, dbUser.ID.String())
+	helper.UpdateAllTokens(token, refreshToken, dbUser.ID.String())
+
+	err = models.FindUser(ctx, dbUser)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, dbUser)
 }
 
 // GetUsers gets user(s) by ID(s)
