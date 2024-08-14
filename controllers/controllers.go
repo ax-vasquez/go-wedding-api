@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -124,7 +123,6 @@ func SetupRoutes() error {
 	r.GET("/authorize", func(c *gin.Context) {
 		err := srv.HandleAuthorizeRequest(c.Writer, c.Request)
 		if err != nil {
-			fmt.Println("OH NO! Error: ", err.Error())
 			http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		}
 	})
