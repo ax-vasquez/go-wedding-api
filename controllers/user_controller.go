@@ -48,6 +48,14 @@ func GetUsers(c *gin.Context) {
 	response := V1_API_RESPONSE_USERS{}
 	var userIds []uuid.UUID
 	var status int
+	// Only admins can request information about users other than themselves
+	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
+		status = http.StatusUnauthorized
+		response.Message = "You do not have access to this resource."
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
 	userIdStrings := strings.Split(c.Query("ids"), ",")
 	for _, userIdStr := range userIdStrings {
 		userId, _ := uuid.Parse(userIdStr)
@@ -82,7 +90,7 @@ func CreateUser(c *gin.Context) {
 	defer cancel()
 	response := V1_API_RESPONSE_USERS{}
 	var status int
-	if err := helper.CheckUserType(c.Request.Context(), "ADMIN"); err != nil {
+	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
 		status = http.StatusUnauthorized
 		response.Status = status
 		c.JSON(status, response)
@@ -181,7 +189,7 @@ func DeleteUser(c *gin.Context) {
 	defer cancel()
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
-	if err := helper.CheckUserType(c.Request.Context(), "ADMIN"); err != nil {
+	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
 		status = http.StatusUnauthorized
 		response.Status = status
 		c.JSON(status, response)

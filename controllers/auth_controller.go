@@ -13,6 +13,16 @@ import (
 	"github.com/go-playground/validator"
 )
 
+type AuthDetails struct {
+	Token        string `json:"token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+type V1_API_RESPONSE_AUTH struct {
+	V1_API_RESPONSE
+	Data AuthDetails
+}
+
 type UserLoginInput struct {
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
@@ -34,7 +44,7 @@ var validate = validator.New()
 //	@Accept       json
 //	@Produce      json
 //	@Param		  data body UserSignupInput true "Sign up details"
-//	@Success      201  {object}  V1_API_RESPONSE_USERS
+//	@Success      202  {object}  V1_API_RESPONSE_USERS
 //	@Failure      400  {object}  V1_API_RESPONSE_USERS
 //	@Failure      500  {object}  V1_API_RESPONSE_USERS
 //	@Router       /signup [post]
@@ -124,8 +134,20 @@ func Signup(c *gin.Context) {
 	c.JSON(status, response)
 }
 
+// Login logs in a user and returns the user details for the user (if authentication is successful)
+//
+//	@Summary      Logs in a user
+//	@Description  Logs in a user and returns the user details for the user (if authentication is successful)
+//	@Tags         auth
+//	@Accept       json
+//	@Produce      json
+//	@Param		  data body UserLoginInput true "Log in details"
+//	@Success      202  {object}  V1_API_RESPONSE_USERS
+//	@Failure      400  {object}  V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  V1_API_RESPONSE_USERS
+//	@Router       /login [post]
 func Login(c *gin.Context) {
-	var response V1_API_RESPONSE_USERS
+	var response V1_API_RESPONSE_AUTH
 	var status int
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
@@ -181,8 +203,9 @@ func Login(c *gin.Context) {
 		response.Message = "Internal server error."
 	}
 
-	status = http.StatusOK
+	status = http.StatusAccepted
 	response.Status = status
-	response.Data.Users = []models.User{dbUser}
+	response.Data.Token = dbUser.Token
+	response.Data.RefreshToken = dbUser.RefreshToken
 	c.JSON(status, response)
 }

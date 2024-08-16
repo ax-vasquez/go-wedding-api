@@ -85,7 +85,7 @@ func CreateHorsDoeuvres(c *gin.Context) {
 	defer cancel()
 	response := V1_API_RESPONSE_HORS_DOEUVRES{}
 	var status int
-	if err := helper.CheckUserType(c.Request.Context(), "ADMIN"); err != nil {
+	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
 		status = http.StatusUnauthorized
 		response.Status = status
 		c.JSON(status, response)
@@ -128,7 +128,7 @@ func DeleteHorsDoeuvres(c *gin.Context) {
 	defer cancel()
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
-	if err := helper.CheckUserType(c.Request.Context(), "ADMIN"); err != nil {
+	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
 		status = http.StatusUnauthorized
 		response.Status = status
 		c.JSON(status, response)

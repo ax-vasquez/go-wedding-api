@@ -43,7 +43,7 @@ func GetEntrees(c *gin.Context) {
 	// If no error occurred, the parse was successful, meaning a UUID was found and results will be filtered for the given user
 	if err == nil {
 		// Since we have an ID, we need to check that the user exists before continuing with controller logic.
-		if err := helper.MatchUserTypeToUid(c.Request.Context(), id.String()); err != nil {
+		if err := helper.MatchUserTypeToUid(c, id.String()); err != nil {
 			status = http.StatusBadRequest
 			response.Message = err.Error()
 		} else {
@@ -88,7 +88,7 @@ func CreateEntree(c *gin.Context) {
 	defer cancel()
 	response := V1_API_RESPONSE_ENTREE{}
 	var status int
-	if err := helper.CheckUserType(c.Request.Context(), "ADMIN"); err != nil {
+	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
 		status = http.StatusUnauthorized
 		response.Status = status
 		c.JSON(status, response)
@@ -130,7 +130,7 @@ func DeleteEntree(c *gin.Context) {
 	defer cancel()
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
-	if err := helper.CheckUserType(c.Request.Context(), "ADMIN"); err != nil {
+	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
 		status = http.StatusUnauthorized
 		response.Status = status
 		c.JSON(status, response)

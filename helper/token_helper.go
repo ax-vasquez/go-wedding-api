@@ -1,7 +1,6 @@
 package helper
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -78,23 +77,34 @@ func GenerateAllTokens(email string, firstName string, lastName string, userType
 	return token, refreshToken, nil
 }
 
-// VerifyToken verifies the authenticity of the given token
-//
-// If no error occurs, then the token is valid.
-func VerifyToken(tokenString string) error {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return secretKey, nil
-	})
+func ValidateToken(signedToken string) (claims *CustomClaims, msg string) {
+
+	token, err := jwt.ParseWithClaims(
+		signedToken,
+		&CustomClaims{},
+		func(token *jwt.Token) (interface{}, error) {
+			return []byte(secretKey), nil
+
+		},
+	)
 
 	if err != nil {
-		return err
+		msg = err.Error()
+		return
 	}
 
-	if !token.Valid {
-		return fmt.Errorf("invalid token")
+	claims, ok := token.Claims.(*CustomClaims)
+	if !ok {
+		msg = "the token is invalid"
+		return nil, msg
 	}
 
-	return nil
+	if claims.ExpiresAt < time.Now().Local().Unix() {
+		msg = "token is expired"
+		return nil, msg
+	}
+
+	return claims, msg
 }
 
 func VerifyPassword(userPassword string, providedPassword string) bool {
