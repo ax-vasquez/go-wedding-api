@@ -10,7 +10,6 @@ import (
 	"github.com/ax-vasquez/wedding-site-api/helper"
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 )
 
@@ -23,13 +22,6 @@ type V1_API_RESPONSE_USERS struct {
 	Data UserData `json:"data"`
 }
 
-type UserSignupInput struct {
-	Email     string `json:"email" binding:"required"`
-	Password  string `json:"password" binding:"required"`
-	FirstName string `json:"first_name" binding:"required"`
-	LastName  string `json:"last_name" binding:"required"`
-}
-
 type UpdateUserInput struct {
 	ID                      uuid.UUID  `json:"id" binding:"required"`
 	IsGoing                 bool       `json:"is_going"`
@@ -39,84 +31,6 @@ type UpdateUserInput struct {
 	HorsDoeuvresSelectionId *uuid.UUID `json:"hors_douevres_selection_id"`
 	EntreeSelectionId       *uuid.UUID `json:"entree_selection_id"`
 }
-
-var validate = validator.New()
-
-func Signup(c *gin.Context) {
-	var response V1_API_RESPONSE_USERS
-	var status int
-	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-	defer cancel()
-	var uInput UserSignupInput
-	if err := c.BindJSON(&uInput); err != nil {
-		status = http.StatusBadRequest
-		response.Message = err.Error()
-	} else {
-		err = validate.Struct(uInput)
-		if err != nil {
-			status = http.StatusBadRequest
-			response.Message = err.Error()
-		} else {
-			count, err := models.CountUsersByEmail(ctx, uInput.Email)
-			if err != nil {
-				status = http.StatusInternalServerError
-				response.Message = "Encountered an error while fetching user data for the given email."
-			} else {
-				if count > 0 {
-					status = http.StatusUnprocessableEntity
-					response.Message = "A user with this email address already exists."
-				} else {
-					verifyPwResult := helper.VerifyPasswordComplexity(uInput.Password, 2, 2, 2, 8)
-					if !verifyPwResult.HasExpectedDigitCt || !verifyPwResult.HasExpectedSpecialCaseCt || !verifyPwResult.HasExpectedUpperCaseCt || !verifyPwResult.HasMinLength {
-						var b strings.Builder
-						b.WriteString("Password failed complexity requirement(s): ")
-						if !verifyPwResult.HasExpectedDigitCt {
-							b.WriteString("must have 2 or more digits; ")
-						}
-						if !verifyPwResult.HasExpectedSpecialCaseCt {
-							b.WriteString("must have 2 or more special characters; ")
-						}
-						if !verifyPwResult.HasExpectedUpperCaseCt {
-							b.WriteString("must have 2 or more capital letters; ")
-						}
-						if !verifyPwResult.HasMinLength {
-							b.WriteString("must be at least 8 characters in length")
-						}
-						status = http.StatusUnprocessableEntity
-						response.Status = status
-						response.Message = b.String()
-						c.JSON(status, response)
-						return
-					}
-					hashedPassword := helper.HashPassword(uInput.Password)
-					var newUser = models.User{}
-					newUser.PasswordHash = hashedPassword
-					createUserInput := []models.User{newUser}
-					err := models.CreateUsers(ctx, &createUserInput)
-					if err != nil {
-						status = http.StatusInternalServerError
-						response.Message = "Internal server error while creating user"
-					} else {
-						status = http.StatusCreated
-						response.Message = "Success"
-						response.Data.Users = createUserInput
-					}
-				}
-			}
-		}
-	}
-	response.Status = status
-	c.JSON(http.StatusOK, response)
-}
-
-// func Login(c *gin.Context) {
-// 	var response V1_API_RESPONSE_USERS
-// 	var status int
-// 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-// 	defer cancel()
-
-// 	c.JSON(status, response)
-// }
 
 // GetUsers gets user(s) by ID(s)
 //

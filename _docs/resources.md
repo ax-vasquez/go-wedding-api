@@ -75,7 +75,8 @@ A list of useful references used while developing this API.
 * [If you can decode JWT, how are they secure?](https://stackoverflow.com/questions/27301557/if-you-can-decode-jwt-how-are-they-secure)
 * [Use of defer in go](https://stackoverflow.com/questions/47607955/use-of-defer-in-go)
 * [What if JWT is stolen?](https://stackoverflow.com/questions/34259248/what-if-jwt-is-stolen)
-* [Regex to validate password strength](https://stackoverflow.com/questions/5142103/regex-to-validate-password-strength)
+* [Password validation with regexp](https://stackoverflow.com/questions/25837241/password-validation-with-regexp)
+* [JWT refresh token flow](https://stackoverflow.com/questions/27726066/jwt-refresh-token-flow)
 
 ### YouTube
 

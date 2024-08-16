@@ -20,8 +20,8 @@ type User struct {
 	LastName string `json:"last_name" binding:"required"`
 	// The user's email (must be unique); this field is an index.
 	Email string `json:"email" gorm:"uniqueIndex" binding:"required"`
-	// The hash of the user's password.
-	PasswordHash string
+	// Either a hash of the user's password (when stored in the DB), or a plain-text representation of the password (plain-text version is never stored)
+	Password string
 	// The user's auth token.
 	Token string `json:"token"`
 	// The user's auth refresh token.

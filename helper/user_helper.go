@@ -2,7 +2,9 @@ package helper
 
 import (
 	"errors"
+	"time"
 
+	"github.com/ax-vasquez/wedding-site-api/models"
 	"golang.org/x/net/context"
 )
 
@@ -42,9 +44,21 @@ func MatchUserTypeToUid(c context.Context, userId string) (err error) {
 }
 
 // Update the user's token in the database
-func UpdateAllTokens(signedToken string, signedRefreshToken string, userId string) {
+func UpdateAllTokens(signedToken string, signedRefreshToken string, user *models.User) error {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 
-	// TODO: Update/store JWT for user on successful authentication
-	return
+	u := models.User{
+		BaseModel: models.BaseModel{
+			ID: user.ID,
+		},
+		Token:        signedToken,
+		RefreshToken: signedRefreshToken,
+	}
 
+	err := models.UpdateUser(
+		ctx,
+		&u,
+	)
+	return err
 }

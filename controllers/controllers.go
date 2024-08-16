@@ -33,7 +33,7 @@ func paveRoutes() *gin.Engine {
 	// Routes without auth middleware (these are used to set/update the user's token, used by the auth middleware)
 	{
 		v1.POST("/signup", Signup)
-		// v1.POST("/login", Login)
+		v1.POST("/login", Login)
 	}
 
 	// Routes for obtaining full or partial data sets for the base data types (admin-only)

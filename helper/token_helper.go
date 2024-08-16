@@ -7,16 +7,16 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/golang-jwt/jwt"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type SignedDetails struct {
-	Email     string
-	FirstName string
-	LastName  string
-	Uid       string
-	UserRole  string
+type CustomClaims struct {
+	*jwt.StandardClaims
+	TokenType string
+	models.User
 }
 
 var JWT_SECRET_KEY string = os.Getenv("JWT_SECRET_KEY")
@@ -38,6 +38,46 @@ func CreateToken(email string) (string, error) {
 	return tokenString, nil
 }
 
+// GenerateAllTokens generates a signed token and signed refresh token
+func GenerateAllTokens(email string, firstName string, lastName string, userType string, uid uuid.UUID) (signedToken string, signedRefreshToken string, err error) {
+
+	// Claims to be stored in the token
+	claims := &CustomClaims{
+		User: models.User{
+			BaseModel: models.BaseModel{
+				ID: uid,
+			},
+			Email:     email,
+			FirstName: firstName,
+			LastName:  lastName,
+			Role:      userType,
+		},
+		StandardClaims: &jwt.StandardClaims{
+			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(24)).Unix(),
+		},
+	}
+
+	// Claims to be stored in the refresh token
+	refreshClaims := &CustomClaims{
+		StandardClaims: &jwt.StandardClaims{
+			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(168)).Unix(),
+		},
+	}
+
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(secretKey)
+	if err != nil {
+		log.Panic(err)
+		return "", "", err
+	}
+	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString(secretKey)
+	if err != nil {
+		log.Panic(err)
+		return "", "", err
+	}
+
+	return token, refreshToken, nil
+}
+
 // VerifyToken verifies the authenticity of the given token
 //
 // If no error occurs, then the token is valid.
@@ -55,6 +95,13 @@ func VerifyToken(tokenString string) error {
 	}
 
 	return nil
+}
+
+func VerifyPassword(userPassword string, providedPassword string) bool {
+	if err := bcrypt.CompareHashAndPassword([]byte(userPassword), []byte(providedPassword)); err != nil {
+		return false
+	}
+	return true
 }
 
 type PasswordComplexityResults struct {
