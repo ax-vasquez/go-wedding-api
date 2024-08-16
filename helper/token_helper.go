@@ -1,11 +1,13 @@
 package helper
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
+	"unicode"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -15,97 +17,83 @@ type SignedDetails struct {
 	LastName  string
 	Uid       string
 	UserRole  string
-	jwt.StandardClaims
 }
 
 var JWT_SECRET_KEY string = os.Getenv("JWT_SECRET_KEY")
+var secretKey = []byte(JWT_SECRET_KEY)
 
-// Generates a token and a refresh token
-func GenerateAllTokens(email string, firstName string, lastName string, role string, uid string) (signedToken string, signedRefreshToken string, err error) {
-	claims := &SignedDetails{
-		Email:     email,
-		FirstName: firstName,
-		LastName:  lastName,
-		Uid:       uid,
-		UserRole:  role,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(24)).Unix(),
-		},
-	}
+// CreateToken creates a signed JWT string for the given email that expires in 24 hours
+func CreateToken(email string) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
+		jwt.MapClaims{
+			"username": email,
+			"exp":      time.Now().Add(time.Hour * 24).Unix(),
+		})
 
-	refreshClaims := &SignedDetails{
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(168)).Unix(),
-		},
-	}
-
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(JWT_SECRET_KEY))
+	tokenString, err := token.SignedString(secretKey)
 	if err != nil {
-		log.Panic(err)
-		return
-	}
-	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(JWT_SECRET_KEY))
-	if err != nil {
-		log.Panic(err)
-		return
+		return "", err
 	}
 
-	return token, refreshToken, err
+	return tokenString, nil
 }
 
-// Converts a plain text password into a hash representation
+// VerifyToken verifies the authenticity of the given token
+//
+// If no error occurs, then the token is valid.
+func VerifyToken(tokenString string) error {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return secretKey, nil
+	})
+
+	if err != nil {
+		return err
+	}
+
+	if !token.Valid {
+		return fmt.Errorf("invalid token")
+	}
+
+	return nil
+}
+
+type PasswordComplexityResults struct {
+	// Whether or not the password meets the criteria for expected number of upper-case characters
+	HasExpectedUpperCaseCt bool
+	// Whether or not the password meets the criteria for expected number of special characters
+	HasExpectedSpecialCaseCt bool
+	// Whether or not the password meets the criteria for expected number of digit characters
+	HasExpectedDigitCt bool
+	// Whether or not the password meets the criteria for expected minimum length
+	HasMinLength bool
+}
+
+func VerifyPasswordComplexity(password string, digitCt int, specialCt int, upperCaseCt int, minLength int) *PasswordComplexityResults {
+	var result PasswordComplexityResults
+	capitals := 0
+	digits := 0
+	specials := 0
+	for _, c := range password {
+		switch {
+		case unicode.IsNumber(c):
+			digits++
+		case unicode.IsUpper(c):
+			capitals++
+		case unicode.IsPunct(c) || unicode.IsSymbol(c):
+			specials++
+		}
+	}
+	result.HasExpectedDigitCt = digits >= digitCt
+	result.HasExpectedSpecialCaseCt = specials >= specialCt
+	result.HasExpectedUpperCaseCt = capitals >= upperCaseCt
+	result.HasMinLength = len(password) >= minLength
+	return &result
+}
+
 func HashPassword(password string) string {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	if err != nil {
 		log.Panic(err)
 	}
 	return string(bytes)
-}
-
-// Verifies the given password matches the user's password
-func VerifyPassword(userPassword string, providedPassword string) (bool, string) {
-	err := bcrypt.CompareHashAndPassword([]byte(providedPassword), []byte(userPassword))
-	check := true
-	msg := ""
-
-	if err != nil {
-		msg = "Invalid credentials - please try again"
-		check = false
-	}
-
-	return check, msg
-}
-
-// Validate a signed JWT
-//
-// If an error occurs at any step of this process, msg is assigned a string value describing
-// the error. If msg is NOT equal to "" (empty string), then you know an error occurred. Otherwise,
-// when validation is successful, claims is retured and msg will be an empty string.
-func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
-
-	token, err := jwt.ParseWithClaims(
-		signedToken,
-		&SignedDetails{},
-		func(token *jwt.Token) (interface{}, error) {
-			return []byte(JWT_SECRET_KEY), nil
-		},
-	)
-
-	if err != nil {
-		msg = err.Error()
-		return
-	}
-
-	claims, ok := token.Claims.(*SignedDetails)
-	if !ok {
-		msg = "the token is invalid"
-		return
-	}
-
-	if claims.ExpiresAt < time.Now().Local().Unix() {
-		msg = "token is expired"
-		return
-	}
-
-	return claims, msg
 }

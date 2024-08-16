@@ -41,7 +41,6 @@ A list of useful references used while developing this API.
 * [Go in production **(Soundcloud's standard practices)**](http://peter.bourgon.org/go-in-production)
 * [Go thread management](https://blog.stackademic.com/deep-dive-into-go-runtime-advanced-thread-management-explained-fd5c97b4daa4)
 * [JWT authentication in Golang](https://www.golang.company/blog/jwt-authentication-in-golang-using-gin-web-framework)
-    * _WARNING: The code samples here appear to be a bit odd - for example, they place many calls to `cancel()` in the `Signup()` method, which doesn't seem to be necessary since you can place the `cancel()` call immediately after the declaration of the context. Another example of an odd code sample is how this resource demonstrates accessing values from the context; they read from the `gin.Context` struct, but that's not the same thing as the request context. Since I am still relatively new to Go, I am not assuming this is incorrect, but done for some reason I am not yet aware of. With that being said, I've adapted code to follow the patterns that seem most appropriate for this project's purpose. I may make further changes later and update this comment._
 
 ### GitHub
 
@@ -53,7 +52,6 @@ A list of useful references used while developing this API.
 * [`gin-gonic/gin`](https://github.com/gin-gonic/gin) - _Gin - HTTP web framework written in Go_
 * [`godotenv`](https://github.com/joho/godotenv) - _Go port of Ruby's dotenv library, which loads variables from a `.env` file_
 * [`gin-swagger`](https://github.com/swaggo/gin-swagger) - _gin middleware to automatically generate RESTful API documentation with Swagger 2.0_
-* [`go-oauth2/oauth2`](https://github.com/go-oauth2/oauth2) - _Go OAuth2 server_
 
 #### Issues
 * [How to close connection in V2 (`gorm`)](https://github.com/go-gorm/gorm/issues/3145)
@@ -77,6 +75,7 @@ A list of useful references used while developing this API.
 * [If you can decode JWT, how are they secure?](https://stackoverflow.com/questions/27301557/if-you-can-decode-jwt-how-are-they-secure)
 * [Use of defer in go](https://stackoverflow.com/questions/47607955/use-of-defer-in-go)
 * [What if JWT is stolen?](https://stackoverflow.com/questions/34259248/what-if-jwt-is-stolen)
+* [Regex to validate password strength](https://stackoverflow.com/questions/5142103/regex-to-validate-password-strength)
 
 ### YouTube
 

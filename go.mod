@@ -5,9 +5,9 @@ go 1.22.5
 require github.com/gin-gonic/gin v1.10.0
 
 require (
-	github.com/go-oauth2/oauth2/v4 v4.5.2 // indirect
 	github.com/go-session/session v3.1.2+incompatible // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/klauspost/compress v1.15.0 // indirect
@@ -29,7 +29,7 @@ require (
 	go.mongodb.org/mongo-driver v1.11.1 // indirect
 	golang.org/x/oauth2 v0.22.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
-	gopkg.in/oauth2.v3 v3.12.0 // indirect
+	gopkg.in/oauth2.v3 v3.9.2 // indirect
 )
 
 require (
@@ -43,7 +43,6 @@ require (
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gabriel-vasile/mimetype v1.4.5 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-oauth2/oauth2 v3.9.2+incompatible
@@ -56,7 +55,6 @@ require (
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.22.0 // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
-	github.com/golangcompany/JWT-Authentication v0.0.0-20221228095502-98fd1702d0d8
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect

@@ -11,7 +11,7 @@ import (
 type User struct {
 	BaseModel
 	// The user's role, which can be "GUEST", "INVITEE" or "ADMIN". Defaults to "GUEST".
-	Role string `json:"role" gorm:"default:GUEST"`
+	Role string `json:"role" sql:"type:ENUM('GUEST', 'INVITEE', 'ADMIN')" gorm:"default:GUEST"`
 	// Whether or not the user is attending.
 	IsGoing bool `json:"is_going"`
 	// The user's first name.
@@ -44,9 +44,9 @@ func CreateUsers(c context.Context, users *[]User) error {
 //
 // This should only return 1 or 0 and is used to check if a user already
 // exists with the given email address.
-func CountUsersByEmail(c context.Context, user *User) (int64, error) {
+func CountUsersByEmail(c context.Context, email string) (int64, error) {
 	var count int64
-	result := db.Model(&user).WithContext(c).Distinct("email").Count(&count)
+	result := db.Model(&User{}).WithContext(c).Where("email = ?", email).Count(&count)
 	return count, result.Error
 }
 

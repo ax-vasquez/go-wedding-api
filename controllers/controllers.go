@@ -1,17 +1,9 @@
 package controllers
 
 import (
-	"log"
-	"net/http"
-
 	docs "github.com/ax-vasquez/wedding-site-api/docs"
 	"github.com/ax-vasquez/wedding-site-api/middleware"
 	"github.com/gin-gonic/gin"
-	"github.com/go-oauth2/oauth2/v4/errors"
-	"github.com/go-oauth2/oauth2/v4/manage"
-	"github.com/go-oauth2/oauth2/v4/models"
-	"github.com/go-oauth2/oauth2/v4/server"
-	"github.com/go-oauth2/oauth2/v4/store"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -41,7 +33,7 @@ func paveRoutes() *gin.Engine {
 	// Routes without auth middleware (these are used to set/update the user's token, used by the auth middleware)
 	{
 		v1.POST("/signup", Signup)
-		v1.POST("/login", Login)
+		// v1.POST("/login", Login)
 	}
 
 	// Routes for obtaining full or partial data sets for the base data types (admin-only)
@@ -90,47 +82,6 @@ func paveRoutes() *gin.Engine {
 
 func SetupRoutes() error {
 	r := paveRoutes()
-
-	manager := manage.NewDefaultManager()
-	// token memory storage
-	manager.MustTokenStorage(store.NewMemoryTokenStore())
-	// client memory store
-	clientStore := store.NewClientStore()
-	clientStore.Set("000000", &models.Client{
-		ID:     "000000",
-		Secret: "999999",
-		Domain: "http://localhost",
-	})
-	manager.MapClientStorage(clientStore)
-
-	srv := server.NewDefaultServer(manager)
-	srv.SetAllowGetAccessRequest(true)
-	srv.SetClientInfoHandler(server.ClientFormHandler)
-
-	srv.UserAuthorizationHandler = func(w http.ResponseWriter, r *http.Request) (userID string, err error) {
-		return "000000", nil
-	}
-
-	srv.SetInternalErrorHandler(func(err error) (re *errors.Response) {
-		log.Println("Internal Error:", err.Error())
-		return
-	})
-
-	srv.SetResponseErrorHandler(func(re *errors.Response) {
-		log.Println("Response Error:", re.Error.Error())
-	})
-
-	r.GET("/authorize", func(c *gin.Context) {
-		err := srv.HandleAuthorizeRequest(c.Writer, c.Request)
-		if err != nil {
-			http.Error(c.Writer, err.Error(), http.StatusBadRequest)
-		}
-	})
-
-	r.GET("/token", func(c *gin.Context) {
-		srv.HandleTokenRequest(c.Writer, c.Request)
-	})
-
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return r.Run()
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/ax-vasquez/wedding-site-api/helper"
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 )
 
@@ -23,11 +23,16 @@ type V1_API_RESPONSE_USERS struct {
 	Data UserData `json:"data"`
 }
 
+type UserSignupInput struct {
+	Email     string `json:"email" binding:"required"`
+	Password  string `json:"password" binding:"required"`
+	FirstName string `json:"first_name" binding:"required"`
+	LastName  string `json:"last_name" binding:"required"`
+}
+
 type UpdateUserInput struct {
 	ID                      uuid.UUID  `json:"id" binding:"required"`
-	IsAdmin                 bool       `json:"is_admin"`
 	IsGoing                 bool       `json:"is_going"`
-	CanInviteOthers         bool       `json:"can_invite_others"`
 	FirstName               string     `json:"first_name"`
 	LastName                string     `json:"last_name"`
 	Email                   string     `json:"email"`
@@ -37,111 +42,81 @@ type UpdateUserInput struct {
 
 var validate = validator.New()
 
-// See [jwt-in-gin-doc]
-//
-// [jwt-in-gin-doc]: https://www.golang.company/blog/jwt-authentication-in-golang-using-gin-web-framework
 func Signup(c *gin.Context) {
-	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-	defer cancel()
 	var response V1_API_RESPONSE_USERS
 	var status int
-
-	var user models.User
-
-	// Exit early if the input does not bind to the expected type
-	if err := c.BindJSON(&user); err != nil {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+	var uInput UserSignupInput
+	if err := c.BindJSON(&uInput); err != nil {
 		status = http.StatusBadRequest
-		response.Status = status
 		response.Message = err.Error()
-		c.JSON(status, response)
-		return
+	} else {
+		err = validate.Struct(uInput)
+		if err != nil {
+			status = http.StatusBadRequest
+			response.Message = err.Error()
+		} else {
+			count, err := models.CountUsersByEmail(ctx, uInput.Email)
+			if err != nil {
+				status = http.StatusInternalServerError
+				response.Message = "Encountered an error while fetching user data for the given email."
+			} else {
+				if count > 0 {
+					status = http.StatusUnprocessableEntity
+					response.Message = "A user with this email address already exists."
+				} else {
+					verifyPwResult := helper.VerifyPasswordComplexity(uInput.Password, 2, 2, 2, 8)
+					if !verifyPwResult.HasExpectedDigitCt || !verifyPwResult.HasExpectedSpecialCaseCt || !verifyPwResult.HasExpectedUpperCaseCt || !verifyPwResult.HasMinLength {
+						var b strings.Builder
+						b.WriteString("Password failed complexity requirement(s): ")
+						if !verifyPwResult.HasExpectedDigitCt {
+							b.WriteString("must have 2 or more digits; ")
+						}
+						if !verifyPwResult.HasExpectedSpecialCaseCt {
+							b.WriteString("must have 2 or more special characters; ")
+						}
+						if !verifyPwResult.HasExpectedUpperCaseCt {
+							b.WriteString("must have 2 or more capital letters; ")
+						}
+						if !verifyPwResult.HasMinLength {
+							b.WriteString("must be at least 8 characters in length")
+						}
+						status = http.StatusUnprocessableEntity
+						response.Status = status
+						response.Message = b.String()
+						c.JSON(status, response)
+						return
+					}
+					hashedPassword := helper.HashPassword(uInput.Password)
+					var newUser = models.User{}
+					newUser.PasswordHash = hashedPassword
+					createUserInput := []models.User{newUser}
+					err := models.CreateUsers(ctx, &createUserInput)
+					if err != nil {
+						status = http.StatusInternalServerError
+						response.Message = "Internal server error while creating user"
+					} else {
+						status = http.StatusCreated
+						response.Message = "Success"
+						response.Data.Users = createUserInput
+					}
+				}
+			}
+		}
 	}
-
-	// Exit early if the provided user input is not valid
-	validationErr := validate.Struct(user)
-	if validationErr != nil {
-		status = http.StatusBadRequest
-		response.Status = status
-		response.Message = validationErr.Error()
-		c.JSON(status, response)
-		return
-	}
-
-	// Exit early if there is an error querying the DB for the user
-	count, err := models.CountUsersByEmail(ctx, &user)
-	if err != nil {
-		log.Panic(err)
-		response.Message = "Internal server error while fetching user by email"
-		c.JSON(http.StatusInternalServerError, response)
-		return
-	}
-
-	password := helper.HashPassword(user.PasswordHash)
-	user.PasswordHash = password
-
-	if count > 0 {
-		response.Status = http.StatusMethodNotAllowed
-		response.Message = "User already exists"
-		c.JSON(http.StatusInternalServerError, response)
-		return
-	}
-
-	token, refreshToken, _ := helper.GenerateAllTokens(user.Email, user.FirstName, user.LastName, user.Role, user.ID.String())
-	user.Token = token
-	user.RefreshToken = refreshToken
-	userSlice := []models.User{user}
-	insertErr := models.CreateUsers(ctx, &userSlice)
-	if insertErr != nil {
-		msg := "User Details were not Saved"
-		c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
-		return
-	}
-	response.Data.Users = userSlice
-
+	response.Status = status
 	c.JSON(http.StatusOK, response)
 }
 
-func Login(c *gin.Context) {
-	var response V1_API_RESPONSE_USERS
-	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-	defer cancel()
-	// The user details obtained from the request context
-	var loginUser *models.User
-	// The user details stored in the DB for the same user
-	var dbUser *models.User
+// func Login(c *gin.Context) {
+// 	var response V1_API_RESPONSE_USERS
+// 	var status int
+// 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+// 	defer cancel()
 
-	if err := c.BindJSON(&loginUser); err != nil {
-		response.Message = err.Error()
-		c.JSON(http.StatusBadRequest, response)
-		return
-	}
-
-	err := models.FindUser(ctx, dbUser)
-
-	if err != nil {
-		response.Message = "Internal server error"
-		c.JSON(http.StatusInternalServerError, response)
-		return
-	}
-
-	passwordIsValid, msg := helper.VerifyPassword(loginUser.PasswordHash, dbUser.PasswordHash)
-	if !passwordIsValid {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
-		return
-	}
-
-	token, refreshToken, _ := helper.GenerateAllTokens(dbUser.Email, dbUser.FirstName, dbUser.LastName, dbUser.Role, dbUser.ID.String())
-	helper.UpdateAllTokens(token, refreshToken, dbUser.ID.String())
-
-	err = models.FindUser(ctx, dbUser)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, dbUser)
-}
+// 	c.JSON(status, response)
+// }
 
 // GetUsers gets user(s) by ID(s)
 //
