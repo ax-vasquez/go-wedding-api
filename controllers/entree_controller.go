@@ -42,18 +42,12 @@ func GetEntrees(c *gin.Context) {
 	var entrees []models.Entree
 	// If no error occurred, the parse was successful, meaning a UUID was found and results will be filtered for the given user
 	if err == nil {
-		// Since we have an ID, we need to check that the user exists before continuing with controller logic.
-		if err := helper.MatchUserTypeToUid(c, id.String()); err != nil {
-			status = http.StatusBadRequest
-			response.Message = err.Error()
-		} else {
-			status = http.StatusOK
-			entrees, err = models.FindEntreesForUser(ctx, id)
-			if err != nil {
-				status = http.StatusInternalServerError
-				log.Println(err.Error())
-				response.Message = "Internal server error"
-			}
+		status = http.StatusOK
+		entrees, err = models.FindEntreesForUser(ctx, id)
+		if err != nil {
+			status = http.StatusInternalServerError
+			log.Println(err.Error())
+			response.Message = "Internal server error"
 		}
 		// If an error occurred, we ignore it and assume it's because there was no ID in the path - all results will be returned
 	} else {

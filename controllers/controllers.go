@@ -40,41 +40,41 @@ func paveRoutes() *gin.Engine {
 	resourceRoutesV1 := v1.Group("")
 	{
 		resourceRoutesV1.Use(middleware.AuthenticateV1())
-		resourceRoutesV1.GET("/entrees", GetEntrees)
-		resourceRoutesV1.GET("/users", GetUsers)
-		resourceRoutesV1.GET("/horsdoeuvres", GetHorsDoeuvres)
+		resourceRoutesV1.GET("/entrees", middleware.IsAdminOrCurrentUser(), GetEntrees)
+		resourceRoutesV1.GET("/users", middleware.IsAdmin(), GetUsers)
+		resourceRoutesV1.GET("/horsdoeuvres", middleware.IsAdminOrCurrentUser(), GetHorsDoeuvres)
 	}
 
 	horsDoeuvresRoutesV1 := v1.Group("/horsdoeuvres")
 	{
 		horsDoeuvresRoutesV1.Use(middleware.AuthenticateV1())
-		horsDoeuvresRoutesV1.POST("", CreateHorsDoeuvres)
-		horsDoeuvresRoutesV1.DELETE("/:id", DeleteHorsDoeuvres)
+		horsDoeuvresRoutesV1.POST("", middleware.IsAdmin(), CreateHorsDoeuvres)
+		horsDoeuvresRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteHorsDoeuvres)
 	}
 
 	entreeRoutesV1 := v1.Group("/entree")
 	{
 		entreeRoutesV1.Use(middleware.AuthenticateV1())
-		entreeRoutesV1.POST("", CreateEntree)
-		entreeRoutesV1.DELETE("/:id", DeleteEntree)
+		entreeRoutesV1.POST("", middleware.IsAdmin(), CreateEntree)
+		entreeRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteEntree)
 	}
 
 	userRoutesV1 := v1.Group("/user")
 	{
 		userRoutesV1.Use(middleware.AuthenticateV1())
-		userRoutesV1.GET("/:id/invitees", GetInviteesForUser)
-		userRoutesV1.GET("/:id/entrees", GetEntrees)
-		userRoutesV1.GET("/:id/horsdoeuvres", GetHorsDoeuvres)
-		userRoutesV1.PATCH("", UpdateUser)
-		userRoutesV1.POST("", CreateUser)
-		userRoutesV1.POST("/:id/invite-user", CreateUserInvitee)
-		userRoutesV1.DELETE("/:id", DeleteUser)
+		userRoutesV1.GET("/:id/invitees", middleware.IsAdminOrCurrentUser(), GetInviteesForUser)
+		userRoutesV1.GET("/:id/entrees", middleware.IsAdminOrCurrentUser(), GetEntrees)
+		userRoutesV1.GET("/:id/horsdoeuvres", middleware.IsAdminOrCurrentUser(), GetHorsDoeuvres)
+		userRoutesV1.PATCH("", middleware.IsAdminOrCurrentUser(), UpdateUser)
+		userRoutesV1.POST("", middleware.IsAdmin(), CreateUser)
+		userRoutesV1.POST("/:id/invite-user", middleware.IsAdminOrCurrentUser(), CreateUserInvitee)
+		userRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteUser)
 	}
 
 	inviteeRoutesV1 := v1.Group("/invitee")
 	{
 		userRoutesV1.Use(middleware.AuthenticateV1())
-		inviteeRoutesV1.DELETE("/:id", DeleteInvitee)
+		inviteeRoutesV1.DELETE("/:id", middleware.IsAdminOrCurrentUser(), DeleteInvitee)
 	}
 
 	return r
