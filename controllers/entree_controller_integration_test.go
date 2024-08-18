@@ -12,7 +12,6 @@ import (
 	"testing"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
-	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -33,10 +32,7 @@ func Test_EntreeController_Integration(t *testing.T) {
 	t.Run("GET /api/v1/entrees/:id", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		routePath := fmt.Sprintf("/api/v1/user/%s/entrees", models.FirstUserIdStr)
-		userCtx := gin.CreateTestContextOnly(w, router)
-		userCtx.Set("user_role", "GUEST")
-		userCtx.Set("uid", models.FirstUserIdStr)
-		req, err := http.NewRequestWithContext(userCtx, "GET", routePath, nil)
+		req, err := http.NewRequest("GET", routePath, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusOK, w.Code)
@@ -64,9 +60,7 @@ func Test_EntreeController_Integration(t *testing.T) {
 			OptionName: "Cup o' Noodles",
 		}
 		entreeJson, _ := json.Marshal(testEntree)
-		adminCtx := gin.CreateTestContextOnly(w, router)
-		adminCtx.Set("user_role", "ADMIN")
-		req, err := http.NewRequestWithContext(adminCtx, "POST", "/api/v1/entree", strings.NewReader(string(entreeJson)))
+		req, err := http.NewRequest("POST", "/api/v1/entree", strings.NewReader(string(entreeJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		var responseObj V1_API_RESPONSE_ENTREE
@@ -78,10 +72,8 @@ func Test_EntreeController_Integration(t *testing.T) {
 		assert.Equal("Cup o' Noodles", responseObj.Data.Entrees[0].OptionName)
 		t.Run("DELETE /api/v1/entree/:id", func(t *testing.T) {
 			w := httptest.NewRecorder()
-			adminCtx := gin.CreateTestContextOnly(w, router)
-			adminCtx.Set("user_role", "ADMIN")
 			routePath := fmt.Sprintf("/api/v1/entree/%s", responseObj.Data.Entrees[0].ID)
-			req, err := http.NewRequestWithContext(adminCtx, "DELETE", routePath, nil)
+			req, err := http.NewRequest("DELETE", routePath, nil)
 			router.ServeHTTP(w, req)
 			assert.Nil(err)
 			assert.Equal(http.StatusAccepted, w.Code)
@@ -97,10 +89,8 @@ func Test_EntreeController_Integration(t *testing.T) {
 		badEntreeData := models.User{
 			FirstName: "Some Entree",
 		}
-		adminCtx := gin.CreateTestContextOnly(w, router)
-		adminCtx.Set("user_role", "ADMIN")
 		testInviteeJson, _ := json.Marshal(badEntreeData)
-		req, err := http.NewRequestWithContext(adminCtx, "POST", "/api/v1/entree", strings.NewReader(string(testInviteeJson)))
+		req, err := http.NewRequest("POST", "/api/v1/entree", strings.NewReader(string(testInviteeJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, w.Code)
