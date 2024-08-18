@@ -6,7 +6,8 @@
         "last_name": "Sousa",
         "email": "user_26@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "c9af6978-cea0-4ebb-aebb-d9395d4f17a3",
@@ -15,7 +16,8 @@
         "last_name": "Van den Andel",
         "email": "user_27@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "69e61704-84f7-4de9-b6e1-feda4149b692",
@@ -24,7 +26,8 @@
         "last_name": "Sobol",
         "email": "user_28@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
 
     },
     {
@@ -34,7 +37,8 @@
         "last_name": "Espina",
         "email": "user_29@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "8c1bea9a-4268-4374-865e-fa88125197a6",
@@ -43,7 +47,8 @@
         "last_name": "Hyland",
         "email": "user_30@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "8250a720-e96e-447e-ae22-7b0c1bea2e5d",
@@ -52,7 +57,8 @@
         "last_name": "Wolff",
         "email": "user_31@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "73a63c2a-bd35-4ea9-b537-823180c48310",
@@ -61,7 +67,8 @@
         "last_name": "North",
         "email": "user_32@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "df3c21ba-ca73-4c8a-be06-ffa98506f1a2",
@@ -70,7 +77,8 @@
         "last_name": "Storstrand",
         "email": "user_33@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "510e0841-72aa-40b7-b919-4191501a6333",
@@ -79,7 +87,8 @@
         "last_name": "Lorenzen",
         "email": "user_34@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "b4a00870-2c7b-4839-9c03-8b3e03ba08ad",
@@ -88,7 +97,8 @@
         "last_name": "Abbatangelo",
         "email": "user_35@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "58c96977-5057-4318-97e5-d58411504a15",
@@ -97,7 +107,8 @@
         "last_name": "Deniau",
         "email": "user_36@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "971c4c13-d04c-4d9d-8042-c1bfc27a0819",
@@ -106,7 +117,8 @@
         "last_name": "Chowdhury",
         "email": "user_37@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "a3dd7bee-0704-4d2f-b868-58aec01783f7",
@@ -115,7 +127,8 @@
         "last_name": "Marcos",
         "email": "user_38@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "0c91290a-aa54-44b5-b8ee-e0b032b1e450",
@@ -124,7 +137,8 @@
         "last_name": "Barclay",
         "email": "user_39@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "3d77cd73-ef62-4658-8012-c6dabd5a10a2",
@@ -133,7 +147,8 @@
         "last_name": "Marchand",
         "email": "user_40@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "41902d30-2521-4173-8c71-5e93d5f0046a",
@@ -142,7 +157,8 @@
         "last_name": "Lynch",
         "email": "user_41@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "178e9cc9-4f2d-4438-84c6-2fffc4829391",
@@ -151,7 +167,8 @@
         "last_name": "Hernandez",
         "email": "user_42@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "e050c82a-4032-4f04-9d5c-859a9bf31a51",
@@ -160,7 +177,8 @@
         "last_name": "Minami",
         "email": "user_43@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "e54ccbd1-6f42-48ee-be70-9143652dc37c",
@@ -169,7 +187,8 @@
         "last_name": "Vang",
         "email": "user_44@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "f8643bb5-2eb7-47ea-b297-efe9e1587473",
@@ -178,7 +197,8 @@
         "last_name": "Wilkins",
         "email": "user_45@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "3ccd6116-6bc8-498b-9f5c-4337dee9ea0e",
@@ -187,7 +207,8 @@
         "last_name": "Kjellsson",
         "email": "user_46@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "1c228cf7-7551-4c61-9e41-d54bfae6328e",
@@ -196,7 +217,8 @@
         "last_name": "Hanssen",
         "email": "user_47@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "54e35d22-9466-432c-a455-0b049254a338",
@@ -205,7 +227,8 @@
         "last_name": "Baghdasaryan",
         "email": "user_48@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "60a327ee-85b2-4cc4-b584-679b503255be",
@@ -214,7 +237,8 @@
         "last_name": "Đurić",
         "email": "user_49@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     },
     {
         "id": "a49f0c0e-7e5f-450a-9864-9303f0caaa2d",
@@ -223,6 +247,7 @@
         "last_name": "Kools",
         "email": "user_50@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
     }
 ]
