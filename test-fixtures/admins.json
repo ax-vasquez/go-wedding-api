@@ -1,0 +1,12 @@
+[
+    {
+        "id": "15034fc9-3f7e-4c42-b6d3-2925330b1b76",
+        "role": "ADMIN",
+        "first_name": "Turtle",
+        "last_name": "Cat",
+        "email": "admin@admin.admin",
+        "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
+        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+    }
+]

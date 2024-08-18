@@ -1,7 +1,6 @@
 package helper
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -109,7 +108,6 @@ func ValidateToken(signedToken string) (claims *CustomClaims, msg string) {
 }
 
 func VerifyPassword(userPassword string, providedPassword string) bool {
-	fmt.Printf("Comparing PW '%s' with hash '%s'...", providedPassword, userPassword)
 	if err := bcrypt.CompareHashAndPassword([]byte(userPassword), []byte(providedPassword)); err != nil {
 		return false
 	}

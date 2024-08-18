@@ -27,6 +27,32 @@ definitions:
           $ref: '#/definitions/models.User'
         type: array
     type: object
+  controllers.UserLoginInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  controllers.UserSignupInput:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - password
+    type: object
   controllers.V1_API_RESPONSE_ENTREE:
     properties:
       data:
@@ -77,6 +103,11 @@ definitions:
   models.Entree:
     properties:
       created_at:
+        description: |-
+          The time the record was created at
+
+          We override Gorm's CreatedAt field so we can set the gorm:"<-:create" directive,
+          which prevents this field from being altered once the record is created
         type: string
       deleted_at:
         $ref: '#/definitions/gorm.DeletedAt'
@@ -92,6 +123,11 @@ definitions:
   models.HorsDoeuvres:
     properties:
       created_at:
+        description: |-
+          The time the record was created at
+
+          We override Gorm's CreatedAt field so we can set the gorm:"<-:create" directive,
+          which prevents this field from being altered once the record is created
         type: string
       deleted_at:
         $ref: '#/definitions/gorm.DeletedAt'
@@ -106,36 +142,55 @@ definitions:
     type: object
   models.User:
     properties:
-      can_invite_others:
-        type: boolean
       created_at:
-        type: string
-      createdAt:
         description: |-
+          The time the record was created at
+
           We override Gorm's CreatedAt field so we can set the gorm:"<-:create" directive,
           which prevents this field from being altered once the record is created
         type: string
       deleted_at:
         $ref: '#/definitions/gorm.DeletedAt'
       email:
+        description: The user's email (must be unique); this field is an index.
         type: string
       entree_selection_id:
+        description: The ID of the entree the user has selected; is null until the
+          user makes a selection.
         type: string
       entreeSelection:
         $ref: '#/definitions/models.Entree'
       first_name:
+        description: The user's first name.
         type: string
       hors_doeuvres_selection_id:
+        description: The ID of the hors doeuvres the user has selected; is null until
+          the user makes a selection.
         type: string
       horsDoeuvresSelection:
         $ref: '#/definitions/models.HorsDoeuvres'
       id:
         type: string
-      is_admin:
-        type: boolean
       is_going:
+        description: Whether or not the user is attending.
         type: boolean
       last_name:
+        description: The user's last name.
+        type: string
+      password:
+        description: Either a hash of the user's password (when stored in the DB),
+          or a plain-text representation of the password (plain-text version is never
+          stored)
+        type: string
+      refresh_token:
+        description: The user's auth refresh token.
+        type: string
+      role:
+        description: The user's role, which can be "GUEST", "INVITEE" or "ADMIN".
+          Defaults to "GUEST".
+        type: string
+      token:
+        description: The user's auth token.
         type: string
       updated_at:
         type: string
@@ -297,6 +352,91 @@ paths:
       summary: creates an hors doeuvres
       tags:
       - hors doeuvres
+  /invitee/{id}:
+    delete:
+      description: Deletes an invitee
+      parameters:
+      - description: User ID of the invitee to delete
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
+      summary: deletes an invitee
+      tags:
+      - user invitee
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in a user and returns the user details for the user (if authentication
+        is successful)
+      parameters:
+      - description: Log in details
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.UserLoginInput'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+      summary: Logs in a user
+      tags:
+      - auth
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: Signs up a new user
+      parameters:
+      - description: Sign up details
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.UserSignupInput'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
+      summary: Signs up a new user
+      tags:
+      - auth
   /user:
     delete:
       description: Deletes an user and returns a response to indicate success or failure
@@ -322,7 +462,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
-      summary: deletes a user
+      summary: admin-only operation to delete a user
       tags:
       - user
     patch:
@@ -383,39 +523,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/controllers.V1_API_RESPONSE_USERS'
-      summary: creates a user
+      summary: admin-only operation to create a user
       tags:
       - user
-  /user/{inviter_id}/invitee/{invitee_id}:
-    delete:
-      description: Deletes an invitee for the given user
-      parameters:
-      - description: Invitee search by inviting user ID
-        format: uuid
-        in: path
-        name: inviter_id
-        required: true
-        type: string
-      - description: Invitee search by inviting user ID
-        format: uuid
-        in: path
-        name: invitee_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES'
-      summary: deletes an invitee for the given user
-      tags:
-      - user invitee
   /user/{user_id}/entrees:
     get:
       description: Gets the selected entree for the given user ID (empty array if

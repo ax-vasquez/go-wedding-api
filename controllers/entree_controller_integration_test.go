@@ -15,6 +15,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// func Test_EntreeController_AdminRole_Integration(t *testing.T) {
+// 	assert := assert.New(t)
+// 	router := paveRoutes()
+// }
+
+// func Test_EntreeController_GuestRole_Integration(t *testing.T) {
+// 	assert := assert.New(t)
+// 	router := paveRoutes()
+// }
+
 func Test_EntreeController_Integration(t *testing.T) {
 	assert := assert.New(t)
 	router := paveRoutes()
@@ -41,19 +51,20 @@ func Test_EntreeController_Integration(t *testing.T) {
 		assert.Nil(err)
 		assert.Equal(1, len(responseObj.Data.Entrees))
 	})
-	t.Run("GET /api/v1/entrees/:id - bad ID returns all entrees", func(t *testing.T) {
-		w := httptest.NewRecorder()
-		// Pass a junk, non-UUID value in the route
-		routePath := fmt.Sprintf("/api/v1/user/%s/entrees", "asdf")
-		req, err := http.NewRequest("GET", routePath, nil)
-		router.ServeHTTP(w, req)
-		assert.Nil(err)
-		assert.Equal(http.StatusOK, w.Code)
-		responseObj := V1_API_RESPONSE_ENTREE{}
-		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
-		assert.Nil(err)
-		assert.Equal(5, len(responseObj.Data.Entrees))
-	})
+	// TODO: Change how this API works; if a bad ID is given, return a "user not found" type response (more intuitive - and correct...)
+	// t.Run("GET /api/v1/entrees/:id - bad ID returns all entrees", func(t *testing.T) {
+	// 	w := httptest.NewRecorder()
+	// 	// Pass a junk, non-UUID value in the route
+	// 	routePath := fmt.Sprintf("/api/v1/user/%s/entrees", "asdf")
+	// 	req, err := http.NewRequest("GET", routePath, nil)
+	// 	router.ServeHTTP(w, req)
+	// 	assert.Nil(err)
+	// 	assert.Equal(http.StatusOK, w.Code)
+	// 	responseObj := V1_API_RESPONSE_ENTREE{}
+	// 	err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+	// 	assert.Nil(err)
+	// 	assert.Equal(5, len(responseObj.Data.Entrees))
+	// })
 	t.Run("POST /api/v1/entree", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		testEntree := models.Entree{

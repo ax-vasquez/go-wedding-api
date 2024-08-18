@@ -67,7 +67,7 @@ func Test_InviteeController_Unit(t *testing.T) {
 			u.FirstName,
 			u.LastName,
 			u.Email,
-			u.PasswordHash,
+			u.Password,
 			u.Token,
 			u.RefreshToken,
 			u.HorsDoeuvresSelectionId,

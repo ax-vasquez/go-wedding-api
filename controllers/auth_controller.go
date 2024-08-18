@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -10,7 +9,6 @@ import (
 	"github.com/ax-vasquez/wedding-site-api/helper"
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator"
 )
 
 type AuthDetails struct {
@@ -34,8 +32,6 @@ type UserSignupInput struct {
 	LastName  string `json:"last_name" binding:"required"`
 }
 
-var validate = validator.New()
-
 // Signup signs up a new user with the provided credentials
 //
 //	@Summary      Signs up a new user
@@ -49,22 +45,13 @@ var validate = validator.New()
 //	@Failure      500  {object}  V1_API_RESPONSE_USERS
 //	@Router       /signup [post]
 func Signup(c *gin.Context) {
-	var response V1_API_RESPONSE_USERS
+	var response V1_API_RESPONSE_AUTH
 	var status int
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 	var uInput UserSignupInput
 
 	if err := c.BindJSON(&uInput); err != nil {
-		status = http.StatusBadRequest
-		response.Message = err.Error()
-		response.Status = status
-		c.JSON(status, response)
-		return
-	}
-
-	err := validate.Struct(uInput)
-	if err != nil {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
 		response.Status = status
@@ -124,12 +111,22 @@ func Signup(c *gin.Context) {
 	if err != nil {
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error while creating user"
-	} else {
-		status = http.StatusCreated
-		response.Message = "Success"
-		response.Data.Users = createUserInput
+		c.JSON(status, response)
+		return
 	}
 
+	token, refreshToken, err := helper.GenerateAllTokens(createUserInput[0].Email, createUserInput[0].FirstName, createUserInput[0].LastName, createUserInput[0].Role, createUserInput[0].ID)
+	if err != nil {
+		status = http.StatusInternalServerError
+		response.Message = "Internal server error."
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
+
+	status = http.StatusCreated
+	response.Data.Token = token
+	response.Data.RefreshToken = refreshToken
 	response.Status = status
 	c.JSON(status, response)
 }
@@ -174,8 +171,6 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(dbUser.Password)
-	fmt.Println(inputUser.Password)
 	// Check password validity for user (the DB user Password is a hash, the input password is the plain-text password)
 	passIsValid := helper.VerifyPassword(dbUser.Password, inputUser.Password)
 	if !passIsValid {
