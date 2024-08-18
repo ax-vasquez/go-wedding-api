@@ -187,7 +187,7 @@ func DeleteUser(c *gin.Context) {
 	} else {
 		status = http.StatusAccepted
 		response.Message = "Deleted user"
-		response.Data.DeletedRecords = int(*result)
+		response.Data.DeletedRecords = int(result)
 	}
 	response.Status = status
 	c.JSON(status, response)

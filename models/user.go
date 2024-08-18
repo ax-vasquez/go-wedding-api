@@ -72,11 +72,11 @@ func UpdateUser(c context.Context, u *User) error {
 }
 
 // Maybe delete a user (if no errors) and returns the number of deleted records
-func DeleteUser(c context.Context, id uuid.UUID) (*int64, error) {
+func DeleteUser(c context.Context, id uuid.UUID) (int64, error) {
 	// Since our models have DeletedAt set, this makes Gorm "soft delete" records on normal delete operations.
 	// We can add .Unscoped() prior to the .Delete() call if we want to permanently-delete them.
 	result := db.WithContext(c).Delete(&User{}, id)
-	return &result.RowsAffected, result.Error
+	return result.RowsAffected, result.Error
 }
 
 // Find Users by the given ids; returns a User slice

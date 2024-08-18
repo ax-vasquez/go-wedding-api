@@ -15,7 +15,6 @@ import (
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/ax-vasquez/wedding-site-api/test"
-	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -45,11 +44,8 @@ func Test_EntreeController_Unit(t *testing.T) {
 		mock.ExpectQuery(regexp.QuoteMeta(`SELECT "entrees"."created_at","entrees"."updated_at","entrees"."deleted_at","entrees"."id","entrees"."option_name" FROM "entrees" JOIN users ON entrees.id = users.entree_selection_id AND users.id = $1 WHERE "entrees"."deleted_at" IS NULL`)).WithArgs(models.NilUuid).WillReturnError(fmt.Errorf(errMsg))
 
 		w := httptest.NewRecorder()
-		adminCtx := gin.CreateTestContextOnly(w, router)
-		adminCtx.Set("user_role", "GUEST")
-		adminCtx.Set("uid", models.NilUuid)
 		route := fmt.Sprintf("/api/v1/user/%s/entrees", models.NilUuid)
-		req, err := http.NewRequestWithContext(adminCtx, "GET", route, nil)
+		req, err := http.NewRequest("GET", route, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
@@ -76,9 +72,7 @@ func Test_EntreeController_Unit(t *testing.T) {
 
 		entreeJson, _ := json.Marshal(testEntree)
 		w := httptest.NewRecorder()
-		adminCtx := gin.CreateTestContextOnly(w, router)
-		adminCtx.Set("user_role", "ADMIN")
-		req, err := http.NewRequestWithContext(adminCtx, "POST", "/api/v1/entree", strings.NewReader(string(entreeJson)))
+		req, err := http.NewRequest("POST", "/api/v1/entree", strings.NewReader(string(entreeJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
@@ -100,10 +94,8 @@ func Test_EntreeController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
-		adminCtx := gin.CreateTestContextOnly(w, router)
-		adminCtx.Set("user_role", "ADMIN")
 		routePath := fmt.Sprintf("/api/v1/entree/%s", uuid.New())
-		req, err := http.NewRequestWithContext(adminCtx, "DELETE", routePath, nil)
+		req, err := http.NewRequest("DELETE", routePath, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
