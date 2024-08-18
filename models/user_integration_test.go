@@ -55,7 +55,7 @@ func Test_UserModel_Integration(t *testing.T) {
 		t.Run("Can delete a user", func(t *testing.T) {
 			result, err := DeleteUser(ctx, (*newUsers)[0].ID)
 			assert.Nil(err)
-			assert.Equal(1, int(*result))
+			assert.Equal(1, int(result))
 		})
 	})
 }
