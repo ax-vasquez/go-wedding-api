@@ -200,7 +200,7 @@ func Login(c *gin.Context) {
 
 	status = http.StatusAccepted
 	response.Status = status
-	response.Data.Token = dbUser.Token
-	response.Data.RefreshToken = dbUser.RefreshToken
+	response.Data.Token = token
+	response.Data.RefreshToken = refreshToken
 	c.JSON(status, response)
 }
