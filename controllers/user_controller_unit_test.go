@@ -46,8 +46,11 @@ func Test_UserController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", u.ID.String())
+		ctx.Set("user_role", "ADMIN")
 		routePath := fmt.Sprintf("/api/v1/users?ids=%s", u.ID)
-		req, err := http.NewRequest("GET", routePath, nil)
+		req, err := http.NewRequestWithContext(ctx, "GET", routePath, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
@@ -60,7 +63,7 @@ func Test_UserController_Unit(t *testing.T) {
 		_, mock, _ := models.Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","role","is_going","first_name","last_name","email","password_hash","token","refresh_token","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id`)).WithArgs(
+			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","role","is_going","first_name","last_name","email","password","token","refresh_token","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id"`)).WithArgs(
 			test.AnyTime{},
 			test.AnyTime{},
 			nil,
@@ -81,9 +84,10 @@ func Test_UserController_Unit(t *testing.T) {
 
 		w := httptest.NewRecorder()
 		userJson, _ := json.Marshal(u)
-		adminCtx := gin.CreateTestContextOnly(w, router)
-		adminCtx.Set("user_role", "ADMIN")
-		req, err := http.NewRequestWithContext(adminCtx, "POST", "/api/v1/user", strings.NewReader(string(userJson)))
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", u.ID.String())
+		ctx.Set("user_role", "ADMIN")
+		req, err := http.NewRequestWithContext(ctx, "POST", "/api/v1/user", strings.NewReader(string(userJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
@@ -109,7 +113,10 @@ func Test_UserController_Unit(t *testing.T) {
 
 		w := httptest.NewRecorder()
 		updateUserJson, _ := json.Marshal(u)
-		req, err := http.NewRequest("PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", u.ID.String())
+		ctx.Set("user_role", "GUEST")
+		req, err := http.NewRequestWithContext(ctx, "PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
@@ -131,11 +138,11 @@ func Test_UserController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
-		adminCtx := gin.CreateTestContextOnly(w, router)
-		adminCtx.Set("user_role", "ADMIN")
-
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", u.ID.String())
+		ctx.Set("user_role", "ADMIN")
 		routePath := fmt.Sprintf("/api/v1/user/%s", someId)
-		req, err := http.NewRequestWithContext(adminCtx, "DELETE", routePath, nil)
+		req, err := http.NewRequestWithContext(ctx, "DELETE", routePath, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)

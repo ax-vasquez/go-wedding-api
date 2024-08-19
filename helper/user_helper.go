@@ -2,7 +2,6 @@ package helper
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
@@ -16,8 +15,6 @@ import (
 func CheckUserType(c *gin.Context, role string) (err error) {
 	userType := c.GetString("user_role")
 	err = nil
-
-	fmt.Println("FOUND ROLE: ", userType)
 
 	if userType != role {
 		err = errors.New("you are not authorised to access this resource")

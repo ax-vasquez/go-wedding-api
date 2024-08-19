@@ -2,6 +2,8 @@ package middleware
 
 import (
 	"net/http"
+	"os"
+	"strconv"
 
 	"github.com/ax-vasquez/wedding-site-api/helper"
 	"github.com/ax-vasquez/wedding-site-api/models"
@@ -11,6 +13,18 @@ import (
 func AuthenticateV1() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
+		test_env_str, _ := os.LookupEnv("USE_MOCK_DB")
+		isUnitTest, _ := strconv.ParseBool(test_env_str)
+		// If the route is being hit during unit testing, then there is no underlying DB - skip authentication since it doesn't work on unit tests
+		if isUnitTest {
+			// when using gin.CreateTestContextOnly, it only places values in the REQUEST context, not the gin context. Need to grab the values from the request context.
+			uid := c.Request.Context().Value("uid")
+			role := c.Request.Context().Value("user_role")
+			c.Set("uid", uid)
+			c.Set("user_role", role)
+			c.Next()
+			return
+		}
 		clientToken := c.Request.Header.Get("token")
 		if clientToken == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "No Authorization Header Provided"})

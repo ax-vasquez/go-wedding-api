@@ -73,7 +73,7 @@ func paveRoutes() *gin.Engine {
 
 	inviteeRoutesV1 := v1.Group("/invitee")
 	{
-		userRoutesV1.Use(middleware.AuthenticateV1())
+		inviteeRoutesV1.Use(middleware.AuthenticateV1())
 		inviteeRoutesV1.DELETE("/:id", middleware.IsAdminOrCurrentUser(), DeleteInvitee)
 	}
 
