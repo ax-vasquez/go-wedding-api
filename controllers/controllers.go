@@ -40,9 +40,9 @@ func paveRoutes() *gin.Engine {
 	resourceRoutesV1 := v1.Group("")
 	{
 		resourceRoutesV1.Use(middleware.AuthenticateV1())
-		resourceRoutesV1.GET("/entrees", middleware.IsAdminOrCurrentUser(), GetEntrees)
-		resourceRoutesV1.GET("/users", middleware.IsAdmin(), GetUsers)
-		resourceRoutesV1.GET("/horsdoeuvres", middleware.IsAdminOrCurrentUser(), GetHorsDoeuvres)
+		resourceRoutesV1.GET("/entrees", GetEntrees)
+		resourceRoutesV1.GET("/users", GetUsers)
+		resourceRoutesV1.GET("/horsdoeuvres", GetHorsDoeuvres)
 	}
 
 	horsDoeuvresRoutesV1 := v1.Group("/horsdoeuvres")
@@ -55,6 +55,7 @@ func paveRoutes() *gin.Engine {
 	entreeRoutesV1 := v1.Group("/entree")
 	{
 		entreeRoutesV1.Use(middleware.AuthenticateV1())
+		entreeRoutesV1.GET("/:id", GetEntrees)
 		entreeRoutesV1.POST("", middleware.IsAdmin(), CreateEntree)
 		entreeRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteEntree)
 	}
@@ -63,7 +64,8 @@ func paveRoutes() *gin.Engine {
 	{
 		userRoutesV1.Use(middleware.AuthenticateV1())
 		userRoutesV1.GET("/:id/invitees", middleware.IsAdminOrCurrentUser(), GetInviteesForUser)
-		userRoutesV1.GET("/:id/entrees", middleware.IsAdminOrCurrentUser(), GetEntrees)
+		// TODO: I've fixed the API that this was using before - it's better to have a specific "EntreeForUser" controller since GetEntrees gets one or all entrees, now
+		// userRoutesV1.GET("/:id/entrees", middleware.IsAdminOrCurrentUser(), GetEntrees)
 		userRoutesV1.GET("/:id/horsdoeuvres", middleware.IsAdminOrCurrentUser(), GetHorsDoeuvres)
 		userRoutesV1.PATCH("", middleware.IsAdminOrCurrentUser(), UpdateUser)
 		userRoutesV1.POST("", middleware.IsAdmin(), CreateUser)

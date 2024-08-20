@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ax-vasquez/wedding-site-api/helper"
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -85,12 +84,6 @@ func CreateHorsDoeuvres(c *gin.Context) {
 	defer cancel()
 	response := V1_API_RESPONSE_HORS_DOEUVRES{}
 	var status int
-	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
-		status = http.StatusUnauthorized
-		response.Status = status
-		c.JSON(status, response)
-		return
-	}
 	var input models.HorsDoeuvres
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
@@ -128,12 +121,6 @@ func DeleteHorsDoeuvres(c *gin.Context) {
 	defer cancel()
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
-	if err := helper.CheckUserType(c, "ADMIN"); err != nil {
-		status = http.StatusUnauthorized
-		response.Status = status
-		c.JSON(status, response)
-		return
-	}
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		status = http.StatusBadRequest

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -87,7 +88,16 @@ func FindUsers(c context.Context, ids []uuid.UUID) ([]User, error) {
 }
 
 // Find user with the given details
+//
+// If email is provided, perform lookup by email. Otherwise, assume lookup by ID. If you perform a lookup
+// using a User object that doesn't have ID OR email set, this will return the first record in the set (which
+// is probably not what you want).
 func FindUser(c context.Context, u *User) error {
-	result := db.WithContext(c).Find(&u)
+	var result *gorm.DB
+	if u.Email != "" {
+		result = db.WithContext(c).Where("email = ?", u.Email).First(&u)
+	} else {
+		result = db.WithContext(c).Find(&u)
+	}
 	return result.Error
 }
