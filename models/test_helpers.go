@@ -26,6 +26,9 @@ var FirstUserInviteeIdStr = "007170d7-5633-4a44-9326-ddf9dce5a6ef"
 // Convenience variable to keep easy reference to the UUID of the entree in the test data set ("Caprese pasta")
 var FirstEntreeIdStr = "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3"
 
+// Convenience variable to keep easy reference to the UUID of the hors doeuvres in the test data set ("Crab puff")
+var FirstHorsDoeuvresIdStr = "3baf970f-1670-4b42-ba81-63168a2f21b8"
+
 // All test users have the same password
 var TestUserPassword = "ASdf12#$"
 

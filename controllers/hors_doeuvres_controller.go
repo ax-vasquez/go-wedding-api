@@ -38,27 +38,41 @@ func GetHorsDoeuvres(c *gin.Context) {
 	var response V1_API_RESPONSE_HORS_DOEUVRES
 	var status int
 	var horsDoeuvres []models.HorsDoeuvres
-	id, err := uuid.Parse(idStr)
-	if err == nil {
+	// If an ID param was given, attempt lookup by the ID
+	if len(idStr) > 0 {
+		id, err := uuid.Parse(idStr)
+		// If the given ID is invalid, return error response
+		if err != nil {
+			status = http.StatusBadRequest
+			response.Status = status
+			response.Message = err.Error()
+			c.JSON(status, response)
+			return
+		}
+		horsdoeuvres, err := models.FindHorsDoeuvresById(ctx, id)
+		horsDoeuvres = append(horsDoeuvres, *horsdoeuvres)
+		// If an error occurs in the DB during lookup, return error response
+		if err != nil {
+			status = http.StatusInternalServerError
+			log.Println(err.Error())
+			response.Status = status
+			response.Message = "Internal server error"
+			c.JSON(status, response)
+			return
+		}
 		status = http.StatusOK
-		horsDoeuvres, err = models.FindHorsDoeuvresForUser(ctx, id)
-		if err != nil {
-			status = http.StatusInternalServerError
-			log.Println(err.Error())
-			response.Message = "Internal server error"
-		} else {
-			status = http.StatusOK
-		}
+		response.Status = status
+		response.Data.HorsDoeuvres = horsDoeuvres
+		c.JSON(status, response)
+		return
+	}
+	horsDoeuvres, err := models.FindHorsDoeuvres(ctx)
+	if err != nil {
+		status = http.StatusInternalServerError
+		log.Println(err.Error())
+		response.Message = "Internal server error"
 	} else {
-		var err error
-		horsDoeuvres, err = models.FindHorsDoeuvres(ctx)
-		if err != nil {
-			status = http.StatusInternalServerError
-			log.Println(err.Error())
-			response.Message = "Internal server error"
-		} else {
-			status = http.StatusOK
-		}
+		status = http.StatusOK
 	}
 	response.Status = status
 	response.Data = HorsDoeuvresData{

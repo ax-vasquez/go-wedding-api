@@ -48,6 +48,7 @@ func paveRoutes() *gin.Engine {
 	horsDoeuvresRoutesV1 := v1.Group("/horsdoeuvres")
 	{
 		horsDoeuvresRoutesV1.Use(middleware.AuthenticateV1())
+		horsDoeuvresRoutesV1.GET("/:id", GetHorsDoeuvres)
 		horsDoeuvresRoutesV1.POST("", middleware.IsAdmin(), CreateHorsDoeuvres)
 		horsDoeuvresRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteHorsDoeuvres)
 	}
@@ -66,7 +67,8 @@ func paveRoutes() *gin.Engine {
 		userRoutesV1.GET("/:id/invitees", middleware.IsAdminOrCurrentUser(), GetInviteesForUser)
 		// TODO: I've fixed the API that this was using before - it's better to have a specific "EntreeForUser" controller since GetEntrees gets one or all entrees, now
 		// userRoutesV1.GET("/:id/entrees", middleware.IsAdminOrCurrentUser(), GetEntrees)
-		userRoutesV1.GET("/:id/horsdoeuvres", middleware.IsAdminOrCurrentUser(), GetHorsDoeuvres)
+		// TODO: Same note as for entrees - should use a different controller to get hors doeuvres for a user
+		// userRoutesV1.GET("/:id/horsdoeuvres", middleware.IsAdminOrCurrentUser(), GetHorsDoeuvres)
 		userRoutesV1.PATCH("", middleware.IsAdminOrCurrentUser(), UpdateUser)
 		userRoutesV1.POST("", middleware.IsAdmin(), CreateUser)
 		userRoutesV1.POST("/:id/invite-user", middleware.IsAdminOrCurrentUser(), CreateUserInvitee)
