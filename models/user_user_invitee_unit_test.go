@@ -56,7 +56,7 @@ func Test_UserUserInvitee_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		fakeId, _ := uuid.Parse(NilUuid)
-		err := CreateUserInvitee(ctx, fakeId, &u)
+		err := CreateUserInvitee(&ctx, fakeId, &u)
 
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
@@ -69,7 +69,7 @@ func Test_UserUserInvitee_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		invitees, err := FindInviteesForUser(ctx, u.ID)
+		invitees, err := FindInviteesForUser(&ctx, u.ID)
 
 		assert.Empty(invitees)
 		assert.NotNil(err)
@@ -85,7 +85,7 @@ func Test_UserUserInvitee_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		res, err := DeleteInvitee(ctx, u.ID)
+		res, err := DeleteInvitee(&ctx, u.ID)
 
 		assert.Zero(res)
 		assert.NotNil(err)

@@ -123,11 +123,7 @@ func DeleteInvitee(c *gin.Context) {
 		return
 	}
 
-	uid, _ := c.Get("uid")
-	uidStr, _ := uid.(string)
-	uidUuid, _ := uuid.Parse(uidStr)
-
-	result, err := models.DeleteInvitee(&ctx, uidUuid, inviteeId)
+	result, err := models.DeleteInvitee(&ctx, inviteeId)
 	if err != nil {
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error"

@@ -47,7 +47,7 @@ func FindInviteesForUser(c *context.Context, userId uuid.UUID) ([]User, error) {
 //
 // This will delete the related records from the user_user_invitees table as well as the invited user from the
 // users table.
-func DeleteInvitee(c *context.Context, userId uuid.UUID, inviteeId uuid.UUID) (*int64, error) {
+func DeleteInvitee(c *context.Context, inviteeId uuid.UUID) (*int64, error) {
 	result := db.WithContext(*c).Delete(&UserUserInvitee{}, "invitee_id = ?", inviteeId)
 	if result.Error != nil {
 		log.Println("Error deleting UserUserInvitee: ", result.Error.Error())
