@@ -2,7 +2,6 @@ package helper
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
@@ -36,9 +35,6 @@ func MatchUserTypeToUid(c *gin.Context, userId string) (err error) {
 	err = nil
 
 	userTypeStr, ok := userType.(string)
-
-	fmt.Println("UID: ", uid)
-	fmt.Println("userId: ", userId)
 
 	if !ok || uid != userId {
 		err = errors.New("you are not authorised to access this resource")

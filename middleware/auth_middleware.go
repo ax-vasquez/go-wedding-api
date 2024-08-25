@@ -10,6 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// TODO: Alter definition setup since we can't import from controllers here (invalid import cycle)
+type V1_API_RESPONSE struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+	Data    gin.H  `json:"data"`
+}
+
 func AuthenticateV1() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
@@ -27,14 +34,20 @@ func AuthenticateV1() gin.HandlerFunc {
 		}
 		clientToken := c.Request.Header.Get("token")
 		if clientToken == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "No Authorization Header Provided"})
+			c.JSON(http.StatusUnauthorized, V1_API_RESPONSE{
+				Status:  http.StatusUnauthorized,
+				Message: "No authorization header provided",
+			})
 			c.Abort()
 			return
 		}
 
 		claims, err := helper.ValidateToken(clientToken)
 		if err != "" {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			c.JSON(http.StatusInternalServerError, V1_API_RESPONSE{
+				Status:  http.StatusUnauthorized,
+				Message: err,
+			})
 			c.Abort()
 			return
 		}
@@ -48,7 +61,10 @@ func AuthenticateV1() gin.HandlerFunc {
 		// Load user from the DB to ensure context has the latest info for the user (in case there have been manual DB updates not reflected in the JWT)
 		findErr := models.FindUser(c, &u)
 		if findErr != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			c.JSON(http.StatusInternalServerError, V1_API_RESPONSE{
+				Status:  http.StatusUnauthorized,
+				Message: err,
+			})
 			c.Abort()
 			return
 		}
@@ -56,7 +72,7 @@ func AuthenticateV1() gin.HandlerFunc {
 		c.Set("email", u.Email)
 		c.Set("first_name", u.FirstName)
 		c.Set("last_name", u.LastName)
-		c.Set("uid", claims.ID)
+		c.Set("uid", claims.ID.String())
 		c.Set("user_role", u.Role)
 		c.Next()
 	}

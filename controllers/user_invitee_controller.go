@@ -47,7 +47,7 @@ func CreateUserInvitee(c *gin.Context) {
 			status = http.StatusBadRequest
 			response.Message = err.Error()
 		} else {
-			err := models.CreateUserInvitee(ctx, id, &invitee)
+			err := models.CreateUserInvitee(&ctx, id, &invitee)
 			if err != nil {
 				status = http.StatusInternalServerError
 				response.Message = "Internal server error"
@@ -86,7 +86,7 @@ func GetInviteesForUser(c *gin.Context) {
 		response.Message = err.Error()
 	} else {
 		status = http.StatusOK
-		data, err := models.FindInviteesForUser(ctx, id)
+		data, err := models.FindInviteesForUser(&ctx, id)
 		if err != nil {
 			status = http.StatusInternalServerError
 			response.Message = "Internal server error"
@@ -113,20 +113,31 @@ func DeleteInvitee(c *gin.Context) {
 	defer cancel()
 	response := V1_API_DELETE_RESPONSE{}
 	var status int
-	invitee_id, err := uuid.Parse(c.Param("id"))
+
+	inviteeId, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
-	} else {
-		result, err := models.DeleteInvitee(ctx, invitee_id)
-		if err != nil {
-			status = http.StatusInternalServerError
-			response.Message = "Internal server error"
-		} else {
-			status = http.StatusAccepted
-			response.Data.DeletedRecords = int(*result)
-		}
+		response.Status = status
+		c.JSON(status, response)
+		return
 	}
+
+	uid, _ := c.Get("uid")
+	uidStr, _ := uid.(string)
+	uidUuid, _ := uuid.Parse(uidStr)
+
+	result, err := models.DeleteInvitee(&ctx, uidUuid, inviteeId)
+	if err != nil {
+		status = http.StatusInternalServerError
+		response.Message = "Internal server error"
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
+
+	status = http.StatusAccepted
+	response.Data.DeletedRecords = int(*result)
 	response.Status = status
 	c.JSON(status, response)
 }

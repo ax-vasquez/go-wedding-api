@@ -20,8 +20,8 @@ type UserUserInvitee struct {
 //
 // This inserts a new row in the user_user_invitees table, which facilitates a many-to-many relationship
 // between invitee.
-func CreateUserInvitee(c context.Context, invitingUserId uuid.UUID, invitedUser *User) error {
-	result := db.Create(&UserUserInvitee{
+func CreateUserInvitee(c *context.Context, invitingUserId uuid.UUID, invitedUser *User) error {
+	result := db.WithContext(*c).Create(&UserUserInvitee{
 		InviterId: invitingUserId,
 		Invitee:   invitedUser,
 	})
@@ -33,9 +33,9 @@ func CreateUserInvitee(c context.Context, invitingUserId uuid.UUID, invitedUser 
 }
 
 // Finds all users for the given inviting user ID
-func FindInviteesForUser(c context.Context, userId uuid.UUID) ([]User, error) {
+func FindInviteesForUser(c *context.Context, userId uuid.UUID) ([]User, error) {
 	var users []User
-	result := db.WithContext(c).Joins("JOIN user_user_invitees ON user_user_invitees.invitee_id = users.id AND user_user_invitees.inviter_id = ?", userId).Find(&users)
+	result := db.WithContext(*c).Joins("JOIN user_user_invitees ON user_user_invitees.invitee_id = users.id AND user_user_invitees.inviter_id = ?", userId).Find(&users)
 	if result.Error != nil {
 		log.Println("Error querying for UserUserInvitee: ", result.Error.Error())
 		return nil, result.Error
@@ -47,8 +47,8 @@ func FindInviteesForUser(c context.Context, userId uuid.UUID) ([]User, error) {
 //
 // This will delete the related records from the user_user_invitees table as well as the invited user from the
 // users table.
-func DeleteInvitee(c context.Context, inviteeId uuid.UUID) (*int64, error) {
-	result := db.WithContext(c).Delete(&UserUserInvitee{}, "invitee_id = ?", inviteeId)
+func DeleteInvitee(c *context.Context, userId uuid.UUID, inviteeId uuid.UUID) (*int64, error) {
+	result := db.WithContext(*c).Delete(&UserUserInvitee{}, "invitee_id = ?", inviteeId)
 	if result.Error != nil {
 		log.Println("Error deleting UserUserInvitee: ", result.Error.Error())
 		return nil, result.Error

@@ -14,8 +14,11 @@ func IsAdminOrCurrentUser() gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		if err := helper.MatchUserTypeToUid(c, c.GetString("uid")); err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "not authorized"})
+		if err := helper.MatchUserTypeToUid(c, c.Param("id")); err != nil {
+			c.JSON(http.StatusUnauthorized, V1_API_RESPONSE{
+				Status:  http.StatusUnauthorized,
+				Message: "not authorized",
+			})
 			c.Abort()
 			return
 		}

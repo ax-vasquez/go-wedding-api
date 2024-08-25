@@ -18,7 +18,7 @@ func Test_UserUserInvitee_Integration(t *testing.T) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 	t.Run("Can find invitees for user", func(t *testing.T) {
-		invitees, err := FindInviteesForUser(ctx, firstUserUuid)
+		invitees, err := FindInviteesForUser(&ctx, firstUserUuid)
 		assert.Nil(err)
 		assert.NotEmpty(invitees)
 		assert.Equal("Suman", invitees[0].FirstName)
@@ -30,12 +30,12 @@ func Test_UserUserInvitee_Integration(t *testing.T) {
 			LastName:  "McTesterson",
 			Email:     "a@b.com",
 		}
-		err := CreateUserInvitee(ctx, firstUserUuid, &invitee)
+		err := CreateUserInvitee(&ctx, firstUserUuid, &invitee)
 		assert.Nil(err)
 		assert.NotEmpty(invitee.ID)
 		assert.Equal("Billy", invitee.FirstName)
 		t.Run("Can delete an invitee", func(t *testing.T) {
-			result, err := DeleteInvitee(ctx, invitee.ID)
+			result, err := DeleteInvitee(&ctx, firstUserUuid, invitee.ID)
 			assert.Nil(err)
 			assert.Equal(1, int(*result))
 		})

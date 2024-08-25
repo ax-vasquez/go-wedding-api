@@ -10,7 +10,10 @@ import (
 func IsAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if err := helper.CheckUserType(c, "ADMIN"); err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "not authorized"})
+			c.JSON(http.StatusUnauthorized, V1_API_RESPONSE{
+				Status:  http.StatusUnauthorized,
+				Message: "not authorized",
+			})
 			c.Abort()
 			return
 		}

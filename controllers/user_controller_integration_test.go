@@ -16,6 +16,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// func Test_UserController_NoAuth_Integration(t *testing.T) {
+// 	assert := assert.New(t)
+// 	router := paveRoutes()
+// }
+
+// func Test_UserController_Admin_Integration(t *testing.T) {
+// 	assert := assert.New(t)
+// 	router := paveRoutes()
+// 	token, _ := loginUser(router, assert, "admin@admin.admin")
+// }
+
+// func Test_UserController_Guest_Integration(t *testing.T) {
+// 	assert := assert.New(t)
+// 	router := paveRoutes()
+// 	token, _ := loginUser(router, assert, "user_1@fakedomain.com")
+// }
+
 func Test_UserController_Integration(t *testing.T) {
 	assert := assert.New(t)
 	router := paveRoutes()
