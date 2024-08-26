@@ -83,7 +83,7 @@ func Test_InviteeController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
-		routePath := fmt.Sprintf("/api/v1/user/%s/invite-user", uuid.New())
+		routePath := fmt.Sprintf("/api/v1/user/%s/invite-user", u.ID)
 		testInviteeJson, _ := json.Marshal(u)
 		ctx := gin.CreateTestContextOnly(w, router)
 		ctx.Set("uid", u.ID.String())
@@ -112,7 +112,7 @@ func Test_InviteeController_Unit(t *testing.T) {
 		routePath := fmt.Sprintf("/api/v1/invitee/%s", u.ID)
 		ctx := gin.CreateTestContextOnly(w, router)
 		ctx.Set("uid", models.NilUuid)
-		ctx.Set("user_role", "GUEST")
+		ctx.Set("user_role", "ADMIN")
 		req, err := http.NewRequestWithContext(ctx, "DELETE", routePath, strings.NewReader(string(testInviteeJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
