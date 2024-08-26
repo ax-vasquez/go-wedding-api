@@ -7,18 +7,10 @@ import (
 	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/ax-vasquez/wedding-site-api/types"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
-
-type HorsDoeuvresData struct {
-	HorsDoeuvres []models.HorsDoeuvres `json:"hors_doeuvres"`
-}
-
-type V1_API_RESPONSE_HORS_DOEUVRES struct {
-	V1_API_RESPONSE
-	Data HorsDoeuvresData `json:"data"`
-}
 
 // GetHorsDoeuvres gets one or all hors doeuvres
 //
@@ -35,7 +27,7 @@ func GetHorsDoeuvres(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 	idStr := c.Param("id")
-	var response V1_API_RESPONSE_HORS_DOEUVRES
+	var response types.V1_API_RESPONSE_HORS_DOEUVRES
 	var status int
 	var horsDoeuvres []models.HorsDoeuvres
 	// If an ID param was given, attempt lookup by the ID
@@ -75,7 +67,7 @@ func GetHorsDoeuvres(c *gin.Context) {
 		status = http.StatusOK
 	}
 	response.Status = status
-	response.Data = HorsDoeuvresData{
+	response.Data = types.HorsDoeuvresData{
 		HorsDoeuvres: horsDoeuvres,
 	}
 	c.JSON(status, response)
@@ -96,7 +88,7 @@ func GetHorsDoeuvres(c *gin.Context) {
 func CreateHorsDoeuvres(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
-	response := V1_API_RESPONSE_HORS_DOEUVRES{}
+	response := types.V1_API_RESPONSE_HORS_DOEUVRES{}
 	var status int
 	var input models.HorsDoeuvres
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
@@ -133,7 +125,7 @@ func CreateHorsDoeuvres(c *gin.Context) {
 func DeleteHorsDoeuvres(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
-	response := V1_API_DELETE_RESPONSE{}
+	response := types.V1_API_DELETE_RESPONSE{}
 	var status int
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {

@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/ax-vasquez/wedding-site-api/types"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
@@ -44,7 +45,7 @@ func Test_UserController_Integration(t *testing.T) {
 		req.Header.Set("token", "BOOP")
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
-		responseObj := V1_API_RESPONSE_USERS{}
+		responseObj := types.V1_API_RESPONSE_USERS{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Greater(len(responseObj.Data.Users), 0)
@@ -65,14 +66,14 @@ func Test_UserController_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Equal(http.StatusCreated, w.Code)
 		assert.Nil(err)
-		responseObj := V1_API_RESPONSE_USERS{}
+		responseObj := types.V1_API_RESPONSE_USERS{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(1, len(responseObj.Data.Users))
 		assert.Equal("Spongebob", responseObj.Data.Users[0].FirstName)
 		t.Run("PATCH /api/v1/user", func(t *testing.T) {
 			w := httptest.NewRecorder()
-			updateUserInput := UpdateUserInput{
+			updateUserInput := types.UpdateUserInput{
 				ID:       responseObj.Data.Users[0].ID,
 				LastName: "Circlepants",
 			}
@@ -95,7 +96,7 @@ func Test_UserController_Integration(t *testing.T) {
 			router.ServeHTTP(w, req)
 			assert.Nil(err)
 			assert.Equal(http.StatusAccepted, w.Code)
-			var deleteResponse V1_API_DELETE_RESPONSE
+			var deleteResponse types.V1_API_DELETE_RESPONSE
 			err = json.Unmarshal([]byte(w.Body.Bytes()), &deleteResponse)
 			assert.Nil(err)
 			assert.Equal(1, deleteResponse.Data.DeletedRecords)
@@ -114,7 +115,7 @@ func Test_UserController_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, w.Code)
-		responseObj := V1_API_RESPONSE_USERS{}
+		responseObj := types.V1_API_RESPONSE_USERS{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(0, len(responseObj.Data.Users))

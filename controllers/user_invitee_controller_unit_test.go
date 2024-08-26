@@ -15,6 +15,7 @@ import (
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/ax-vasquez/wedding-site-api/test"
+	"github.com/ax-vasquez/wedding-site-api/types"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -54,7 +55,7 @@ func Test_InviteeController_Unit(t *testing.T) {
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
@@ -92,7 +93,7 @@ func Test_InviteeController_Unit(t *testing.T) {
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
@@ -117,7 +118,7 @@ func Test_InviteeController_Unit(t *testing.T) {
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})

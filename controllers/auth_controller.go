@@ -8,29 +8,9 @@ import (
 
 	"github.com/ax-vasquez/wedding-site-api/helper"
 	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/ax-vasquez/wedding-site-api/types"
 	"github.com/gin-gonic/gin"
 )
-
-type AuthDetails struct {
-	Token        string `json:"token"`
-	RefreshToken string `json:"refresh_token"`
-}
-
-type V1_API_RESPONSE_AUTH struct {
-	V1_API_RESPONSE
-	Data AuthDetails
-}
-
-type UserLoginInput struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
-type UserSignupInput struct {
-	UserLoginInput
-	FirstName string `json:"first_name" binding:"required"`
-	LastName  string `json:"last_name" binding:"required"`
-}
 
 // Signup signs up a new user with the provided credentials
 //
@@ -45,11 +25,11 @@ type UserSignupInput struct {
 //	@Failure      500  {object}  V1_API_RESPONSE_USERS
 //	@Router       /signup [post]
 func Signup(c *gin.Context) {
-	var response V1_API_RESPONSE_AUTH
+	var response types.V1_API_RESPONSE_AUTH
 	var status int
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
-	var uInput UserSignupInput
+	var uInput types.UserSignupInput
 
 	if err := c.BindJSON(&uInput); err != nil {
 		status = http.StatusBadRequest
@@ -144,12 +124,12 @@ func Signup(c *gin.Context) {
 //	@Failure      500  {object}  V1_API_RESPONSE_USERS
 //	@Router       /login [post]
 func Login(c *gin.Context) {
-	var response V1_API_RESPONSE_AUTH
+	var response types.V1_API_RESPONSE_AUTH
 	var status int
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 
-	var inputUser UserLoginInput
+	var inputUser types.UserLoginInput
 	var dbUser models.User
 
 	if err := c.BindJSON(&inputUser); err != nil {

@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/ax-vasquez/wedding-site-api/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,10 +19,10 @@ func Test_AuthController_Integration(t *testing.T) {
 	assert := assert.New(t)
 	router := paveRoutes()
 	t.Run("POST /api/v1/signup - successful signup", func(t *testing.T) {
-		newUserInput := UserSignupInput{
+		newUserInput := types.UserSignupInput{
 			FirstName: "Test",
 			LastName:  "Person",
-			UserLoginInput: UserLoginInput{
+			UserLoginInput: types.UserLoginInput{
 				Email:    "some@email.place",
 				Password: models.TestUserPassword,
 			},
@@ -32,7 +33,7 @@ func Test_AuthController_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusCreated, w.Code)
-		signupResponse := V1_API_RESPONSE_AUTH{}
+		signupResponse := types.V1_API_RESPONSE_AUTH{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &signupResponse)
 		assert.Nil(err)
 		assert.NotEmpty(signupResponse.Data.Token)
@@ -43,7 +44,7 @@ func Test_AuthController_Integration(t *testing.T) {
 			router.ServeHTTP(w, req)
 			assert.Nil(err)
 			assert.Equal(http.StatusUnprocessableEntity, w.Code)
-			signupResponse := V1_API_RESPONSE_AUTH{}
+			signupResponse := types.V1_API_RESPONSE_AUTH{}
 			err = json.Unmarshal([]byte(w.Body.Bytes()), &signupResponse)
 			assert.Nil(err)
 			assert.Empty(signupResponse.Data.Token)
@@ -58,7 +59,7 @@ func Test_AuthController_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, w.Code)
-		signupResponse := V1_API_RESPONSE_AUTH{}
+		signupResponse := types.V1_API_RESPONSE_AUTH{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &signupResponse)
 		assert.Nil(err)
 		assert.NotEmpty(signupResponse.Message)
@@ -67,10 +68,10 @@ func Test_AuthController_Integration(t *testing.T) {
 		assert.Empty(signupResponse.Data.RefreshToken)
 	})
 	t.Run("POST /api/v1/signup - invalid password - password too short", func(t *testing.T) {
-		newUserInput := UserSignupInput{
+		newUserInput := types.UserSignupInput{
 			FirstName: "Test",
 			LastName:  "Person",
-			UserLoginInput: UserLoginInput{
+			UserLoginInput: types.UserLoginInput{
 				Email: "some_other@email.place",
 				// Passwords must be at least 8 characters in length - this is too short
 				Password: "ASdf!@",
@@ -82,7 +83,7 @@ func Test_AuthController_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusUnprocessableEntity, w.Code)
-		signupResponse := V1_API_RESPONSE_AUTH{}
+		signupResponse := types.V1_API_RESPONSE_AUTH{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &signupResponse)
 		assert.Nil(err)
 		assert.NotEmpty(signupResponse.Message)
@@ -91,10 +92,10 @@ func Test_AuthController_Integration(t *testing.T) {
 		assert.Empty(signupResponse.Data.RefreshToken)
 	})
 	t.Run("POST /api/v1/signup - invalid password - not enough capitals", func(t *testing.T) {
-		newUserInput := UserSignupInput{
+		newUserInput := types.UserSignupInput{
 			FirstName: "Test",
 			LastName:  "Person",
-			UserLoginInput: UserLoginInput{
+			UserLoginInput: types.UserLoginInput{
 				Email: "some_other@email.place",
 				// Passwords must be at least 8 characters in length - this is too short
 				Password: "asdf12#$",
@@ -106,7 +107,7 @@ func Test_AuthController_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusUnprocessableEntity, w.Code)
-		signupResponse := V1_API_RESPONSE_AUTH{}
+		signupResponse := types.V1_API_RESPONSE_AUTH{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &signupResponse)
 		assert.Nil(err)
 		assert.NotEmpty(signupResponse.Message)
@@ -115,10 +116,10 @@ func Test_AuthController_Integration(t *testing.T) {
 		assert.Empty(signupResponse.Data.RefreshToken)
 	})
 	t.Run("POST /api/v1/signup - invalid password - not enough digits", func(t *testing.T) {
-		newUserInput := UserSignupInput{
+		newUserInput := types.UserSignupInput{
 			FirstName: "Test",
 			LastName:  "Person",
-			UserLoginInput: UserLoginInput{
+			UserLoginInput: types.UserLoginInput{
 				Email: "some_other@email.place",
 				// Passwords must be at least 8 characters in length - this is too short
 				Password: "asdf!@#$",
@@ -130,7 +131,7 @@ func Test_AuthController_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusUnprocessableEntity, w.Code)
-		signupResponse := V1_API_RESPONSE_AUTH{}
+		signupResponse := types.V1_API_RESPONSE_AUTH{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &signupResponse)
 		assert.Nil(err)
 		assert.NotEmpty(signupResponse.Message)
@@ -139,10 +140,10 @@ func Test_AuthController_Integration(t *testing.T) {
 		assert.Empty(signupResponse.Data.RefreshToken)
 	})
 	t.Run("POST /api/v1/signup - invalid password - not enough symbols", func(t *testing.T) {
-		newUserInput := UserSignupInput{
+		newUserInput := types.UserSignupInput{
 			FirstName: "Test",
 			LastName:  "Person",
-			UserLoginInput: UserLoginInput{
+			UserLoginInput: types.UserLoginInput{
 				Email: "some_other@email.place",
 				// Passwords must be at least 8 characters in length - this is too short
 				Password: "asdf12#$",
@@ -154,7 +155,7 @@ func Test_AuthController_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusUnprocessableEntity, w.Code)
-		signupResponse := V1_API_RESPONSE_AUTH{}
+		signupResponse := types.V1_API_RESPONSE_AUTH{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &signupResponse)
 		assert.Nil(err)
 		assert.NotEmpty(signupResponse.Message)
@@ -163,7 +164,7 @@ func Test_AuthController_Integration(t *testing.T) {
 		assert.Empty(signupResponse.Data.RefreshToken)
 	})
 	t.Run("POST /api/v1/login - successful login", func(t *testing.T) {
-		loginInput := UserLoginInput{
+		loginInput := types.UserLoginInput{
 			Email:    "user_1@fakedomain.com",
 			Password: models.TestUserPassword,
 		}
@@ -173,7 +174,7 @@ func Test_AuthController_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusAccepted, w.Code)
-		loginResponse := V1_API_RESPONSE_AUTH{}
+		loginResponse := types.V1_API_RESPONSE_AUTH{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &loginResponse)
 		assert.Nil(err)
 		assert.NotEmpty(loginResponse.Data.Token)
@@ -187,7 +188,7 @@ func Test_AuthController_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, w.Code)
-		loginResponse := V1_API_RESPONSE_AUTH{}
+		loginResponse := types.V1_API_RESPONSE_AUTH{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &loginResponse)
 		assert.Nil(err)
 		assert.Empty(loginResponse.Data.Token)

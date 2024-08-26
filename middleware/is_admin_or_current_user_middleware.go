@@ -14,6 +14,7 @@ func IsAdminOrCurrentUser() gin.HandlerFunc {
 			c.Next()
 			return
 		}
+		// TODO: Handle when there is no ID in the parameter (needs "or" logic to check if the ID may be in the body)
 		if err := helper.MatchUserTypeToUid(c, c.Param("id")); err != nil {
 			c.JSON(http.StatusUnauthorized, V1_API_RESPONSE{
 				Status:  http.StatusUnauthorized,

@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/ax-vasquez/wedding-site-api/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -64,7 +65,7 @@ func Test_UserInviteeController_Admin_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusOK, w.Code)
-		responseObj := V1_API_RESPONSE_USER_INVITEES{}
+		responseObj := types.V1_API_RESPONSE_USER_INVITEES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(1, len(responseObj.Data.Invitees))
@@ -79,7 +80,7 @@ func Test_UserInviteeController_Admin_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, w.Code)
-		responseObj := V1_API_RESPONSE_USER_INVITEES{}
+		responseObj := types.V1_API_RESPONSE_USER_INVITEES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, responseObj.Status)
@@ -99,7 +100,7 @@ func Test_UserInviteeController_Admin_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusCreated, w.Code)
-		responseObj := V1_API_RESPONSE_USER_INVITEES{}
+		responseObj := types.V1_API_RESPONSE_USER_INVITEES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(1, len(responseObj.Data.Invitees))
@@ -115,7 +116,7 @@ func Test_UserInviteeController_Admin_Integration(t *testing.T) {
 			router.ServeHTTP(w, req)
 			assert.Nil(err)
 			assert.Equal(http.StatusAccepted, w.Code)
-			var deleteResponse V1_API_DELETE_RESPONSE
+			var deleteResponse types.V1_API_DELETE_RESPONSE
 			err = json.Unmarshal([]byte(w.Body.Bytes()), &deleteResponse)
 			assert.Nil(err)
 			assert.Equal(1, deleteResponse.Data.DeletedRecords)
@@ -136,7 +137,7 @@ func Test_UserInviteeController_Admin_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, w.Code)
-		responseObj := V1_API_RESPONSE_USER_INVITEES{}
+		responseObj := types.V1_API_RESPONSE_USER_INVITEES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(0, len(responseObj.Data.Invitees))
@@ -150,7 +151,7 @@ func Test_UserInviteeController_Admin_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, w.Code)
-		var deleteResponse V1_API_DELETE_RESPONSE
+		var deleteResponse types.V1_API_DELETE_RESPONSE
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &deleteResponse)
 		assert.Nil(err)
 		assert.Equal(0, deleteResponse.Data.DeletedRecords)
@@ -169,7 +170,7 @@ func Test_UserInviteeController_Admin_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, w.Code)
-		responseObj := V1_API_RESPONSE_USER_INVITEES{}
+		responseObj := types.V1_API_RESPONSE_USER_INVITEES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(0, len(responseObj.Data.Invitees))
@@ -189,7 +190,7 @@ func Test_UserInviteeController_Guest_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusOK, w.Code)
-		responseObj := V1_API_RESPONSE_USER_INVITEES{}
+		responseObj := types.V1_API_RESPONSE_USER_INVITEES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(1, len(responseObj.Data.Invitees))
@@ -204,7 +205,7 @@ func Test_UserInviteeController_Guest_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusUnauthorized, w.Code)
-		responseObj := V1_API_RESPONSE_USER_INVITEES{}
+		responseObj := types.V1_API_RESPONSE_USER_INVITEES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(http.StatusUnauthorized, responseObj.Status)
@@ -224,7 +225,7 @@ func Test_UserInviteeController_Guest_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusCreated, w.Code)
-		responseObj := V1_API_RESPONSE_USER_INVITEES{}
+		responseObj := types.V1_API_RESPONSE_USER_INVITEES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(1, len(responseObj.Data.Invitees))
@@ -240,7 +241,7 @@ func Test_UserInviteeController_Guest_Integration(t *testing.T) {
 			router.ServeHTTP(w, req)
 			assert.Nil(err)
 			assert.Equal(http.StatusUnauthorized, w.Code)
-			var deleteResponse V1_API_DELETE_RESPONSE
+			var deleteResponse types.V1_API_DELETE_RESPONSE
 			err = json.Unmarshal([]byte(w.Body.Bytes()), &deleteResponse)
 			assert.Nil(err)
 			assert.Equal(0, deleteResponse.Data.DeletedRecords)
@@ -261,7 +262,7 @@ func Test_UserInviteeController_Guest_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusUnauthorized, w.Code)
-		responseObj := V1_API_RESPONSE_USER_INVITEES{}
+		responseObj := types.V1_API_RESPONSE_USER_INVITEES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(0, len(responseObj.Data.Invitees))
@@ -275,7 +276,7 @@ func Test_UserInviteeController_Guest_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusUnauthorized, w.Code)
-		var deleteResponse V1_API_DELETE_RESPONSE
+		var deleteResponse types.V1_API_DELETE_RESPONSE
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &deleteResponse)
 		assert.Nil(err)
 		assert.Equal(0, deleteResponse.Data.DeletedRecords)
@@ -294,7 +295,7 @@ func Test_UserInviteeController_Guest_Integration(t *testing.T) {
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, w.Code)
-		responseObj := V1_API_RESPONSE_USER_INVITEES{}
+		responseObj := types.V1_API_RESPONSE_USER_INVITEES{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
 		assert.Equal(0, len(responseObj.Data.Invitees))

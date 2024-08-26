@@ -8,28 +8,10 @@ import (
 	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/ax-vasquez/wedding-site-api/types"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
-
-type UserData struct {
-	Users []models.User `json:"users"`
-}
-
-type V1_API_RESPONSE_USERS struct {
-	V1_API_RESPONSE
-	Data UserData `json:"data"`
-}
-
-type UpdateUserInput struct {
-	ID                      uuid.UUID  `json:"id" binding:"required"`
-	IsGoing                 bool       `json:"is_going"`
-	FirstName               string     `json:"first_name"`
-	LastName                string     `json:"last_name"`
-	Email                   string     `json:"email"`
-	HorsDoeuvresSelectionId *uuid.UUID `json:"hors_douevres_selection_id"`
-	EntreeSelectionId       *uuid.UUID `json:"entree_selection_id"`
-}
 
 // GetUsers gets user(s) by ID(s)
 //
@@ -44,7 +26,7 @@ type UpdateUserInput struct {
 func GetUsers(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
-	response := V1_API_RESPONSE_USERS{}
+	response := types.V1_API_RESPONSE_USERS{}
 	var userIds []uuid.UUID
 	var status int
 	userIdStrings := strings.Split(c.Query("ids"), ",")
@@ -79,7 +61,7 @@ func GetUsers(c *gin.Context) {
 func CreateUser(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(c, 100*time.Second)
 	defer cancel()
-	response := V1_API_RESPONSE_USERS{}
+	response := types.V1_API_RESPONSE_USERS{}
 	var status int
 	var input models.User
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
@@ -117,9 +99,9 @@ func CreateUser(c *gin.Context) {
 func UpdateUser(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
-	response := V1_API_RESPONSE_USERS{}
+	response := types.V1_API_RESPONSE_USERS{}
 	var status int
-	var input UpdateUserInput
+	var input types.UpdateUserInput
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
@@ -176,7 +158,7 @@ func UpdateUser(c *gin.Context) {
 func DeleteUser(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
-	response := V1_API_DELETE_RESPONSE{}
+	response := types.V1_API_DELETE_RESPONSE{}
 	var status int
 	id, _ := uuid.Parse(c.Param("id"))
 	result, err := models.DeleteUser(ctx, id)

@@ -10,21 +10,6 @@ import (
 
 // @BasePath /api/v1
 
-type V1_API_RESPONSE struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
-	Data    gin.H  `json:"data"`
-}
-
-type DeleteRecordResponse struct {
-	DeletedRecords int `json:"deleted_records"`
-}
-
-type V1_API_DELETE_RESPONSE struct {
-	V1_API_RESPONSE
-	Data DeleteRecordResponse `json:"data"`
-}
-
 func paveRoutes() *gin.Engine {
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = "/api/v1"

@@ -7,18 +7,10 @@ import (
 	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/ax-vasquez/wedding-site-api/types"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
-
-type UserInviteeData struct {
-	Invitees []models.User `json:"users"`
-}
-
-type V1_API_RESPONSE_USER_INVITEES struct {
-	V1_API_RESPONSE
-	Data UserInviteeData `json:"data"`
-}
 
 // CreateUserInvitee invites a user
 //
@@ -34,7 +26,7 @@ type V1_API_RESPONSE_USER_INVITEES struct {
 func CreateUserInvitee(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
-	response := V1_API_RESPONSE_USER_INVITEES{}
+	response := types.V1_API_RESPONSE_USER_INVITEES{}
 	var status int
 	var invitee models.User
 	idStr := c.Param("id")
@@ -78,7 +70,7 @@ func CreateUserInvitee(c *gin.Context) {
 func GetInviteesForUser(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
-	response := V1_API_RESPONSE_USER_INVITEES{}
+	response := types.V1_API_RESPONSE_USER_INVITEES{}
 	var status int
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -111,7 +103,7 @@ func GetInviteesForUser(c *gin.Context) {
 func DeleteInvitee(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
-	response := V1_API_DELETE_RESPONSE{}
+	response := types.V1_API_DELETE_RESPONSE{}
 	var status int
 
 	inviteeId, err := uuid.Parse(c.Param("id"))

@@ -7,18 +7,10 @@ import (
 	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/ax-vasquez/wedding-site-api/types"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
-
-type EntreeData struct {
-	Entrees []models.Entree `json:"entrees"`
-}
-
-type V1_API_RESPONSE_ENTREE struct {
-	V1_API_RESPONSE
-	Data EntreeData `json:"data"`
-}
 
 // GetEntrees gets one or all entrees
 //
@@ -35,7 +27,7 @@ func GetEntrees(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 	idStr := c.Param("id")
-	response := V1_API_RESPONSE_ENTREE{}
+	response := types.V1_API_RESPONSE_ENTREE{}
 	var status int
 	var entrees []models.Entree
 	// If an ID param was given, attempt lookup by the ID
@@ -95,7 +87,7 @@ func GetEntrees(c *gin.Context) {
 func CreateEntree(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
-	response := V1_API_RESPONSE_ENTREE{}
+	response := types.V1_API_RESPONSE_ENTREE{}
 	var status int
 	var input models.Entree
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
@@ -131,7 +123,7 @@ func CreateEntree(c *gin.Context) {
 func DeleteEntree(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
-	response := V1_API_DELETE_RESPONSE{}
+	response := types.V1_API_DELETE_RESPONSE{}
 	var status int
 	id, _ := uuid.Parse(c.Param("id"))
 	result, err := models.DeleteEntree(ctx, id)
@@ -141,7 +133,7 @@ func DeleteEntree(c *gin.Context) {
 	} else {
 		status = http.StatusAccepted
 		response.Message = "Deleted entree"
-		response.Data = DeleteRecordResponse{
+		response.Data = types.DeleteRecordResponse{
 			DeletedRecords: int(*result),
 		}
 	}

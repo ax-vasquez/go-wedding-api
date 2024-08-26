@@ -35,7 +35,7 @@ func Test_UserUserInvitee_Integration(t *testing.T) {
 		assert.NotEmpty(invitee.ID)
 		assert.Equal("Billy", invitee.FirstName)
 		t.Run("Can delete an invitee", func(t *testing.T) {
-			result, err := DeleteInvitee(&ctx, firstUserUuid, invitee.ID)
+			result, err := DeleteInvitee(&ctx, invitee.ID)
 			assert.Nil(err)
 			assert.Equal(1, int(*result))
 		})

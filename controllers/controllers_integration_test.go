@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/ax-vasquez/wedding-site-api/types"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
@@ -20,7 +21,7 @@ import (
 
 // loginUser logs in a test user with the provided email address
 func loginUser(r *gin.Engine, assert *assert.Assertions, email string) (string, string) {
-	login := UserLoginInput{
+	login := types.UserLoginInput{
 		Email: email,
 		// All test users have the same password for simplicity in testing
 		Password: models.TestUserPassword,
@@ -31,7 +32,7 @@ func loginUser(r *gin.Engine, assert *assert.Assertions, email string) (string, 
 	r.ServeHTTP(w, req)
 	assert.Nil(err)
 	assert.Equal(http.StatusAccepted, w.Code)
-	loginResponse := V1_API_RESPONSE_AUTH{}
+	loginResponse := types.V1_API_RESPONSE_AUTH{}
 	err = json.Unmarshal([]byte(w.Body.Bytes()), &loginResponse)
 	assert.Nil(err)
 	assert.NotEmpty(loginResponse.Data.Token)
