@@ -31,17 +31,6 @@ type V1_API_RESPONSE_AUTH struct {
 	Data AuthDetails
 }
 
-type UserLoginInput struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
-type UserSignupInput struct {
-	UserLoginInput
-	FirstName string `json:"first_name" binding:"required"`
-	LastName  string `json:"last_name" binding:"required"`
-}
-
 type UserData struct {
 	Users []models.User `json:"users"`
 }
@@ -76,6 +65,17 @@ type HorsDoeuvresData struct {
 type V1_API_RESPONSE_HORS_DOEUVRES struct {
 	V1_API_RESPONSE
 	Data HorsDoeuvresData `json:"data"`
+}
+
+type UserLoginInput struct {
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+type UserSignupInput struct {
+	UserLoginInput
+	FirstName string `json:"first_name" binding:"required"`
+	LastName  string `json:"last_name" binding:"required"`
 }
 
 type UpdateUserInput struct {

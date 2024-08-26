@@ -1,12 +1,13 @@
 package helper
 
 import (
+	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
+	"github.com/ax-vasquez/wedding-site-api/types"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/net/context"
 )
@@ -26,28 +27,34 @@ func CheckUserType(c *gin.Context, role string) (err error) {
 	return err
 }
 
-// Checks if userType is "USER" and if uid matches the userId
-//
-// If either contidion is unmet, an error is returned. After checking
-// if the userType is "USER" and if the uid matches userId, [CheckUserType]
-// is called.
+// MatchUserTypeToUid checks to see if the incoming request has a user_role set in the context, and if the uid matches the user ID of the
+// owner for the resource being requested/modified.
 func MatchUserTypeToUid(c *gin.Context, userId string) (err error) {
 	uid := c.Value("uid")
 	userType := c.Value("user_role")
 	err = nil
 
-	body, _ := io.ReadAll(c.Request.Body)
-	fmt.Println("BODY: ", string(body))
-
 	userTypeStr, ok := userType.(string)
 
-	fmt.Println("USER TYPE: ", userTypeStr)
-	fmt.Println("UID: ", uid)
-	fmt.Println("USER ID: ", userId)
-
-	if !ok || uid != userId {
-		err = errors.New("you are not authorised to access this resource")
-		return err
+	// If userId is empty at this point, it means there was no user ID present in the URL parameters
+	if userId == "" {
+		// Currently, the only endpoint where this logic should be possible is when a user is updating their own records (route does not have a user ID in it)
+		var updateUserInput types.UpdateUserInput
+		bodyBytes, bytesErr := io.ReadAll(c.Request.Body)
+		err = json.Unmarshal(bodyBytes, &updateUserInput)
+		if bytesErr != nil || err != nil {
+			err = errors.New("bad request")
+			return err
+		}
+		if uid != updateUserInput.ID {
+			err = errors.New("you are not authorised to access this resource")
+			return err
+		}
+	} else {
+		if !ok || uid != userId {
+			err = errors.New("you are not authorised to access this resource")
+			return err
+		}
 	}
 
 	err = CheckUserType(c, userTypeStr)
