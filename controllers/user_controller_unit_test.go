@@ -98,22 +98,29 @@ func Test_UserController_Unit(t *testing.T) {
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
 	t.Run("PATCH /api/v1/user - internal server error", func(t *testing.T) {
+		input := types.UpdateUserInput{
+			ID:        u.ID,
+			FirstName: "Newname",
+			LastName:  "Newlastname",
+			Email:     u.Email,
+		}
 		_, mock, _ := models.Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_going"=$2,"first_name"=$3,"last_name"=$4,"email"=$5 WHERE "users"."deleted_at" IS NULL AND "id" = $6 RETURNING *`)).WithArgs(
+			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"first_name"=$2,"last_name"=$3,"email"=$4 WHERE "users"."deleted_at" IS NULL AND "id" = $5 RETURNING *`)).WithArgs(
 			test.AnyTime{},
-			u.IsGoing,
-			u.FirstName,
-			u.LastName,
-			u.Email,
-			u.ID,
+			input.FirstName,
+			input.LastName,
+			input.Email,
+			input.ID,
 		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
-		updateUserJson, _ := json.Marshal(u)
+
+		updateUserJson, _ := json.Marshal(input)
+		fmt.Println("PASSING INPUT: ", strings.NewReader(string(updateUserJson)))
 		ctx := gin.CreateTestContextOnly(w, router)
 		ctx.Set("uid", u.ID.String())
 		ctx.Set("user_role", "GUEST")

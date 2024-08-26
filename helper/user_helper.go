@@ -1,9 +1,7 @@
 package helper
 
 import (
-	"encoding/json"
 	"errors"
-	"io"
 	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
@@ -40,13 +38,10 @@ func MatchUserTypeToUid(c *gin.Context, userId string) (err error) {
 	if userId == "" {
 		// Currently, the only endpoint where this logic should be possible is when a user is updating their own records (route does not have a user ID in it)
 		var updateUserInput types.UpdateUserInput
-		bodyBytes, bytesErr := io.ReadAll(c.Request.Body)
-		err = json.Unmarshal(bodyBytes, &updateUserInput)
-		if bytesErr != nil || err != nil {
-			err = errors.New("bad request")
+		if err := c.ShouldBindBodyWithJSON(&updateUserInput); err != nil {
 			return err
 		}
-		if uid != updateUserInput.ID {
+		if uid != updateUserInput.ID.String() {
 			err = errors.New("you are not authorised to access this resource")
 			return err
 		}
