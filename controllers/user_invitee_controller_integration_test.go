@@ -214,9 +214,9 @@ func Test_UserInviteeController_Guest_Integration(t *testing.T) {
 		w := httptest.NewRecorder()
 		routePath := fmt.Sprintf("/api/v1/user/%s/invite-user", models.FirstUserIdStr)
 		testInvitee := models.User{
-			FirstName: "Finn",
+			FirstName: "Minerva",
 			LastName:  "Mertens",
-			Email:     "finn@ooo.world",
+			Email:     "minerva@ooo.world",
 		}
 		testInviteeJson, _ := json.Marshal(testInvitee)
 		req, err := http.NewRequest("POST", routePath, strings.NewReader(string(testInviteeJson)))
@@ -231,7 +231,7 @@ func Test_UserInviteeController_Guest_Integration(t *testing.T) {
 		assert.Equal(1, len(responseObj.Data.Invitees))
 		assert.NotEmpty(responseObj.Data.Invitees[0].ID)
 		assert.NotEqual(models.NilUuid, responseObj.Data.Invitees[0].ID)
-		assert.Equal("Finn", responseObj.Data.Invitees[0].FirstName)
+		assert.Equal("Minerva", responseObj.Data.Invitees[0].FirstName)
 		t.Run("DELETE /api/v1/invitee/:id - guest - attempting use admin-only 'delete invitee' endpoint returns error", func(t *testing.T) {
 			w := httptest.NewRecorder()
 			routePath := fmt.Sprintf("/api/v1/invitee/%s", responseObj.Data.Invitees[0].ID)
