@@ -136,6 +136,23 @@ func Test_UserController_Admin_Integration(t *testing.T) {
 			assert.Equal(1, deleteResponse.Data.DeletedRecords)
 		})
 	})
+	t.Run("PATCH /api/v1/user - admin - bad input returns error", func(t *testing.T) {
+		responseObj := types.V1_API_RESPONSE_USERS{}
+		w := httptest.NewRecorder()
+		updateUserInput := "bad input"
+		updateUserJson, _ := json.Marshal(updateUserInput)
+		req, err := http.NewRequest("PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("token", token)
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+		assert.Nil(err)
+		assert.Equal(http.StatusBadRequest, w.Code)
+		assert.Equal(http.StatusBadRequest, responseObj.Status)
+		assert.NotEmpty(responseObj.Message)
+		assert.Empty(responseObj.Data.Users)
+	})
 	t.Run("POST /api/v1/user - admin - bad user data returns error", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		// "Bad" invitee data in that the fields will not unmarshal to a User object in the handler
@@ -192,6 +209,23 @@ func Test_UserController_Guest_Integration(t *testing.T) {
 		assert.Nil(err)
 		assert.Equal(1, len(responseObj.Data.Users))
 		assert.Equal("Circlepants", responseObj.Data.Users[0].LastName)
+	})
+	t.Run("PATCH /api/v1/user - guest - bad input returns unauthorized error", func(t *testing.T) {
+		responseObj := types.V1_API_RESPONSE_USERS{}
+		w := httptest.NewRecorder()
+		updateUserInput := "bad input"
+		updateUserJson, _ := json.Marshal(updateUserInput)
+		req, err := http.NewRequest("PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("token", token)
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+		assert.Nil(err)
+		assert.Equal(http.StatusUnauthorized, w.Code)
+		assert.Equal(http.StatusUnauthorized, responseObj.Status)
+		assert.NotEmpty(responseObj.Message)
+		assert.Empty(responseObj.Data.Users)
 	})
 	t.Run("PATCH /api/v1/user - guest - cannot update data of another user", func(t *testing.T) {
 		w := httptest.NewRecorder()

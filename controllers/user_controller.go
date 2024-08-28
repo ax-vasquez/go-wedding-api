@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -110,6 +111,7 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
+	fmt.Println("POKE")
 	u := &models.User{
 		BaseModel: models.BaseModel{
 			ID: input.ID,
