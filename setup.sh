@@ -7,6 +7,7 @@ EXPECTED_KEYS=(
     "PGSQL_DBNAME"
     "PGSQL_PORT"
     "PGSQL_TIMEZONE"
+    "JWT_SECRET_KEY"
 )
 
 # Check if .env file exists

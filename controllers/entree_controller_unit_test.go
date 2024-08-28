@@ -15,6 +15,8 @@ import (
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/ax-vasquez/wedding-site-api/test"
+	"github.com/ax-vasquez/wedding-site-api/types"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -30,12 +32,15 @@ func Test_EntreeController_Unit(t *testing.T) {
 		mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "entrees" WHERE "entrees"."deleted_at" IS NULL`)).WillReturnError(fmt.Errorf(errMsg))
 
 		w := httptest.NewRecorder()
-		req, err := http.NewRequest("GET", "/api/v1/entrees", nil)
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", models.NilUuid)
+		ctx.Set("user_role", "ADMIN")
+		req, err := http.NewRequestWithContext(ctx, "GET", "/api/v1/entrees", nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
@@ -43,14 +48,17 @@ func Test_EntreeController_Unit(t *testing.T) {
 		_, mock, _ := models.Setup()
 		mock.ExpectQuery(regexp.QuoteMeta(`SELECT "entrees"."created_at","entrees"."updated_at","entrees"."deleted_at","entrees"."id","entrees"."option_name" FROM "entrees" JOIN users ON entrees.id = users.entree_selection_id AND users.id = $1 WHERE "entrees"."deleted_at" IS NULL`)).WithArgs(models.NilUuid).WillReturnError(fmt.Errorf(errMsg))
 
-		route := fmt.Sprintf("/api/v1/user/%s/entrees", models.NilUuid)
 		w := httptest.NewRecorder()
-		req, err := http.NewRequest("GET", route, nil)
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", models.NilUuid)
+		ctx.Set("user_role", "GUEST")
+		route := fmt.Sprintf("/api/v1/user/%s/entrees", models.NilUuid)
+		req, err := http.NewRequestWithContext(ctx, "GET", route, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
@@ -72,12 +80,15 @@ func Test_EntreeController_Unit(t *testing.T) {
 
 		entreeJson, _ := json.Marshal(testEntree)
 		w := httptest.NewRecorder()
-		req, err := http.NewRequest("POST", "/api/v1/entree", strings.NewReader(string(entreeJson)))
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", models.NilUuid)
+		ctx.Set("user_role", "ADMIN")
+		req, err := http.NewRequestWithContext(ctx, "POST", "/api/v1/entree", strings.NewReader(string(entreeJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
@@ -93,14 +104,17 @@ func Test_EntreeController_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		routePath := fmt.Sprintf("/api/v1/entree/%s", uuid.New())
 		w := httptest.NewRecorder()
-		req, err := http.NewRequest("DELETE", routePath, nil)
+		routePath := fmt.Sprintf("/api/v1/entree/%s", someId)
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", someId.String())
+		ctx.Set("user_role", "ADMIN")
+		req, err := http.NewRequestWithContext(ctx, "DELETE", routePath, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})

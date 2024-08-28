@@ -1,64 +1,60 @@
 package models
 
 import (
-	"time"
+	"context"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 // User table
 type User struct {
 	BaseModel
-	// We override Gorm's CreatedAt field so we can set the gorm:"<-:create" directive,
-	// which prevents this field from being altered once the record is created
-	CreatedAt               time.Time     `gorm:"<-:create"`
-	IsAdmin                 bool          `json:"is_admin"`
-	IsGoing                 bool          `json:"is_going"`
-	CanInviteOthers         bool          `json:"can_invite_others"`
-	FirstName               string        `json:"first_name" binding:"required"`
-	LastName                string        `json:"last_name" binding:"required"`
-	Email                   string        `json:"email" gorm:"uniqueIndex" binding:"required"`
+	// The user's role, which can be "GUEST", "INVITEE" or "ADMIN". Defaults to "GUEST".
+	Role string `json:"role" sql:"type:ENUM('GUEST', 'INVITEE', 'ADMIN')" gorm:"default:GUEST"`
+	// Whether or not the user is attending.
+	IsGoing bool `json:"is_going"`
+	// The user's first name.
+	FirstName string `json:"first_name" binding:"required"`
+	// The user's last name.
+	LastName string `json:"last_name" binding:"required"`
+	// The user's email (must be unique); this field is an index.
+	Email string `json:"email" gorm:"uniqueIndex" binding:"required"`
+	// Either a hash of the user's password (when stored in the DB), or a plain-text representation of the password (plain-text version is never stored)
+	Password string
+	// The user's auth token.
+	Token string `json:"token"`
+	// The user's auth refresh token.
+	RefreshToken string `json:"refresh_token"`
+	// The ID of the hors doeuvres the user has selected; is null until the user makes a selection.
 	HorsDoeuvresSelectionId *uuid.UUID    `json:"hors_doeuvres_selection_id"`
 	HorsDoeuvresSelection   *HorsDoeuvres `gorm:"foreignKey:HorsDoeuvresSelectionId"`
-	EntreeSelectionId       *uuid.UUID    `json:"entree_selection_id"`
-	EntreeSelection         *Entree       `gorm:"foreignKey:EntreeSelectionId"`
+	// The ID of the entree the user has selected; is null until the user makes a selection.
+	EntreeSelectionId *uuid.UUID `json:"entree_selection_id"`
+	EntreeSelection   *Entree    `gorm:"foreignKey:EntreeSelectionId"`
 }
 
 // Maybe create users with given data (if no errors) and returns the number of inserted records
-func CreateUsers(users *[]User) error {
-	result := db.Create(&users)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+func CreateUsers(c context.Context, users *[]User) error {
+	result := db.WithContext(c).Create(&users)
+	return result.Error
 }
 
-// Set is_admin for user
-func SetAdminPrivileges(u *User) error {
-	result := db.Model(&u).Select("is_admin").Updates(&u)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+// Get the count of users whose email matches that of the given user.
+//
+// This should only return 1 or 0 and is used to check if a user already
+// exists with the given email address.
+func CountUsersByEmail(c context.Context, email string) (int64, error) {
+	var count int64
+	result := db.Model(&User{}).WithContext(c).Where("email = ?", email).Count(&count)
+	return count, result.Error
 }
 
 // Set is_going for user
-func SetIsGoing(u *User) error {
-	result := db.Model(&u).Select("is_going").Updates(&u)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
-}
-
-// Set can_invite_others for user
-func SetCanInviteOthers(u *User) error {
-	result := db.Model(&u).Select("can_invite_others").Updates(&u)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+func SetIsGoing(c context.Context, u *User) error {
+	result := db.WithContext(c).Model(&u).Select("is_going").Updates(&u)
+	return result.Error
 }
 
 // Maybe update a user (if no errors) and returns the number of inserted records
@@ -71,31 +67,37 @@ func SetCanInviteOthers(u *User) error {
 // a given boolean field without overwriting unspecified fields.
 //
 // See: https://gorm.io/docs/update.html#Updates-multiple-columns
-func UpdateUser(u *User) error {
-	result := db.Model(&u).Clauses(clause.Returning{}).Updates(&u)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+func UpdateUser(c context.Context, u *User) error {
+	result := db.WithContext(c).Model(&u).Clauses(clause.Returning{}).Updates(&u)
+	return result.Error
 }
 
 // Maybe delete a user (if no errors) and returns the number of deleted records
-func DeleteUser(id uuid.UUID) (*int64, error) {
+func DeleteUser(c context.Context, id uuid.UUID) (int64, error) {
 	// Since our models have DeletedAt set, this makes Gorm "soft delete" records on normal delete operations.
 	// We can add .Unscoped() prior to the .Delete() call if we want to permanently-delete them.
-	result := db.Delete(&User{}, id)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return &result.RowsAffected, nil
+	result := db.WithContext(c).Delete(&User{}, id)
+	return result.RowsAffected, result.Error
 }
 
 // Find Users by the given ids; returns a User slice
-func FindUsers(ids []uuid.UUID) ([]User, error) {
+func FindUsers(c context.Context, ids []uuid.UUID) ([]User, error) {
 	var users []User
-	result := db.Find(&users, ids)
-	if result.Error != nil {
-		return nil, result.Error
+	result := db.WithContext(c).Find(&users, ids)
+	return users, result.Error
+}
+
+// Find user with the given details
+//
+// If email is provided, perform lookup by email. Otherwise, assume lookup by ID. If you perform a lookup
+// using a User object that doesn't have ID OR email set, this will return the first record in the set (which
+// is probably not what you want).
+func FindUser(c context.Context, u *User) error {
+	var result *gorm.DB
+	if u.Email != "" {
+		result = db.WithContext(c).Where("email = ?", u.Email).First(&u)
+	} else {
+		result = db.WithContext(c).Find(&u)
 	}
-	return users, nil
+	return result.Error
 }

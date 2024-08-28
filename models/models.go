@@ -15,6 +15,10 @@ import (
 )
 
 type BaseModel struct {
+	// The time the record was created at
+	//
+	// We override Gorm's CreatedAt field so we can set the gorm:"<-:create" directive,
+	// which prevents this field from being altered once the record is created
 	CreatedAt time.Time      `json:"created_at" gorm:"<-:create"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`

@@ -231,6 +231,134 @@ const docTemplate = `{
                 }
             }
         },
+        "/invitee/{id}": {
+            "delete": {
+                "description": "Deletes an invitee",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user invitee"
+                ],
+                "summary": "deletes an invitee",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "User ID of the invitee to delete",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "Logs in a user and returns the user details for the user (if authentication is successful)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Logs in a user",
+                "parameters": [
+                    {
+                        "description": "Log in details",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.UserLoginInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    }
+                }
+            }
+        },
+        "/signup": {
+            "post": {
+                "description": "Signs up a new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Signs up a new user",
+                "parameters": [
+                    {
+                        "description": "Sign up details",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.UserSignupInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "post": {
                 "description": "Creates a user with the given input and returns an array of user objects, containing the newly-created user",
@@ -243,7 +371,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "creates a user",
+                "summary": "admin-only operation to create a user",
                 "parameters": [
                     {
                         "description": "The input user data (only ` + "`" + `first_name` + "`" + `, ` + "`" + `last_name` + "`" + ` and ` + "`" + `email` + "`" + ` are required)",
@@ -284,7 +412,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "deletes a user",
+                "summary": "admin-only operation to delete a user",
                 "parameters": [
                     {
                         "type": "string",
@@ -356,50 +484,6 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/{inviter_id}/invitee/{invitee_id}": {
-            "delete": {
-                "description": "Deletes an invitee for the given user",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user invitee"
-                ],
-                "summary": "deletes an invitee for the given user",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "Invitee search by inviting user ID",
-                        "name": "inviter_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "Invitee search by inviting user ID",
-                        "name": "invitee_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
                         }
                     }
                 }
@@ -643,6 +727,44 @@ const docTemplate = `{
                 }
             }
         },
+        "controllers.UserLoginInput": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.UserSignupInput": {
+            "type": "object",
+            "required": [
+                "email",
+                "first_name",
+                "last_name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.V1_API_RESPONSE_ENTREE": {
             "type": "object",
             "properties": {
@@ -722,6 +844,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "created_at": {
+                    "description": "The time the record was created at\n\nWe override Gorm's CreatedAt field so we can set the gorm:\"\u003c-:create\" directive,\nwhich prevents this field from being altered once the record is created",
                     "type": "string"
                 },
                 "deleted_at": {
@@ -745,6 +868,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "created_at": {
+                    "description": "The time the record was created at\n\nWe override Gorm's CreatedAt field so we can set the gorm:\"\u003c-:create\" directive,\nwhich prevents this field from being altered once the record is created",
                     "type": "string"
                 },
                 "deleted_at": {
@@ -769,47 +893,60 @@ const docTemplate = `{
                 "last_name"
             ],
             "properties": {
-                "can_invite_others": {
-                    "type": "boolean"
-                },
-                "createdAt": {
-                    "description": "We override Gorm's CreatedAt field so we can set the gorm:\"\u003c-:create\" directive,\nwhich prevents this field from being altered once the record is created",
-                    "type": "string"
-                },
                 "created_at": {
+                    "description": "The time the record was created at\n\nWe override Gorm's CreatedAt field so we can set the gorm:\"\u003c-:create\" directive,\nwhich prevents this field from being altered once the record is created",
                     "type": "string"
                 },
                 "deleted_at": {
                     "$ref": "#/definitions/gorm.DeletedAt"
                 },
                 "email": {
+                    "description": "The user's email (must be unique); this field is an index.",
                     "type": "string"
                 },
                 "entreeSelection": {
                     "$ref": "#/definitions/models.Entree"
                 },
                 "entree_selection_id": {
+                    "description": "The ID of the entree the user has selected; is null until the user makes a selection.",
                     "type": "string"
                 },
                 "first_name": {
+                    "description": "The user's first name.",
                     "type": "string"
                 },
                 "horsDoeuvresSelection": {
                     "$ref": "#/definitions/models.HorsDoeuvres"
                 },
                 "hors_doeuvres_selection_id": {
+                    "description": "The ID of the hors doeuvres the user has selected; is null until the user makes a selection.",
                     "type": "string"
                 },
                 "id": {
                     "type": "string"
                 },
-                "is_admin": {
-                    "type": "boolean"
-                },
                 "is_going": {
+                    "description": "Whether or not the user is attending.",
                     "type": "boolean"
                 },
                 "last_name": {
+                    "description": "The user's last name.",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "Either a hash of the user's password (when stored in the DB), or a plain-text representation of the password (plain-text version is never stored)",
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "description": "The user's auth refresh token.",
+                    "type": "string"
+                },
+                "role": {
+                    "description": "The user's role, which can be \"GUEST\", \"INVITEE\" or \"ADMIN\". Defaults to \"GUEST\".",
+                    "type": "string"
+                },
+                "token": {
+                    "description": "The user's auth token.",
                     "type": "string"
                 },
                 "updated_at": {

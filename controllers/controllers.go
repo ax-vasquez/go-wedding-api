@@ -2,6 +2,7 @@ package controllers
 
 import (
 	docs "github.com/ax-vasquez/wedding-site-api/docs"
+	"github.com/ax-vasquez/wedding-site-api/middleware"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -9,41 +10,61 @@ import (
 
 // @BasePath /api/v1
 
-type V1_API_RESPONSE struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
-	Data    gin.H  `json:"data"`
-}
-
-type DeleteRecordResponse struct {
-	DeletedRecords int `json:"deleted_records"`
-}
-
-type V1_API_DELETE_RESPONSE struct {
-	V1_API_RESPONSE
-	Data DeleteRecordResponse `json:"data"`
-}
-
 func paveRoutes() *gin.Engine {
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
+
+	// Routes without auth middleware (these are used to set/update the user's token, used by the auth middleware)
 	{
-		v1.DELETE("/entree/:id", DeleteEntree)
-		v1.DELETE("/horsdoeuvres/:id", DeleteHorsDoeuvres)
-		v1.DELETE("/user/:id", DeleteUser)
-		v1.DELETE("/invitee/:invitee_id", DeleteInviteeForUser)
-		v1.GET("/entrees", GetEntrees)
-		v1.GET("/horsdoeuvres", GetHorsDoeuvres)
-		v1.GET("/users", GetUsers)
-		v1.GET("/user/:id/invitees", GetInviteesForUser)
-		v1.GET("/user/:id/entrees", GetEntrees)
-		v1.GET("/user/:id/horsdoeuvres", GetHorsDoeuvres)
-		v1.PATCH("/user", UpdateUser)
-		v1.POST("/entree", CreateEntree)
-		v1.POST("/horsdoeuvres", CreateHorsDoeuvres)
-		v1.POST("/user", CreateUser)
-		v1.POST("/user/:id/invite-user", CreateUserInvitee)
+		v1.POST("/signup", Signup)
+		v1.POST("/login", Login)
+	}
+
+	// Routes for obtaining full or partial data sets for the base data types (admin-only)
+	resourceRoutesV1 := v1.Group("")
+	{
+		resourceRoutesV1.Use(middleware.AuthenticateV1())
+		resourceRoutesV1.GET("/entrees", GetEntrees)
+		resourceRoutesV1.GET("/users", GetUsers)
+		resourceRoutesV1.GET("/horsdoeuvres", GetHorsDoeuvres)
+	}
+
+	horsDoeuvresRoutesV1 := v1.Group("/horsdoeuvres")
+	{
+		horsDoeuvresRoutesV1.Use(middleware.AuthenticateV1())
+		horsDoeuvresRoutesV1.GET("/:id", GetHorsDoeuvres)
+		horsDoeuvresRoutesV1.POST("", middleware.IsAdmin(), CreateHorsDoeuvres)
+		horsDoeuvresRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteHorsDoeuvres)
+	}
+
+	entreeRoutesV1 := v1.Group("/entree")
+	{
+		entreeRoutesV1.Use(middleware.AuthenticateV1())
+		entreeRoutesV1.GET("/:id", GetEntrees)
+		entreeRoutesV1.POST("", middleware.IsAdmin(), CreateEntree)
+		entreeRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteEntree)
+	}
+
+	userRoutesV1 := v1.Group("/user")
+	{
+		userRoutesV1.Use(middleware.AuthenticateV1())
+		userRoutesV1.GET("/:id/invitees", middleware.IsAdminOrCurrentUser(), GetInviteesForUser)
+		// TODO: I've fixed the API that this was using before - it's better to have a specific "EntreeForUser" controller since GetEntrees gets one or all entrees, now
+		userRoutesV1.GET("/:id/entrees", middleware.IsAdminOrCurrentUser(), GetEntrees)
+		// TODO: Same note as for entrees - should use a different controller to get hors doeuvres for a user
+		userRoutesV1.GET("/:id/horsdoeuvres", middleware.IsAdminOrCurrentUser(), GetHorsDoeuvres)
+		userRoutesV1.PATCH("", middleware.IsAdminOrCurrentUser(), UpdateUser)
+		userRoutesV1.POST("", middleware.IsAdmin(), CreateUser)
+		userRoutesV1.POST("/:id/invite-user", middleware.IsAdminOrCurrentUser(), CreateUserInvitee)
+		userRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteUser)
+	}
+
+	inviteeRoutesV1 := v1.Group("/invitee")
+	{
+		inviteeRoutesV1.Use(middleware.AuthenticateV1())
+		// TODO: Make an endpoint that allows a guest to delete invitees they invited - this route is admin-only
+		inviteeRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteInvitee)
 	}
 
 	return r

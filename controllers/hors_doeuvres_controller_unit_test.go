@@ -15,6 +15,8 @@ import (
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/ax-vasquez/wedding-site-api/test"
+	"github.com/ax-vasquez/wedding-site-api/types"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -33,12 +35,15 @@ func Test_HorsDoeuvresController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
-		req, err := http.NewRequest("GET", "/api/v1/horsdoeuvres", nil)
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", models.NilUuid)
+		ctx.Set("user_role", "GUEST")
+		req, err := http.NewRequestWithContext(ctx, "GET", "/api/v1/horsdoeuvres", nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
@@ -53,13 +58,16 @@ func Test_HorsDoeuvresController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", someId.String())
+		ctx.Set("user_role", "GUEST")
 		routePath := fmt.Sprintf("/api/v1/user/%s/horsdoeuvres", someId)
-		req, err := http.NewRequest("GET", routePath, nil)
+		req, err := http.NewRequestWithContext(ctx, "GET", routePath, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
@@ -80,13 +88,16 @@ func Test_HorsDoeuvresController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", models.NilUuid)
+		ctx.Set("user_role", "ADMIN")
 		horsDoeuvresJson, _ := json.Marshal(testHorsDoeuvres)
-		req, err := http.NewRequest("POST", "/api/v1/horsdoeuvres", strings.NewReader(string(horsDoeuvresJson)))
+		req, err := http.NewRequestWithContext(ctx, "POST", "/api/v1/horsdoeuvres", strings.NewReader(string(horsDoeuvresJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
@@ -103,14 +114,17 @@ func Test_HorsDoeuvresController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", models.NilUuid)
+		ctx.Set("user_role", "ADMIN")
 		// Route needs to be generated since the ID of the record to delete is embedded within the route itself
 		routePath := fmt.Sprintf("/api/v1/horsdoeuvres/%s", someId)
-		req, err := http.NewRequest("DELETE", routePath, nil)
+		req, err := http.NewRequestWithContext(ctx, "DELETE", routePath, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})

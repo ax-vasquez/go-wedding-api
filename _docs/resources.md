@@ -14,8 +14,9 @@ A list of useful references used while developing this API.
 
 * [`Makefile` documentation](https://www.gnu.org/software/make/manual/make.html)
 
-### Golang
+### Go
 
+* [Effective Go](https://go.dev/doc/effective_go)
 * [`defer`, `panic` and `recover`](https://go.dev/blog/defer-panic-and-recover)
 
 ### Gorm
@@ -39,6 +40,7 @@ A list of useful references used while developing this API.
 * [When to use pointers in Go](https://medium.com/@meeusdylan/when-to-use-pointers-in-go-44c15fe04eac)
 * [Go in production **(Soundcloud's standard practices)**](http://peter.bourgon.org/go-in-production)
 * [Go thread management](https://blog.stackademic.com/deep-dive-into-go-runtime-advanced-thread-management-explained-fd5c97b4daa4)
+* [JWT authentication in Golang](https://www.golang.company/blog/jwt-authentication-in-golang-using-gin-web-framework)
 
 ### GitHub
 
@@ -70,6 +72,11 @@ A list of useful references used while developing this API.
 * [Separating unit tests and integration tests in Go](https://stackoverflow.com/questions/25965584/separating-unit-tests-and-integration-tests-in-go)
 * [Mock functions in Go](https://stackoverflow.com/questions/19167970/mock-functions-in-go)
 * [Golang defaults to running tests concurrently in separate Goroutines](https://stackoverflow.com/questions/24375966/does-go-test-run-unit-tests-concurrently)
+* [If you can decode JWT, how are they secure?](https://stackoverflow.com/questions/27301557/if-you-can-decode-jwt-how-are-they-secure)
+* [Use of defer in go](https://stackoverflow.com/questions/47607955/use-of-defer-in-go)
+* [What if JWT is stolen?](https://stackoverflow.com/questions/34259248/what-if-jwt-is-stolen)
+* [Password validation with regexp](https://stackoverflow.com/questions/25837241/password-validation-with-regexp)
+* [JWT refresh token flow](https://stackoverflow.com/questions/27726066/jwt-refresh-token-flow)
 
 ### YouTube
 

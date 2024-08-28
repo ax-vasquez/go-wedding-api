@@ -15,6 +15,8 @@ import (
 
 	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/ax-vasquez/wedding-site-api/test"
+	"github.com/ax-vasquez/wedding-site-api/types"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -29,12 +31,11 @@ func Test_UserController_Unit(t *testing.T) {
 		BaseModel: models.BaseModel{
 			ID: uuid.New(),
 		},
-		IsAdmin:         true,
-		CanInviteOthers: true,
-		IsGoing:         true,
-		FirstName:       "Booples",
-		LastName:        "McFadden",
-		Email:           "fake@email.place",
+		Role:      "GUEST",
+		IsGoing:   true,
+		FirstName: "Booples",
+		LastName:  "McFadden",
+		Email:     "fake@email.place",
 	}
 	t.Run("GET /api/v1/users - internal server error", func(t *testing.T) {
 		_, mock, _ := models.Setup()
@@ -46,13 +47,16 @@ func Test_UserController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", u.ID.String())
+		ctx.Set("user_role", "ADMIN")
 		routePath := fmt.Sprintf("/api/v1/users?ids=%s", u.ID)
-		req, err := http.NewRequest("GET", routePath, nil)
+		req, err := http.NewRequestWithContext(ctx, "GET", routePath, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
@@ -60,16 +64,18 @@ func Test_UserController_Unit(t *testing.T) {
 		_, mock, _ := models.Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","is_admin","is_going","can_invite_others","first_name","last_name","email","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING "id`)).WithArgs(
+			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","role","is_going","first_name","last_name","email","password","token","refresh_token","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id"`)).WithArgs(
 			test.AnyTime{},
 			test.AnyTime{},
 			nil,
-			u.IsAdmin,
+			u.Role,
 			u.IsGoing,
-			u.CanInviteOthers,
 			u.FirstName,
 			u.LastName,
 			u.Email,
+			u.Password,
+			u.Token,
+			u.RefreshToken,
 			u.HorsDoeuvresSelectionId,
 			u.EntreeSelectionId,
 			u.ID,
@@ -79,40 +85,51 @@ func Test_UserController_Unit(t *testing.T) {
 
 		w := httptest.NewRecorder()
 		userJson, _ := json.Marshal(u)
-		req, err := http.NewRequest("POST", "/api/v1/user", strings.NewReader(string(userJson)))
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", u.ID.String())
+		ctx.Set("user_role", "ADMIN")
+		req, err := http.NewRequestWithContext(ctx, "POST", "/api/v1/user", strings.NewReader(string(userJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
 	t.Run("PATCH /api/v1/user - internal server error", func(t *testing.T) {
+		input := types.UpdateUserInput{
+			ID:        u.ID,
+			FirstName: "Newname",
+			LastName:  "Newlastname",
+			Email:     u.Email,
+		}
 		_, mock, _ := models.Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"is_admin"=$2,"is_going"=$3,"can_invite_others"=$4,"first_name"=$5,"last_name"=$6,"email"=$7 WHERE "users"."deleted_at" IS NULL AND "id" = $8 RETURNING *`)).WithArgs(
+			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"first_name"=$2,"last_name"=$3,"email"=$4 WHERE "users"."deleted_at" IS NULL AND "id" = $5 RETURNING *`)).WithArgs(
 			test.AnyTime{},
-			u.IsAdmin,
-			u.IsGoing,
-			u.CanInviteOthers,
-			u.FirstName,
-			u.LastName,
-			u.Email,
-			u.ID,
+			input.FirstName,
+			input.LastName,
+			input.Email,
+			input.ID,
 		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
-		updateUserJson, _ := json.Marshal(u)
-		req, err := http.NewRequest("PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
+
+		updateUserJson, _ := json.Marshal(input)
+		fmt.Println("PASSING INPUT: ", strings.NewReader(string(updateUserJson)))
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", u.ID.String())
+		ctx.Set("user_role", "GUEST")
+		req, err := http.NewRequestWithContext(ctx, "PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
@@ -129,14 +146,16 @@ func Test_UserController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
-		// Route needs to be generated since the ID of the record to delete is embedded within the route itself
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", u.ID.String())
+		ctx.Set("user_role", "ADMIN")
 		routePath := fmt.Sprintf("/api/v1/user/%s", someId)
-		req, err := http.NewRequest("DELETE", routePath, nil)
+		req, err := http.NewRequestWithContext(ctx, "DELETE", routePath, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
 
-		var jsonResponse V1_API_RESPONSE_ENTREE
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})

@@ -4,10 +4,12 @@
 package models
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"regexp"
 	"testing"
+	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/test"
 	"github.com/google/uuid"
@@ -18,6 +20,8 @@ func Test_EntreeModel_Unit(t *testing.T) {
 	os.Setenv("USE_MOCK_DB", "true")
 	assert := assert.New(t)
 	errMsg := "arbitrary database error"
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 	t.Run("FindEntrees - database error returns error", func(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectQuery(
@@ -25,7 +29,7 @@ func Test_EntreeModel_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		entrees, err := FindEntrees()
+		entrees, err := FindEntrees(ctx)
 
 		assert.Empty(entrees)
 		assert.NotNil(err)
@@ -41,7 +45,7 @@ func Test_EntreeModel_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		entree, err := FindEntreeById(someId)
+		entree, err := FindEntreeById(ctx, someId)
 
 		assert.Empty(entree)
 		assert.NotNil(err)
@@ -57,7 +61,7 @@ func Test_EntreeModel_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		entrees, err := FindEntreesForUser(someId)
+		entrees, err := FindEntreesForUser(ctx, someId)
 
 		assert.Empty(entrees)
 		assert.NotNil(err)
@@ -80,7 +84,7 @@ func Test_EntreeModel_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		entrees := []Entree{opt}
-		err := CreateEntrees(&entrees)
+		err := CreateEntrees(ctx, &entrees)
 
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
@@ -97,7 +101,7 @@ func Test_EntreeModel_Unit(t *testing.T) {
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
-		_, err := DeleteEntree(someId)
+		_, err := DeleteEntree(ctx, someId)
 
 		assert.NotNil(err)
 		assert.Equal(errMsg, err.Error())
