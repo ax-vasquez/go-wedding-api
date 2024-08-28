@@ -12,3 +12,10 @@ func (a AnyTime) Match(v driver.Value) bool {
 	_, ok := v.(time.Time)
 	return ok
 }
+
+type AnyString struct{}
+
+func (a AnyString) Match(v driver.Value) bool {
+	_, ok := v.(string)
+	return ok
+}

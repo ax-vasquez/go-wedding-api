@@ -144,9 +144,8 @@ func Test_AuthController_Integration(t *testing.T) {
 			FirstName: "Test",
 			LastName:  "Person",
 			UserLoginInput: types.UserLoginInput{
-				Email: "some_other@email.place",
-				// Passwords must be at least 8 characters in length - this is too short
-				Password: "asdf12#$",
+				Email:    "some_other@email.place",
+				Password: "asdf1234",
 			},
 		}
 		newUserInputJson, _ := json.Marshal(newUserInput)
@@ -179,6 +178,23 @@ func Test_AuthController_Integration(t *testing.T) {
 		assert.Nil(err)
 		assert.NotEmpty(loginResponse.Data.Token)
 		assert.NotEmpty(loginResponse.Data.RefreshToken)
+	})
+	t.Run("POST /api/v1/login - failed login", func(t *testing.T) {
+		loginInput := types.UserLoginInput{
+			Email:    "user_1@fakedomain.com",
+			Password: "incorrectpw",
+		}
+		loginInputJson, _ := json.Marshal(loginInput)
+		w := httptest.NewRecorder()
+		req, err := http.NewRequest("POST", "/api/v1/login", strings.NewReader(string(loginInputJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusUnauthorized, w.Code)
+		loginResponse := types.V1_API_RESPONSE_AUTH{}
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &loginResponse)
+		assert.Nil(err)
+		assert.Empty(loginResponse.Data.Token)
+		assert.Empty(loginResponse.Data.RefreshToken)
 	})
 	t.Run("POST /api/v1/login - bad request", func(t *testing.T) {
 		loginInput := "bad input"

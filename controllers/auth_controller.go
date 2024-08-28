@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -41,14 +42,16 @@ func Signup(c *gin.Context) {
 
 	count, err := models.CountUsersByEmail(ctx, uInput.Email)
 	if err != nil {
+		log.Println("ERROR: ", err.Error())
 		status = http.StatusInternalServerError
-		response.Message = "Encountered an error while fetching user data for the given email."
+		response.Message = "Internal server error when checking if user exists"
 		response.Status = status
 		c.JSON(status, response)
 		return
 	}
 
 	if count > 0 {
+		log.Println("DUPLICATE USER SIGNUP ATTEMPT FOR EMAIL: ", uInput.Email)
 		status = http.StatusUnprocessableEntity
 		response.Message = "A user with this email address already exists."
 		response.Status = status
@@ -89,14 +92,17 @@ func Signup(c *gin.Context) {
 	createUserInput := []models.User{newUser}
 	err = models.CreateUsers(ctx, &createUserInput)
 	if err != nil {
+		log.Println("ERROR: ", err.Error())
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error while creating user"
+		response.Status = status
 		c.JSON(status, response)
 		return
 	}
 
 	token, refreshToken, err := helper.GenerateAllTokens(createUserInput[0].Email, createUserInput[0].FirstName, createUserInput[0].LastName, createUserInput[0].Role, createUserInput[0].ID)
 	if err != nil {
+		log.Println("ERROR: ", err.Error())
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error."
 		response.Status = status
@@ -176,6 +182,9 @@ func Login(c *gin.Context) {
 	if err != nil {
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error."
+		response.Status = status
+		c.JSON(status, response)
+		return
 	}
 
 	status = http.StatusAccepted
