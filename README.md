@@ -23,15 +23,16 @@ As changes are made to the API, the documentation will need to be updated as wel
 
 **Quick steps**
 
-1. `setup.sh`
-1. `docker-compose up -d`
-1. `go run main.go`
+1. `make setup`
+1. `make run`
 
 ### Generating the `.env` file
 
-The provided `setup.sh` script will generate the `.env` file for you and preload defaults. You can edit the generated variable
+Running `make setup` to bootstrap your local environment for development.
+
+The `setup` target will generate the `.env` file for you and preload defaults. You can edit the generated variable
 values as-needed, as well as add to the `.env` file if you need. If you somehow get into a state where you're missing a necessary
-environment variable, you can re-run `setup.sh` to add the missing variables back to your `.env` file non-destructively. It will 
+environment variable, you can re-run `make setup` to add the missing variables back to your `.env` file non-destructively. It will 
 not overwrite values for required variables that you may have edited.
 
 ### Starting the containers

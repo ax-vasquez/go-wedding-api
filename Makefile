@@ -1,6 +1,6 @@
-
+# Local dev environment setup
 setup:
-	echo "TODO"
+	./scripts/genDotenv.sh
 
 # Run the application for local development (do not use in deployments)
 run:
