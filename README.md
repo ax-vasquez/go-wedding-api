@@ -19,6 +19,12 @@ As changes are made to the API, the documentation will need to be updated as wel
 1. Generate the new docs using `swag init --parseDependency --parseInternal`
     * The flags are required so that it can infer details about objects that are not directly used in the API, but inherited by ones that are
 
+## Building
+
+Run `make build` to create a production-optimized build.
+
+All builds are placed in the `bin` directory, which is not committed to this repository.
+
 ## Local development
 
 **Quick steps**
