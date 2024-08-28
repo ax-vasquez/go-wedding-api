@@ -150,8 +150,9 @@ func Login(c *gin.Context) {
 	// Load the user details from the DB
 	err := models.FindUser(ctx, &dbUser)
 	if err != nil {
+		log.Println("ERROR: ", err.Error())
 		status = http.StatusInternalServerError
-		response.Message = "Internal server error."
+		response.Message = "Internal server error during user lookup"
 		response.Status = status
 		c.JSON(status, response)
 		return
@@ -170,6 +171,7 @@ func Login(c *gin.Context) {
 	// Generate new tokens for the user once we know the pass is valid
 	token, refreshToken, err := helper.GenerateAllTokens(dbUser.Email, dbUser.FirstName, dbUser.LastName, dbUser.Role, dbUser.ID)
 	if err != nil {
+		log.Println("ERROR: ", err.Error())
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error."
 		response.Status = status
@@ -180,8 +182,9 @@ func Login(c *gin.Context) {
 	// Update signed tokens in DB for user
 	err = helper.UpdateAllTokens(token, refreshToken, &dbUser)
 	if err != nil {
+		log.Println("ERROR: ", err.Error())
 		status = http.StatusInternalServerError
-		response.Message = "Internal server error."
+		response.Message = "Internal server error while saving auth details"
 		response.Status = status
 		c.JSON(status, response)
 		return
