@@ -8,6 +8,7 @@ EXPECTED_KEYS=(
     "PGSQL_PORT"
     "PGSQL_TIMEZONE"
     "JWT_SECRET_KEY"
+    "PORT"
 )
 
 # Check if .env file exists
@@ -39,6 +40,9 @@ do
         elif [ ${key} = "PGSQL_TIMEZONE" ]; then
             echo "Using \"US/Central\" as default value for \"${key}\""
             echo "${key}=US/Central" >> .env
+        elif [ ${key} = "PORT" ]; then
+            echo "Using \"US/Central\" as default value for \"${key}\""
+            echo "${key}=5000" >> .env
         fi
     fi
 done

@@ -4,6 +4,15 @@ A list of useful references used while developing this API.
 
 ## Vendors
 
+### Amazon (AWS)
+
+#### EC2
+
+* [EC2 Key Pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
+    * [Create EC2 Key Pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html)
+    * [Connect to Linux instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connect-to-linux-instance.html)
+* [EC2 Status Checks](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/viewing_status.html)
+
 ### Docker
 
 * [Docker Hub - PostgreSQL](https://hub.docker.com/_/postgres)
@@ -77,6 +86,8 @@ A list of useful references used while developing this API.
 * [What if JWT is stolen?](https://stackoverflow.com/questions/34259248/what-if-jwt-is-stolen)
 * [Password validation with regexp](https://stackoverflow.com/questions/25837241/password-validation-with-regexp)
 * [JWT refresh token flow](https://stackoverflow.com/questions/27726066/jwt-refresh-token-flow)
+* [Fixing AWS error with not existing instance profile during setup](https://stackoverflow.com/questions/30790666/error-with-not-existing-instance-profile-while-trying-to-get-a-django-project-ru/76620598#76620598)
+* [Debugging failed Elastic Beanstalk deployments](https://stackoverflow.com/questions/75539692/how-do-i-debug-instances-that-fail-to-deploy-with-elastic-beanstalk)
 
 ### YouTube
 
