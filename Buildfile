@@ -1,1 +1,1 @@
-make: ./build.sh
+make: chmod +x scripts/build.sh; ./build.sh
