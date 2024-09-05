@@ -6,6 +6,12 @@ A list of useful references used while developing this API.
 
 ### Amazon (AWS)
 
+#### Elastic Beanstalk (EB)
+
+* [Custom start commands using a `Procfile`](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/nodejs-configuration-procfile.html)
+* [Extending EB Linux Platforms (info on `Procfile` and `Buildfile`)](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/platforms-linux-extend.html)
+* [Go on Elastic Beanstalk Quick Start](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/go-quickstart.html)
+
 #### EC2
 
 * [EC2 Key Pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
@@ -50,6 +56,7 @@ A list of useful references used while developing this API.
 * [Go in production **(Soundcloud's standard practices)**](http://peter.bourgon.org/go-in-production)
 * [Go thread management](https://blog.stackademic.com/deep-dive-into-go-runtime-advanced-thread-management-explained-fd5c97b4daa4)
 * [JWT authentication in Golang](https://www.golang.company/blog/jwt-authentication-in-golang-using-gin-web-framework)
+* [Build a Gin application on AWS Elastic Beanstalk and scale it with Memcache](https://blog.memcachier.com/2018/07/30/gin-elastic-beanstalk-and-memcache/)
 
 ### GitHub
 
@@ -88,7 +95,9 @@ A list of useful references used while developing this API.
 * [JWT refresh token flow](https://stackoverflow.com/questions/27726066/jwt-refresh-token-flow)
 * [Fixing AWS error with not existing instance profile during setup](https://stackoverflow.com/questions/30790666/error-with-not-existing-instance-profile-while-trying-to-get-a-django-project-ru/76620598#76620598)
 * [Debugging failed Elastic Beanstalk deployments](https://stackoverflow.com/questions/75539692/how-do-i-debug-instances-that-fail-to-deploy-with-elastic-beanstalk)
+* [Create RDS with `eb` `create-env`](https://stackoverflow.com/questions/25946723/aws-cli-create-rds-with-elasticbeanstalk-create-environment)
 
 ### YouTube
 
 * [Improve Your Go Tests with TestMain](https://www.youtube.com/watch?v=MAdwtwHzGP4)
+* [Deploying your Go apps to AWS Elastic Beanstalk](https://www.youtube.com/watch?v=1WXJTlkf0S4)

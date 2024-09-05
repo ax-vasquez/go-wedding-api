@@ -42,7 +42,7 @@ do
             echo "${key}=US/Central" >> .env
         elif [ ${key} = "PORT" ]; then
             echo "Using \"US/Central\" as default value for \"${key}\""
-            echo "${key}=5000" >> .env
+            echo "${key}=8080" >> .env
         fi
     fi
 done
