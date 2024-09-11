@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"os"
 
 	docs "github.com/ax-vasquez/wedding-site-api/docs"
@@ -80,6 +81,7 @@ func SetupRoutes() error {
 		// Set to 5000 since that's what EB listens to by default
 		port = "5000"
 	}
+	fmt.Println("USING PORT: ", port)
 	r := paveRoutes()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return r.Run(":" + port)
