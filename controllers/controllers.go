@@ -1,9 +1,14 @@
 package controllers
 
 import (
+	"context"
+	"log"
 	"os"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	docs "github.com/ax-vasquez/wedding-site-api/docs"
 	"github.com/ax-vasquez/wedding-site-api/middleware"
 	"github.com/gin-contrib/cors"
@@ -94,12 +99,52 @@ func SetupRoutes() error {
 	}
 	r := paveRoutes()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	// TODO: Test this out; documentation is murky at best since there are apparently a bunch of ways to do this (that have also changed over time)
+	// TODO: See if there is a better way to load the certificates; it feels like there should be a way to use ACM for this, but it's not well documented
 	if gin.Mode() == "release" {
-		// My hope is that, because the application is running within Elastic Beanstalk, it should just be able to use the URI since they are part of the same VPC
-		certUri := os.Getenv("SSL_CERTIFICATE_S3_URI")
-		privateKeyUri := os.Getenv("SSL_PRIVATE_KEY_S3_URI")
-		return r.RunTLS((":" + port), certUri, privateKeyUri)
+		ctx := context.TODO()
+		cfg, err := config.LoadDefaultConfig(ctx)
+		if err != nil {
+			log.Fatalf("failed to load AWS configuration: %v", err)
+		}
+		bucket := os.Getenv("AWS_BUCKET")
+		certKey := os.Getenv("AWS_BUCKET_KEY_TO_CERTIFICATE")
+		privateKey := os.Getenv("AWS_BUCKET_KEY_TO_CERTIFICATE")
+		client := s3.NewFromConfig(cfg)
+
+		rawCertObj, err := client.GetObject(ctx, &s3.GetObjectInput{
+			Bucket: aws.String(bucket),
+			Key:    aws.String(certKey),
+		})
+		if err != nil {
+			log.Fatal("Failed to load certificate object: ", err.Error())
+		}
+		defer rawCertObj.Body.Close()
+		privateKeyObj, err := client.GetObject(ctx, &s3.GetObjectInput{
+			Bucket: aws.String(bucket),
+			Key:    aws.String(privateKey),
+		})
+		if err != nil {
+			log.Fatal("Failed to load private key object: ", err.Error())
+		}
+		defer privateKeyObj.Body.Close()
+
+		certFileName := "domain.cert.pem"
+		privateKeyFileName := "private.key.pem"
+
+		certFile, err := os.Create(certFileName)
+		if err != nil {
+			log.Printf("Couldn't create file %v. Here's why: %v\n", certFileName, err)
+			return err
+		}
+		defer certFile.Close()
+
+		privKeyFile, err := os.Create(privateKeyFileName)
+		if err != nil {
+			log.Printf("Couldn't create file %v. Here's why: %v\n", certFileName, err)
+			return err
+		}
+		defer privKeyFile.Close()
+		return r.RunTLS((":" + port), certFileName, privateKeyFileName)
 	}
 	return r.Run(":" + port)
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/ax-vasquez/wedding-site-api/controllers"
 	"github.com/ax-vasquez/wedding-site-api/models"
@@ -11,6 +12,7 @@ import (
 
 func main() {
 	var err error
+	log.Print(os.Getenv("GIN_MODE"))
 	// Configure dev environment
 	if gin.Mode() == "debug" {
 		log.Println("Running in local development mode...")

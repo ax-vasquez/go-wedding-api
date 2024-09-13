@@ -6,6 +6,8 @@ A list of useful references used while developing this API.
 
 ### Amazon (AWS)
 
+* [`Fn::GetAtt`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-getatt.html)
+
 #### Elastic Beanstalk (EB)
 
 * [Custom start commands using a `Procfile`](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/nodejs-configuration-procfile.html)

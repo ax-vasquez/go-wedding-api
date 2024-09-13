@@ -9,3 +9,6 @@ run:
 # Build the application into a binary (only for use in deployments)
 build:
 	GOOS=linux GOARCH=amd64 go build -o bin/application
+
+build-mac:
+	GOOS=darwin GOARCH=amd64 go build -o bin/application-mac
