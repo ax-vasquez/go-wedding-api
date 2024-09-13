@@ -96,6 +96,7 @@ func SetupRoutes() error {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	// TODO: Test this out; documentation is murky at best since there are apparently a bunch of ways to do this (that have also changed over time)
 	if gin.Mode() == "release" {
+		// My hope is that, because the application is running within Elastic Beanstalk, it should just be able to use the URI since they are part of the same VPC
 		certUri := os.Getenv("SSL_CERTIFICATE_S3_URI")
 		privateKeyUri := os.Getenv("SSL_PRIVATE_KEY_S3_URI")
 		return r.RunTLS((":" + port), certUri, privateKeyUri)
