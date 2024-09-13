@@ -15,6 +15,10 @@ deployed to Elastic Beanstalk and document my findings here.
     * Deployment would fail and rollback
 * **Application MUST run on port `5000` and binary MUST be named `application`; this was not covered in documentation aside from being shown as the port sample code used**
     * If you don't, the logs for the environment will not contain a `web.stdout.log` file (which is your application log output)
+* **Error: "staging application failed due to invalid zip file"**
+    * Located in `eb-engine.log`
+    * This is because you uploaded the incorrect file type; the binary must be zipped
+    * Using `eb deploy` _should_ zip the correct file contents for you
 
 ## Happy Path
 

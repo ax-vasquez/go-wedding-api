@@ -1,11 +1,12 @@
 package controllers
 
 import (
-	"fmt"
 	"os"
+	"time"
 
 	docs "github.com/ax-vasquez/wedding-site-api/docs"
 	"github.com/ax-vasquez/wedding-site-api/middleware"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -15,6 +16,15 @@ import (
 
 func paveRoutes() *gin.Engine {
 	r := gin.Default()
+	corsOrigin := os.Getenv("CORS_ORIGIN")
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{corsOrigin},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 	// Disable trusting all proxies for now since there aren't any concerns around using a load balancer (app is small scale).
 	r.SetTrustedProxies(nil)
 	docs.SwaggerInfo.BasePath = "/api/v1"
@@ -77,12 +87,18 @@ func paveRoutes() *gin.Engine {
 
 func SetupRoutes() error {
 	port := os.Getenv("PORT")
+
 	if port == "" {
 		// Set to 5000 since that's what EB listens to by default
 		port = "5000"
 	}
-	fmt.Println("USING PORT: ", port)
 	r := paveRoutes()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// TODO: Test this out; documentation is murky at best since there are apparently a bunch of ways to do this (that have also changed over time)
+	if gin.Mode() == "release" {
+		certUri := os.Getenv("SSL_CERTIFICATE_S3_URI")
+		privateKeyUri := os.Getenv("SSL_PRIVATE_KEY_S3_URI")
+		return r.RunTLS((":" + port), certUri, privateKeyUri)
+	}
 	return r.Run(":" + port)
 }

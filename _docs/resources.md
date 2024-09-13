@@ -11,6 +11,7 @@ A list of useful references used while developing this API.
 * [Custom start commands using a `Procfile`](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/nodejs-configuration-procfile.html)
 * [Extending EB Linux Platforms (info on `Procfile` and `Buildfile`)](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/platforms-linux-extend.html)
 * [Go on Elastic Beanstalk Quick Start](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/go-quickstart.html)
+* [Configuring HTTPS for Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https.html)
 
 #### EC2
 
