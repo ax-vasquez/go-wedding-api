@@ -17,6 +17,9 @@ import (
 func paveRoutes() *gin.Engine {
 	r := gin.Default()
 	corsOrigin := os.Getenv("CORS_ORIGIN")
+	if gin.Mode() == "debug" && corsOrigin == "" {
+		corsOrigin = "*"
+	}
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{corsOrigin},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH"},

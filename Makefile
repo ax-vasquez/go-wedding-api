@@ -1,3 +1,7 @@
+run-tests:
+	go test -tags=integration ./controllers -v
+	go test -tags=unit ./controllers -v
+
 # Local dev environment setup
 setup:
 	./scripts/genDotenv.sh
