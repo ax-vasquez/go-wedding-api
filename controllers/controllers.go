@@ -1,8 +1,12 @@
 package controllers
 
 import (
+	"os"
+	"time"
+
 	docs "github.com/ax-vasquez/wedding-site-api/docs"
 	"github.com/ax-vasquez/wedding-site-api/middleware"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -12,6 +16,19 @@ import (
 
 func paveRoutes() *gin.Engine {
 	r := gin.Default()
+	corsOrigin := os.Getenv("CORS_ORIGIN")
+	if gin.Mode() == "debug" && corsOrigin == "" {
+		corsOrigin = "*"
+	}
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{corsOrigin},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
+	// Disable trusting all proxies for now since there aren't any concerns around using a load balancer (app is small scale).
 	r.SetTrustedProxies(nil)
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
@@ -72,7 +89,13 @@ func paveRoutes() *gin.Engine {
 }
 
 func SetupRoutes() error {
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		// Set to 5000 since that's what EB listens to by default
+		port = "5000"
+	}
 	r := paveRoutes()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	return r.Run()
+	return r.Run(":" + port)
 }

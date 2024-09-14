@@ -4,6 +4,25 @@ A list of useful references used while developing this API.
 
 ## Vendors
 
+### Amazon (AWS)
+
+* [`Fn::GetAtt`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-getatt.html)
+
+#### Elastic Beanstalk (EB)
+
+* [Custom start commands using a `Procfile`](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/nodejs-configuration-procfile.html)
+* [Extending EB Linux Platforms (info on `Procfile` and `Buildfile`)](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/platforms-linux-extend.html)
+* [Go on Elastic Beanstalk Quick Start](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/go-quickstart.html)
+* [Configuring HTTPS for Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https.html)
+* [Routing custom domain traffic to Elastic Beanstalk](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-beanstalk-environment.html)
+
+#### EC2
+
+* [EC2 Key Pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
+    * [Create EC2 Key Pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html)
+    * [Connect to Linux instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connect-to-linux-instance.html)
+* [EC2 Status Checks](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/viewing_status.html)
+
 ### Docker
 
 * [Docker Hub - PostgreSQL](https://hub.docker.com/_/postgres)
@@ -41,6 +60,8 @@ A list of useful references used while developing this API.
 * [Go in production **(Soundcloud's standard practices)**](http://peter.bourgon.org/go-in-production)
 * [Go thread management](https://blog.stackademic.com/deep-dive-into-go-runtime-advanced-thread-management-explained-fd5c97b4daa4)
 * [JWT authentication in Golang](https://www.golang.company/blog/jwt-authentication-in-golang-using-gin-web-framework)
+* [Build a Gin application on AWS Elastic Beanstalk and scale it with Memcache](https://blog.memcachier.com/2018/07/30/gin-elastic-beanstalk-and-memcache/)
+* [Configuring a public RDS instance for access](https://stackoverflow.com/questions/31867896/aws-rds-public-access)
 
 ### GitHub
 
@@ -77,7 +98,12 @@ A list of useful references used while developing this API.
 * [What if JWT is stolen?](https://stackoverflow.com/questions/34259248/what-if-jwt-is-stolen)
 * [Password validation with regexp](https://stackoverflow.com/questions/25837241/password-validation-with-regexp)
 * [JWT refresh token flow](https://stackoverflow.com/questions/27726066/jwt-refresh-token-flow)
+* [Fixing AWS error with not existing instance profile during setup](https://stackoverflow.com/questions/30790666/error-with-not-existing-instance-profile-while-trying-to-get-a-django-project-ru/76620598#76620598)
+* [Debugging failed Elastic Beanstalk deployments](https://stackoverflow.com/questions/75539692/how-do-i-debug-instances-that-fail-to-deploy-with-elastic-beanstalk)
+* [Create RDS with `eb` `create-env`](https://stackoverflow.com/questions/25946723/aws-cli-create-rds-with-elasticbeanstalk-create-environment)
+* [RDS connection error - No `pg_hba.conf` entry for host](https://stackoverflow.com/questions/76899023/rds-while-connection-error-no-pg-hba-conf-entry-for-host)
 
 ### YouTube
 
 * [Improve Your Go Tests with TestMain](https://www.youtube.com/watch?v=MAdwtwHzGP4)
+* [Deploying your Go apps to AWS Elastic Beanstalk](https://www.youtube.com/watch?v=1WXJTlkf0S4)
