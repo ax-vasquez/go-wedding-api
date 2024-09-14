@@ -14,6 +14,7 @@ A list of useful references used while developing this API.
 * [Extending EB Linux Platforms (info on `Procfile` and `Buildfile`)](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/platforms-linux-extend.html)
 * [Go on Elastic Beanstalk Quick Start](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/go-quickstart.html)
 * [Configuring HTTPS for Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https.html)
+* [Routing custom domain traffic to Elastic Beanstalk](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-beanstalk-environment.html)
 
 #### EC2
 
