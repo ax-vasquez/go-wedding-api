@@ -43,19 +43,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_ENTREE"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_ENTREE"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_ENTREE"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_ENTREE"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_ENTREE"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_ENTREE"
                         }
                     }
                 }
@@ -83,13 +83,13 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_ENTREE"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_ENTREE"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_ENTREE"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_ENTREE"
                         }
                     }
                 }
@@ -109,13 +109,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_ENTREE"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_ENTREE"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_ENTREE"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_ENTREE"
                         }
                     }
                 }
@@ -135,13 +135,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_HORS_DOEUVRES"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_HORS_DOEUVRES"
                         }
                     }
                 }
@@ -173,19 +173,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_HORS_DOEUVRES"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_HORS_DOEUVRES"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_HORS_DOEUVRES"
                         }
                     }
                 }
@@ -213,19 +213,19 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_HORS_DOEUVRES"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_HORS_DOEUVRES"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_HORS_DOEUVRES"
                         }
                     }
                 }
@@ -255,13 +255,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
                         }
                     }
                 }
@@ -287,7 +287,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.UserLoginInput"
+                            "$ref": "#/definitions/types.UserLoginInput"
                         }
                     }
                 ],
@@ -295,19 +295,19 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     }
                 }
@@ -333,7 +333,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.UserSignupInput"
+                            "$ref": "#/definitions/types.UserSignupInput"
                         }
                     }
                 ],
@@ -341,19 +341,19 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     }
                 }
@@ -387,19 +387,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     }
                 }
@@ -427,19 +427,19 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     }
                 }
@@ -471,19 +471,19 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     }
                 }
@@ -513,13 +513,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_ENTREE"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_ENTREE"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_ENTREE"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_ENTREE"
                         }
                     }
                 }
@@ -549,13 +549,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_HORS_DOEUVRES"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_HORS_DOEUVRES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_HORS_DOEUVRES"
                         }
                     }
                 }
@@ -585,19 +585,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
                         }
                     }
                 }
@@ -627,19 +627,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USER_INVITEES"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
                         }
                     }
                 }
@@ -669,13 +669,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/controllers.V1_API_RESPONSE_USERS"
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     }
                 }
@@ -683,144 +683,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "controllers.EntreeData": {
-            "type": "object",
-            "properties": {
-                "entrees": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Entree"
-                    }
-                }
-            }
-        },
-        "controllers.HorsDoeuvresData": {
-            "type": "object",
-            "properties": {
-                "hors_doeuvres": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.HorsDoeuvres"
-                    }
-                }
-            }
-        },
-        "controllers.UserData": {
-            "type": "object",
-            "properties": {
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.User"
-                    }
-                }
-            }
-        },
-        "controllers.UserInviteeData": {
-            "type": "object",
-            "properties": {
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.User"
-                    }
-                }
-            }
-        },
-        "controllers.UserLoginInput": {
-            "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "controllers.UserSignupInput": {
-            "type": "object",
-            "required": [
-                "email",
-                "first_name",
-                "last_name",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "first_name": {
-                    "type": "string"
-                },
-                "last_name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "controllers.V1_API_RESPONSE_ENTREE": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/controllers.EntreeData"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
-        "controllers.V1_API_RESPONSE_HORS_DOEUVRES": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/controllers.HorsDoeuvresData"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
-        "controllers.V1_API_RESPONSE_USERS": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/controllers.UserData"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
-        "controllers.V1_API_RESPONSE_USER_INVITEES": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/controllers.UserInviteeData"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
         "gin.H": {
             "type": "object",
             "additionalProperties": {}
@@ -951,6 +813,144 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "types.EntreeData": {
+            "type": "object",
+            "properties": {
+                "entrees": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Entree"
+                    }
+                }
+            }
+        },
+        "types.HorsDoeuvresData": {
+            "type": "object",
+            "properties": {
+                "hors_doeuvres": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.HorsDoeuvres"
+                    }
+                }
+            }
+        },
+        "types.UserData": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.User"
+                    }
+                }
+            }
+        },
+        "types.UserInviteeData": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.User"
+                    }
+                }
+            }
+        },
+        "types.UserLoginInput": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.UserSignupInput": {
+            "type": "object",
+            "required": [
+                "email",
+                "first_name",
+                "last_name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.V1_API_RESPONSE_ENTREE": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/types.EntreeData"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "types.V1_API_RESPONSE_HORS_DOEUVRES": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/types.HorsDoeuvresData"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "types.V1_API_RESPONSE_USERS": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/types.UserData"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "types.V1_API_RESPONSE_USER_INVITEES": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/types.UserInviteeData"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         }

@@ -8,6 +8,7 @@ setup:
 
 # Run the application for local development (do not use in deployments)
 run:
+	swag init --generalInfo application.go --parseDependency --parseInternal
 	go run application.go
 
 # Build the application into a binary (only for use in deployments)

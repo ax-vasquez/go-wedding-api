@@ -35,8 +35,8 @@ func paveRoutes() *gin.Engine {
 
 	// Routes without auth middleware (these are used to set/update the user's token, used by the auth middleware)
 	{
-		v1.POST("/signup", Signup)
-		v1.POST("/login", Login)
+		v1.POST("/signup", Signup).Use(middleware.CSRF())
+		v1.POST("/login", Login).Use(middleware.CSRF())
 	}
 
 	// Routes for obtaining full or partial data sets for the base data types (admin-only)
@@ -52,16 +52,16 @@ func paveRoutes() *gin.Engine {
 	{
 		horsDoeuvresRoutesV1.Use(middleware.AuthenticateV1())
 		horsDoeuvresRoutesV1.GET("/:id", GetHorsDoeuvres)
-		horsDoeuvresRoutesV1.POST("", middleware.IsAdmin(), CreateHorsDoeuvres)
-		horsDoeuvresRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteHorsDoeuvres)
+		horsDoeuvresRoutesV1.POST("", middleware.IsAdmin(), CreateHorsDoeuvres).Use(middleware.CSRF())
+		horsDoeuvresRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteHorsDoeuvres).Use(middleware.CSRF())
 	}
 
 	entreeRoutesV1 := v1.Group("/entree")
 	{
 		entreeRoutesV1.Use(middleware.AuthenticateV1())
 		entreeRoutesV1.GET("/:id", GetEntrees)
-		entreeRoutesV1.POST("", middleware.IsAdmin(), CreateEntree)
-		entreeRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteEntree)
+		entreeRoutesV1.POST("", middleware.IsAdmin(), CreateEntree).Use(middleware.CSRF())
+		entreeRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteEntree).Use(middleware.CSRF())
 	}
 
 	userRoutesV1 := v1.Group("/user")
@@ -72,10 +72,10 @@ func paveRoutes() *gin.Engine {
 		userRoutesV1.GET("/:id/entrees", middleware.IsAdminOrCurrentUser(), GetEntrees)
 		// TODO: Same note as for entrees - should use a different controller to get hors doeuvres for a user
 		userRoutesV1.GET("/:id/horsdoeuvres", middleware.IsAdminOrCurrentUser(), GetHorsDoeuvres)
-		userRoutesV1.PATCH("", middleware.IsAdminOrCurrentUser(), UpdateUser)
-		userRoutesV1.POST("", middleware.IsAdmin(), CreateUser)
-		userRoutesV1.POST("/:id/invite-user", middleware.IsAdminOrCurrentUser(), CreateUserInvitee)
-		userRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteUser)
+		userRoutesV1.PATCH("", middleware.IsAdminOrCurrentUser(), UpdateUser).Use(middleware.CSRF())
+		userRoutesV1.POST("", middleware.IsAdmin(), CreateUser).Use(middleware.CSRF())
+		userRoutesV1.POST("/:id/invite-user", middleware.IsAdminOrCurrentUser(), CreateUserInvitee).Use(middleware.CSRF())
+		userRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteUser).Use(middleware.CSRF())
 	}
 
 	inviteeRoutesV1 := v1.Group("/invitee")
@@ -90,7 +90,6 @@ func paveRoutes() *gin.Engine {
 
 func SetupRoutes() error {
 	port := os.Getenv("PORT")
-
 	if port == "" {
 		// Set to 5000 since that's what EB listens to by default
 		port = "5000"

@@ -20,10 +20,10 @@ import (
 //	@Tags         auth
 //	@Accept       json
 //	@Produce      json
-//	@Param		  data body UserSignupInput true "Sign up details"
-//	@Success      202  {object}  V1_API_RESPONSE_USERS
-//	@Failure      400  {object}  V1_API_RESPONSE_USERS
-//	@Failure      500  {object}  V1_API_RESPONSE_USERS
+//	@Param		  data body types.UserSignupInput true "Sign up details"
+//	@Success      202  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      400  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USERS
 //	@Router       /signup [post]
 func Signup(c *gin.Context) {
 	var response types.V1_API_RESPONSE_AUTH
@@ -124,10 +124,11 @@ func Signup(c *gin.Context) {
 //	@Tags         auth
 //	@Accept       json
 //	@Produce      json
-//	@Param		  data body UserLoginInput true "Log in details"
-//	@Success      202  {object}  V1_API_RESPONSE_USERS
-//	@Failure      400  {object}  V1_API_RESPONSE_USERS
-//	@Failure      500  {object}  V1_API_RESPONSE_USERS
+//	@Param		  data body types.UserLoginInput true "Log in details"
+//	@Param		  csrf header http.Header false "toots"
+//	@Success      202  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      400  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USERS
 //	@Router       /login [post]
 func Login(c *gin.Context) {
 	var response types.V1_API_RESPONSE_AUTH

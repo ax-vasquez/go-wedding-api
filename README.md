@@ -9,14 +9,14 @@ and responses using a stack built from scratch.
 
 This project leverages [`gin-swagger`](https://github.com/swaggo/gin-swagger) for its API documentation.
 
-To view the API documentation locally, start the application (`go run main.go`) and navigate to `localhost:8080/swagger/index.html`
+To view the API documentation locally, start the application (`make run`) and navigate to `localhost:8080/swagger/index.html`
 
 ### Generating updating API documentation
 
 As changes are made to the API, the documentation will need to be updated as well. This is a two step process:
 
 1. Update the doc comment using the [appropriate formatting](https://github.com/swaggo/swag/blob/master/README.md#declarative-comments-format)
-1. Generate the new docs using `swag init --parseDependency --parseInternal`
+1. Generate the new docs using `swag init --generalInfo application.go --parseDependency --parseInternal`
     * The flags are required so that it can infer details about objects that are not directly used in the API, but inherited by ones that are
 
 ## Building

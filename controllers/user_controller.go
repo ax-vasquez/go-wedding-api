@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -20,8 +19,8 @@ import (
 //	@Description  Gets user(s) by the ID(s) in the request query string, `?ids=`
 //	@Tags         user
 //	@Produce      json
-//	@Success      200  {object}  V1_API_RESPONSE_USERS
-//	@Failure      500  {object}  V1_API_RESPONSE_USERS
+//	@Success      200  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USERS
 //	@Param 		  ids  path string true "user search by id" Format(uuid)
 //	@Router       /users [get]
 func GetUsers(c *gin.Context) {
@@ -55,9 +54,9 @@ func GetUsers(c *gin.Context) {
 //	@Accept       json
 //	@Produce      json
 //	@Param		  data body models.User true "The input user data (only `first_name`, `last_name` and `email` are required)"
-//	@Success      201  {object}  V1_API_RESPONSE_USERS
-//	@Failure      400  {object}  V1_API_RESPONSE_USERS
-//	@Failure      500  {object}  V1_API_RESPONSE_USERS
+//	@Success      201  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      400  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USERS
 //	@Router       /user [post]
 func CreateUser(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(c, 100*time.Second)
@@ -93,9 +92,9 @@ func CreateUser(c *gin.Context) {
 //	@Accept       json
 //	@Produce      json
 //	@Param		  data body models.User true "The input user update data (only `id` is required, but is not useful without setting other fields to update)"
-//	@Success      202  {object}  V1_API_RESPONSE_USERS
-//	@Failure      400  {object}  V1_API_RESPONSE_USERS
-//	@Failure      500  {object}  V1_API_RESPONSE_USERS
+//	@Success      202  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      400  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USERS
 //	@Router       /user [patch]
 func UpdateUser(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
@@ -111,7 +110,6 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("POKE")
 	u := &models.User{
 		BaseModel: models.BaseModel{
 			ID: input.ID,
@@ -153,9 +151,9 @@ func UpdateUser(c *gin.Context) {
 //	@Tags         user
 //	@Produce      json
 //	@Param 		  id  path string true "User ID" Format(uuid)
-//	@Success      202  {object}  V1_API_RESPONSE_USERS
-//	@Failure      400  {object}  V1_API_RESPONSE_USERS
-//	@Failure      500  {object}  V1_API_RESPONSE_USERS
+//	@Success      202  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      400  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USERS
 //	@Router       /user [delete]
 func DeleteUser(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)

@@ -28,7 +28,7 @@ type AuthDetails struct {
 
 type V1_API_RESPONSE_AUTH struct {
 	V1_API_RESPONSE
-	Data AuthDetails
+	Data AuthDetails `json:"data"`
 }
 
 type UserData struct {
