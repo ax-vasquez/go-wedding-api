@@ -97,6 +97,11 @@ const docTemplate = `{
         },
         "/entrees": {
             "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
                 "description": "Gets the selected entree for the given user ID (empty array if no selection has been made), or a list of all available entrees if no user ID is provided",
                 "produces": [
                     "application/json"
@@ -289,6 +294,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/types.UserLoginInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Anti CSRF token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -491,6 +503,11 @@ const docTemplate = `{
         },
         "/user/{user_id}/entrees": {
             "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
                 "description": "Gets the selected entree for the given user ID (empty array if no selection has been made), or a list of all available entrees if no user ID is provided",
                 "produces": [
                     "application/json"

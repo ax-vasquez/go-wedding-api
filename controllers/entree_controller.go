@@ -23,6 +23,7 @@ import (
 //	@Param 			user_id  path string true "User ID" Format(uuid)
 //	@Router       	/entrees [get]
 //	@Router       	/user/{user_id}/entrees [get]
+//	@Security	JWT
 func GetEntrees(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()

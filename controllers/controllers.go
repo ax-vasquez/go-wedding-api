@@ -12,10 +12,15 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+//@securityDefinitions.Bearer.type JWT
+//@in header
+//@name Authorization
+
 // @BasePath /api/v1
 
 func paveRoutes() *gin.Engine {
 	r := gin.Default()
+
 	corsOrigin := os.Getenv("CORS_ORIGIN")
 	if gin.Mode() == "debug" && corsOrigin == "" {
 		corsOrigin = "*"
@@ -23,7 +28,7 @@ func paveRoutes() *gin.Engine {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{corsOrigin},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH"},
-		AllowHeaders:     []string{"Origin"},
+		AllowHeaders:     []string{"Origin", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
@@ -36,7 +41,7 @@ func paveRoutes() *gin.Engine {
 	// Routes without auth middleware (these are used to set/update the user's token, used by the auth middleware)
 	{
 		v1.POST("/signup", Signup).Use(middleware.CSRF())
-		v1.POST("/login", Login).Use(middleware.CSRF())
+		v1.POST("/login", Login)
 	}
 
 	// Routes for obtaining full or partial data sets for the base data types (admin-only)

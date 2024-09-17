@@ -125,7 +125,7 @@ func Signup(c *gin.Context) {
 //	@Accept       json
 //	@Produce      json
 //	@Param		  data body types.UserLoginInput true "Log in details"
-//	@Param		  csrf header http.Header false "toots"
+//	@Param		  X-CSRF-Token	header	string	true "Anti CSRF token"
 //	@Success      202  {object}  types.V1_API_RESPONSE_USERS
 //	@Failure      400  {object}  types.V1_API_RESPONSE_USERS
 //	@Failure      500  {object}  types.V1_API_RESPONSE_USERS

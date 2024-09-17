@@ -272,6 +272,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/types.V1_API_RESPONSE_ENTREE'
+      security:
+      - JWT: []
       summary: gets one or all entrees
       tags:
       - entrees
@@ -389,6 +391,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/types.UserLoginInput'
+      - description: Anti CSRF token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -549,6 +556,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/types.V1_API_RESPONSE_ENTREE'
+      security:
+      - JWT: []
       summary: gets one or all entrees
       tags:
       - entrees
