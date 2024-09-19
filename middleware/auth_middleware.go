@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/ax-vasquez/wedding-site-api/helper"
-	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,7 +31,7 @@ func AuthenticateV1() gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		clientToken := c.Request.Header.Get("token")
+		clientToken := c.Request.Header.Get("auth-token")
 		if clientToken == "" {
 			c.JSON(http.StatusUnauthorized, V1_API_RESPONSE{
 				Status:  http.StatusUnauthorized,
@@ -42,6 +41,8 @@ func AuthenticateV1() gin.HandlerFunc {
 			return
 		}
 
+		// NOTE: If a manual change to the user has been made (for example, "GUEST" to "ADMIN") after the JWT was generated, the user should
+		// sign out and back in to generate a new token with new claims (so we don't have to hit the DB for the latest data each time).
 		claims, err := helper.ValidateToken(clientToken)
 		if err != "" {
 			c.JSON(http.StatusInternalServerError, V1_API_RESPONSE{
@@ -52,28 +53,10 @@ func AuthenticateV1() gin.HandlerFunc {
 			return
 		}
 
-		u := models.User{
-			BaseModel: models.BaseModel{
-				ID: claims.ID,
-			},
-		}
-
-		// Load user from the DB to ensure context has the latest info for the user (in case there have been manual DB updates not reflected in the JWT)
-		findErr := models.FindUser(c, &u)
-		if findErr != nil {
-			c.JSON(http.StatusInternalServerError, V1_API_RESPONSE{
-				Status:  http.StatusUnauthorized,
-				Message: err,
-			})
-			c.Abort()
-			return
-		}
-
-		c.Set("email", u.Email)
-		c.Set("first_name", u.FirstName)
-		c.Set("last_name", u.LastName)
+		c.Set("first_name", claims.FirstName)
+		c.Set("last_name", claims.LastName)
 		c.Set("uid", claims.ID.String())
-		c.Set("user_role", u.Role)
+		c.Set("user_role", claims.Role)
 		c.Next()
 	}
 }
