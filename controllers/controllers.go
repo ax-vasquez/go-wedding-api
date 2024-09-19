@@ -72,6 +72,7 @@ func paveRoutes() *gin.Engine {
 	userRoutesV1 := v1.Group("/user")
 	{
 		userRoutesV1.Use(middleware.AuthenticateV1())
+		userRoutesV1.GET("", middleware.IsAdminOrCurrentUser(), GetLoggedInUser)
 		userRoutesV1.GET("/:id/invitees", middleware.IsAdminOrCurrentUser(), GetInviteesForUser)
 		// TODO: I've fixed the API that this was using before - it's better to have a specific "EntreeForUser" controller since GetEntrees gets one or all entrees, now
 		userRoutesV1.GET("/:id/entrees", middleware.IsAdminOrCurrentUser(), GetEntrees)

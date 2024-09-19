@@ -13,6 +13,36 @@ import (
 	"github.com/google/uuid"
 )
 
+// GetLoggedInUser gets the currently logged in user
+//
+//	@Summary      gets the logged in user details
+//	@Description  Gets the logged in user by querying for user data in the context set using JWT claims during authentication.
+//	@Tags         user
+//	@Produce      json
+//	@Success      200  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USERS
+//	@Router       /user [get]
+func GetLoggedInUser(c *gin.Context) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+
+	response := types.V1_API_RESPONSE_USERS{}
+	var status int
+
+	idStr := c.GetString("uid")
+	id, _ := uuid.Parse(idStr)
+	users, err := models.FindUsers(ctx, []uuid.UUID{id})
+	if err != nil {
+		status = http.StatusInternalServerError
+		response.Message = "Internal server error"
+	} else {
+		status = http.StatusOK
+	}
+	response.Status = status
+	response.Data.Users = users
+	c.JSON(status, response)
+}
+
 // GetUsers gets user(s) by ID(s)
 //
 //	@Summary      gets user(s)
@@ -22,7 +52,7 @@ import (
 //	@Success      200  {object}  types.V1_API_RESPONSE_USERS
 //	@Failure      500  {object}  types.V1_API_RESPONSE_USERS
 //	@Param 		  ids  path string true "user search by id" Format(uuid)
-//	@Router       /users [get]
+//	@Router       /user [get]
 func GetUsers(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()

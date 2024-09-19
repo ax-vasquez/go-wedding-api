@@ -372,6 +372,40 @@ const docTemplate = `{
             }
         },
         "/user": {
+            "get": {
+                "description": "Gets user(s) by the ID(s) in the request query string, ` + "`" + `?ids=` + "`" + `",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "gets user(s)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "user search by id",
+                        "name": "ids",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Creates a user with the given input and returns an array of user objects, containing the newly-created user",
                 "consumes": [
@@ -657,42 +691,6 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
-                        }
-                    }
-                }
-            }
-        },
-        "/users": {
-            "get": {
-                "description": "Gets user(s) by the ID(s) in the request query string, ` + "`" + `?ids=` + "`" + `",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "gets user(s)",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "user search by id",
-                        "name": "ids",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
                         }
                     }
                 }

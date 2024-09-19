@@ -472,6 +472,29 @@ paths:
       summary: admin-only operation to delete a user
       tags:
       - user
+    get:
+      description: Gets user(s) by the ID(s) in the request query string, `?ids=`
+      parameters:
+      - description: user search by id
+        format: uuid
+        in: path
+        name: ids
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USERS'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USERS'
+      summary: gets user(s)
+      tags:
+      - user
     patch:
       consumes:
       - application/json
@@ -643,28 +666,4 @@ paths:
       summary: gets invitees for user
       tags:
       - user invitee
-  /users:
-    get:
-      description: Gets user(s) by the ID(s) in the request query string, `?ids=`
-      parameters:
-      - description: user search by id
-        format: uuid
-        in: path
-        name: ids
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/types.V1_API_RESPONSE_USERS'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/types.V1_API_RESPONSE_USERS'
-      summary: gets user(s)
-      tags:
-      - user
 swagger: "2.0"
