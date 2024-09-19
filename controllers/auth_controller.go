@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -42,7 +43,6 @@ func Signup(c *gin.Context) {
 
 	count, err := models.CountUsersByEmail(ctx, uInput.Email)
 	if err != nil {
-		log.Println("ERROR: ", err.Error())
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error when checking if user exists"
 		response.Status = status
@@ -51,9 +51,17 @@ func Signup(c *gin.Context) {
 	}
 
 	if count > 0 {
-		log.Println("DUPLICATE USER SIGNUP ATTEMPT FOR EMAIL: ", uInput.Email)
 		status = http.StatusUnprocessableEntity
 		response.Message = "A user with this email address already exists."
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
+
+	inviteCode := os.Getenv("INVITE_CODE")
+	if uInput.InviteCode != inviteCode {
+		status = http.StatusUnauthorized
+		response.Message = "Invalid invite code."
 		response.Status = status
 		c.JSON(status, response)
 		return

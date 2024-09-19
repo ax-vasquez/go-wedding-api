@@ -132,7 +132,6 @@ func UpdateUser(c *gin.Context) {
 	response := types.V1_API_RESPONSE_USERS{}
 	var status int
 	var input types.UpdateUserInput
-	log.Println("UPDATE INPUT: ", input)
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
 		response.Message = err.Error()

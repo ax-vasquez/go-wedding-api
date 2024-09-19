@@ -74,8 +74,9 @@ type UserLoginInput struct {
 
 type UserSignupInput struct {
 	UserLoginInput
-	FirstName string `json:"first_name" binding:"required"`
-	LastName  string `json:"last_name" binding:"required"`
+	FirstName  string `json:"first_name" binding:"required"`
+	LastName   string `json:"last_name" binding:"required"`
+	InviteCode string `json:"invite_code" binding:"required"`
 }
 
 type UpdateUserInput struct {

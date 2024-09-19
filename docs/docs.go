@@ -895,6 +895,7 @@ const docTemplate = `{
             "required": [
                 "email",
                 "first_name",
+                "invite_code",
                 "last_name",
                 "password"
             ],
@@ -903,6 +904,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "first_name": {
+                    "type": "string"
+                },
+                "invite_code": {
                     "type": "string"
                 },
                 "last_name": {
