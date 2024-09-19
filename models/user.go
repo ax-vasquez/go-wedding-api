@@ -83,7 +83,7 @@ func DeleteUser(c context.Context, id uuid.UUID) (int64, error) {
 // Find Users by the given ids; returns a User slice
 func FindUsers(c context.Context, ids []uuid.UUID) ([]User, error) {
 	var users []User
-	result := db.WithContext(c).Find(&users, ids)
+	result := db.WithContext(c).Select("id", "role", "first_name", "last_name", "email").Find(&users, ids)
 	return users, result.Error
 }
 
@@ -95,9 +95,9 @@ func FindUsers(c context.Context, ids []uuid.UUID) ([]User, error) {
 func FindUser(c context.Context, u *User) error {
 	var result *gorm.DB
 	if u.Email != "" {
-		result = db.WithContext(c).Where("email = ?", u.Email).First(&u)
+		result = db.WithContext(c).Select("id", "role", "first_name", "last_name", "email").Where("email = ?", u.Email).First(&u)
 	} else {
-		result = db.WithContext(c).Find(&u)
+		result = db.WithContext(c).Select("id", "role", "first_name", "last_name", "email").Find(&u)
 	}
 	return result.Error
 }
