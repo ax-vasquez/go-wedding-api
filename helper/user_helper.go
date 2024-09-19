@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/ax-vasquez/wedding-site-api/models"
-	"github.com/ax-vasquez/wedding-site-api/types"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/net/context"
 )
@@ -35,17 +34,7 @@ func MatchUserTypeToUid(c *gin.Context, userId string) (err error) {
 	userTypeStr, ok := userType.(string)
 
 	// If userId is empty at this point, it means there was no user ID present in the URL parameters
-	if userId == "" {
-		// Currently, the only endpoint where this logic should be possible is when a user is updating their own records (route does not have a user ID in it)
-		var updateUserInput types.UpdateUserInput
-		if err := c.ShouldBindBodyWithJSON(&updateUserInput); err != nil {
-			return err
-		}
-		if uid != updateUserInput.ID.String() {
-			err = errors.New("you are not authorised to access this resource")
-			return err
-		}
-	} else {
+	if userId != "" {
 		if !ok || uid != userId {
 			err = errors.New("you are not authorised to access this resource")
 			return err

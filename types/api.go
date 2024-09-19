@@ -79,7 +79,6 @@ type UserSignupInput struct {
 }
 
 type UpdateUserInput struct {
-	ID                      uuid.UUID  `json:"id" binding:"required"`
 	IsGoing                 bool       `json:"is_going"`
 	FirstName               string     `json:"first_name"`
 	LastName                string     `json:"last_name"`

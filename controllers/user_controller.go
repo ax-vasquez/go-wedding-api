@@ -132,6 +132,7 @@ func UpdateUser(c *gin.Context) {
 	response := types.V1_API_RESPONSE_USERS{}
 	var status int
 	var input types.UpdateUserInput
+	log.Println("UPDATE INPUT: ", input)
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
@@ -140,9 +141,28 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
+	userIdInContext, _ := c.Get("uid")
+	uidStr, ok := userIdInContext.(string)
+	if !ok {
+		status = http.StatusInternalServerError
+		response.Message = "ID in context failed type assertion (string)"
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
+
+	uid, err := uuid.Parse(uidStr)
+	if err != nil {
+		status = http.StatusInternalServerError
+		response.Message = err.Error()
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
+
 	u := &models.User{
 		BaseModel: models.BaseModel{
-			ID: input.ID,
+			ID: uid,
 		},
 		IsGoing:                 input.IsGoing,
 		FirstName:               input.FirstName,
