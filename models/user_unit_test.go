@@ -66,7 +66,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		someId := uuid.New()
 		_, mock, _ := Setup()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "users" WHERE "users"."id" = $1 AND "users"."deleted_at" IS NULL`)).WithArgs(
+			regexp.QuoteMeta(`SELECT "id","role","is_going","first_name","last_name","email","entree_selection_id","hors_doeuvres_selection_id" FROM "users" WHERE "users"."id" = $1 AND "users"."deleted_at" IS NULL`)).WithArgs(
 			someId,
 		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
@@ -100,7 +100,7 @@ func Test_UserModel_Unit(t *testing.T) {
 		_, mock, _ := Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"role"=$2,"is_going"=$3,"first_name"=$4,"last_name"=$5,"email"=$6 WHERE "users"."deleted_at" IS NULL AND "id" = $7 RETURNING *`)).WithArgs(
+			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"role"=$2,"is_going"=$3,"first_name"=$4,"last_name"=$5,"email"=$6 WHERE "users"."deleted_at" IS NULL AND "id" = $7 RETURNING "users"."role","users"."first_name","users"."last_name","users"."email","users"."hors_doeuvres_selection_id","users"."entree_selection_id"`)).WithArgs(
 			test.AnyTime{},
 			u.Role,
 			u.IsGoing,

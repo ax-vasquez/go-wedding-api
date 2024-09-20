@@ -12,10 +12,15 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+//@securityDefinitions.Bearer.type JWT
+//@in header
+//@name Authorization
+
 // @BasePath /api/v1
 
 func paveRoutes() *gin.Engine {
 	r := gin.Default()
+
 	corsOrigin := os.Getenv("CORS_ORIGIN")
 	if gin.Mode() == "debug" && corsOrigin == "" {
 		corsOrigin = "*"
@@ -23,7 +28,7 @@ func paveRoutes() *gin.Engine {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{corsOrigin},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH"},
-		AllowHeaders:     []string{"Origin"},
+		AllowHeaders:     []string{"Origin", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
@@ -67,12 +72,14 @@ func paveRoutes() *gin.Engine {
 	userRoutesV1 := v1.Group("/user")
 	{
 		userRoutesV1.Use(middleware.AuthenticateV1())
+		userRoutesV1.GET("", middleware.IsAdminOrCurrentUser(), GetLoggedInUser)
 		userRoutesV1.GET("/:id/invitees", middleware.IsAdminOrCurrentUser(), GetInviteesForUser)
 		// TODO: I've fixed the API that this was using before - it's better to have a specific "EntreeForUser" controller since GetEntrees gets one or all entrees, now
 		userRoutesV1.GET("/:id/entrees", middleware.IsAdminOrCurrentUser(), GetEntrees)
 		// TODO: Same note as for entrees - should use a different controller to get hors doeuvres for a user
 		userRoutesV1.GET("/:id/horsdoeuvres", middleware.IsAdminOrCurrentUser(), GetHorsDoeuvres)
-		userRoutesV1.PATCH("", middleware.IsAdminOrCurrentUser(), UpdateUser)
+		userRoutesV1.PATCH("", middleware.IsAdminOrCurrentUser(), UpdateLoggedInUser)
+		userRoutesV1.PATCH("/update-other", middleware.IsAdmin(), AdminUpdateUser)
 		userRoutesV1.POST("", middleware.IsAdmin(), CreateUser)
 		userRoutesV1.POST("/:id/invite-user", middleware.IsAdminOrCurrentUser(), CreateUserInvitee)
 		userRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteUser)
@@ -90,7 +97,6 @@ func paveRoutes() *gin.Engine {
 
 func SetupRoutes() error {
 	port := os.Getenv("PORT")
-
 	if port == "" {
 		// Set to 5000 since that's what EB listens to by default
 		port = "5000"

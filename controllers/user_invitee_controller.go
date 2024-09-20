@@ -18,9 +18,9 @@ import (
 //	@Description  Invites a user for ght given user
 //	@Tags         user invitee
 //	@Produce      json
-//	@Success      200  {object}  V1_API_RESPONSE_USER_INVITEES
-//	@Failure      400  {object}  V1_API_RESPONSE_USER_INVITEES
-//	@Failure      500  {object}  V1_API_RESPONSE_USER_INVITEES
+//	@Success      200  {object}  types.V1_API_RESPONSE_USER_INVITEES
+//	@Failure      400  {object}  types.V1_API_RESPONSE_USER_INVITEES
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USER_INVITEES
 //	@Param 		  user_id  path string true "Inviting user ID" Format(uuid)
 //	@Router       /user/{user_id}/invite-user [post]
 func CreateUserInvitee(c *gin.Context) {
@@ -62,9 +62,9 @@ func CreateUserInvitee(c *gin.Context) {
 //	@Description  Gets invitee user data for users invited by the given inviter ID
 //	@Tags         user invitee
 //	@Produce      json
-//	@Success      200  {object}  V1_API_RESPONSE_USER_INVITEES
-//	@Failure      400  {object}  V1_API_RESPONSE_USER_INVITEES
-//	@Failure      500  {object}  V1_API_RESPONSE_USER_INVITEES
+//	@Success      200  {object}  types.V1_API_RESPONSE_USER_INVITEES
+//	@Failure      400  {object}  types.V1_API_RESPONSE_USER_INVITEES
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USER_INVITEES
 //	@Param 		  user_id  path string true "Invitee search by inviting user ID" Format(uuid)
 //	@Router       /user/{user_id}/invitees [get]
 func GetInviteesForUser(c *gin.Context) {
@@ -96,8 +96,8 @@ func GetInviteesForUser(c *gin.Context) {
 //	@Description  Deletes an invitee
 //	@Tags         user invitee
 //	@Produce      json
-//	@Success      200  {object}  V1_API_RESPONSE_USER_INVITEES
-//	@Failure      500  {object}  V1_API_RESPONSE_USER_INVITEES
+//	@Success      200  {object}  types.V1_API_RESPONSE_USER_INVITEES
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USER_INVITEES
 //	@Param 		  id  path string true "User ID of the invitee to delete" Format(uuid)
 //	@Router       /invitee/{id} [delete]
 func DeleteInvitee(c *gin.Context) {

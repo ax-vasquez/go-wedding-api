@@ -18,8 +18,8 @@ import (
 //	@Description  Gets the selected hors doeuvres for the given user ID (empty array if no selection has been made), or a list of all available entrees if no user ID is provided
 //	@Tags         hors doeuvres
 //	@Produce      json
-//	@Success      200  {object}  V1_API_RESPONSE_HORS_DOEUVRES
-//	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Success      200  {object}  types.V1_API_RESPONSE_HORS_DOEUVRES
+//	@Failure      500  {object}  types.V1_API_RESPONSE_HORS_DOEUVRES
 //	@Param 		  user_id  path string true "User ID" Format(uuid)
 //	@Router       /horsdoeuvres [get]
 //	@Router       /user/{user_id}/horsdoeuvres [get]
@@ -81,9 +81,9 @@ func GetHorsDoeuvres(c *gin.Context) {
 //	@Accept       json
 //	@Produce      json
 //	@Param		  data body models.HorsDoeuvres true "The input hors doeuvres data (only `option_name` is required)"
-//	@Success      201  {object}  V1_API_RESPONSE_HORS_DOEUVRES
-//	@Failure      400  {object}  V1_API_RESPONSE_HORS_DOEUVRES
-//	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Success      201  {object}  types.V1_API_RESPONSE_HORS_DOEUVRES
+//	@Failure      400  {object}  types.V1_API_RESPONSE_HORS_DOEUVRES
+//	@Failure      500  {object}  types.V1_API_RESPONSE_HORS_DOEUVRES
 //	@Router       /horsdoeuvres [post]
 func CreateHorsDoeuvres(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
@@ -118,9 +118,9 @@ func CreateHorsDoeuvres(c *gin.Context) {
 //	@Tags         hors doeuvres
 //	@Produce      json
 //	@Param 		  id  path string true "Hors Doeuvres ID" Format(uuid)
-//	@Success      202  {object}  V1_API_RESPONSE_HORS_DOEUVRES
-//	@Failure      400  {object}  V1_API_RESPONSE_HORS_DOEUVRES
-//	@Failure      500  {object}  V1_API_RESPONSE_HORS_DOEUVRES
+//	@Success      202  {object}  types.V1_API_RESPONSE_HORS_DOEUVRES
+//	@Failure      400  {object}  types.V1_API_RESPONSE_HORS_DOEUVRES
+//	@Failure      500  {object}  types.V1_API_RESPONSE_HORS_DOEUVRES
 //	@Router       /horsdoeuvres [delete]
 func DeleteHorsDoeuvres(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)

@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -16,12 +17,14 @@ import (
 )
 
 func Test_AuthController_Integration(t *testing.T) {
+	inviteCode := os.Getenv("INVITE_CODE")
 	assert := assert.New(t)
 	router := paveRoutes()
 	t.Run("POST /api/v1/signup - successful signup", func(t *testing.T) {
 		newUserInput := types.UserSignupInput{
-			FirstName: "Test",
-			LastName:  "Person",
+			FirstName:  "Test",
+			LastName:   "Person",
+			InviteCode: inviteCode,
 			UserLoginInput: types.UserLoginInput{
 				Email:    "some@email.place",
 				Password: models.TestUserPassword,
@@ -51,6 +54,28 @@ func Test_AuthController_Integration(t *testing.T) {
 			assert.Empty(signupResponse.Data.RefreshToken)
 		})
 	})
+	t.Run("POST /api/v1/signup - bad invite code", func(t *testing.T) {
+		newUserInput := types.UserSignupInput{
+			FirstName:  "Tony",
+			LastName:   "Pepperoni",
+			InviteCode: "Junk",
+			UserLoginInput: types.UserLoginInput{
+				Email:    "some_other@email.place",
+				Password: models.TestUserPassword,
+			},
+		}
+		newUserInputJson, _ := json.Marshal(newUserInput)
+		w := httptest.NewRecorder()
+		req, err := http.NewRequest("POST", "/api/v1/signup", strings.NewReader(string(newUserInputJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusUnauthorized, w.Code)
+		signupResponse := types.V1_API_RESPONSE_AUTH{}
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &signupResponse)
+		assert.Nil(err)
+		assert.Empty(signupResponse.Data.Token)
+		assert.Empty(signupResponse.Data.RefreshToken)
+	})
 	t.Run("POST /api/v1/signup - bad request", func(t *testing.T) {
 		newUserInput := "invalid input"
 		newUserInputJson, _ := json.Marshal(newUserInput)
@@ -69,8 +94,9 @@ func Test_AuthController_Integration(t *testing.T) {
 	})
 	t.Run("POST /api/v1/signup - invalid password - password too short", func(t *testing.T) {
 		newUserInput := types.UserSignupInput{
-			FirstName: "Test",
-			LastName:  "Person",
+			FirstName:  "Test",
+			LastName:   "Person",
+			InviteCode: inviteCode,
 			UserLoginInput: types.UserLoginInput{
 				Email: "some_other@email.place",
 				// Passwords must be at least 8 characters in length - this is too short
@@ -93,8 +119,9 @@ func Test_AuthController_Integration(t *testing.T) {
 	})
 	t.Run("POST /api/v1/signup - invalid password - not enough capitals", func(t *testing.T) {
 		newUserInput := types.UserSignupInput{
-			FirstName: "Test",
-			LastName:  "Person",
+			FirstName:  "Test",
+			LastName:   "Person",
+			InviteCode: inviteCode,
 			UserLoginInput: types.UserLoginInput{
 				Email: "some_other@email.place",
 				// Passwords must be at least 8 characters in length - this is too short
@@ -117,8 +144,9 @@ func Test_AuthController_Integration(t *testing.T) {
 	})
 	t.Run("POST /api/v1/signup - invalid password - not enough digits", func(t *testing.T) {
 		newUserInput := types.UserSignupInput{
-			FirstName: "Test",
-			LastName:  "Person",
+			FirstName:  "Test",
+			LastName:   "Person",
+			InviteCode: inviteCode,
 			UserLoginInput: types.UserLoginInput{
 				Email: "some_other@email.place",
 				// Passwords must be at least 8 characters in length - this is too short
@@ -141,8 +169,9 @@ func Test_AuthController_Integration(t *testing.T) {
 	})
 	t.Run("POST /api/v1/signup - invalid password - not enough symbols", func(t *testing.T) {
 		newUserInput := types.UserSignupInput{
-			FirstName: "Test",
-			LastName:  "Person",
+			FirstName:  "Test",
+			LastName:   "Person",
+			InviteCode: inviteCode,
 			UserLoginInput: types.UserLoginInput{
 				Email:    "some_other@email.place",
 				Password: "asdf1234",

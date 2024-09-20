@@ -18,11 +18,12 @@ import (
 //	@Description  	Gets the selected entree for the given user ID (empty array if no selection has been made), or a list of all available entrees if no user ID is provided
 //	@Tags         	entrees
 //	@Produce      	json
-//	@Success      	200  {object}  V1_API_RESPONSE_ENTREE
-//	@Failure      	500  {object}  V1_API_RESPONSE_ENTREE
+//	@Success      	200  {object}  types.V1_API_RESPONSE_ENTREE
+//	@Failure      	500  {object}  types.V1_API_RESPONSE_ENTREE
 //	@Param 			user_id  path string true "User ID" Format(uuid)
 //	@Router       	/entrees [get]
 //	@Router       	/user/{user_id}/entrees [get]
+//	@Security	JWT
 func GetEntrees(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
@@ -80,9 +81,9 @@ func GetEntrees(c *gin.Context) {
 //	@Accept       json
 //	@Produce      json
 //	@Param		  data body models.Entree true "The input entree data (only `option_name` is required)"
-//	@Success      201  {object}  V1_API_RESPONSE_ENTREE
-//	@Failure      400  {object}  V1_API_RESPONSE_ENTREE
-//	@Failure      500  {object}  V1_API_RESPONSE_ENTREE
+//	@Success      201  {object}  types.V1_API_RESPONSE_ENTREE
+//	@Failure      400  {object}  types.V1_API_RESPONSE_ENTREE
+//	@Failure      500  {object}  types.V1_API_RESPONSE_ENTREE
 //	@Router       /entree [post]
 func CreateEntree(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
@@ -117,8 +118,8 @@ func CreateEntree(c *gin.Context) {
 //	@Tags         entrees
 //	@Produce      json
 //	@Param 		  id  path string true "Entree ID" Format(uuid)
-//	@Success      202  {object}  V1_API_RESPONSE_ENTREE
-//	@Failure      500  {object}  V1_API_RESPONSE_ENTREE
+//	@Success      202  {object}  types.V1_API_RESPONSE_ENTREE
+//	@Failure      500  {object}  types.V1_API_RESPONSE_ENTREE
 //	@Router       /entree [delete]
 func DeleteEntree(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)

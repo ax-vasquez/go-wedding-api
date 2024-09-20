@@ -28,7 +28,7 @@ type AuthDetails struct {
 
 type V1_API_RESPONSE_AUTH struct {
 	V1_API_RESPONSE
-	Data AuthDetails
+	Data AuthDetails `json:"data"`
 }
 
 type UserData struct {
@@ -74,12 +74,22 @@ type UserLoginInput struct {
 
 type UserSignupInput struct {
 	UserLoginInput
-	FirstName string `json:"first_name" binding:"required"`
-	LastName  string `json:"last_name" binding:"required"`
+	FirstName  string `json:"first_name" binding:"required"`
+	LastName   string `json:"last_name" binding:"required"`
+	InviteCode string `json:"invite_code" binding:"required"`
 }
 
 type UpdateUserInput struct {
-	ID                      uuid.UUID  `json:"id" binding:"required"`
+	IsGoing                 bool       `json:"is_going"`
+	FirstName               string     `json:"first_name"`
+	LastName                string     `json:"last_name"`
+	Email                   string     `json:"email"`
+	HorsDoeuvresSelectionId *uuid.UUID `json:"hors_douevres_selection_id"`
+	EntreeSelectionId       *uuid.UUID `json:"entree_selection_id"`
+}
+
+type AdminUpdateUserInput struct {
+	ID                      uuid.UUID  `json:"id"`
 	IsGoing                 bool       `json:"is_going"`
 	FirstName               string     `json:"first_name"`
 	LastName                string     `json:"last_name"`

@@ -6,7 +6,6 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/ax-vasquez/wedding-site-api/models"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -15,7 +14,13 @@ import (
 type CustomClaims struct {
 	*jwt.StandardClaims
 	TokenType string
-	models.User
+	ID        uuid.UUID `json:"id"`
+	// The user's role, which can be "GUEST", "INVITEE" or "ADMIN". Defaults to "GUEST".
+	Role string `json:"role"`
+	// The user's first name.
+	FirstName string `json:"first_name"`
+	// The user's last name.
+	LastName string `json:"last_name"`
 }
 
 var JWT_SECRET_KEY string = os.Getenv("JWT_SECRET_KEY")
@@ -42,15 +47,10 @@ func GenerateAllTokens(email string, firstName string, lastName string, userType
 
 	// Claims to be stored in the token
 	claims := &CustomClaims{
-		User: models.User{
-			BaseModel: models.BaseModel{
-				ID: uid,
-			},
-			Email:     email,
-			FirstName: firstName,
-			LastName:  lastName,
-			Role:      userType,
-		},
+		ID:        uid,
+		FirstName: firstName,
+		LastName:  lastName,
+		Role:      userType,
 		StandardClaims: &jwt.StandardClaims{
 			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(24)).Unix(),
 		},

@@ -68,7 +68,32 @@ func SetIsGoing(c context.Context, u *User) error {
 //
 // See: https://gorm.io/docs/update.html#Updates-multiple-columns
 func UpdateUser(c context.Context, u *User) error {
-	result := db.WithContext(c).Model(&u).Clauses(clause.Returning{}).Updates(&u)
+	result := db.WithContext(c).Model(&u).Clauses(clause.Returning{Columns: []clause.Column{
+		{
+			Table: "users",
+			Name:  "role",
+		},
+		{
+			Table: "users",
+			Name:  "first_name",
+		},
+		{
+			Table: "users",
+			Name:  "last_name",
+		},
+		{
+			Table: "users",
+			Name:  "email",
+		},
+		{
+			Table: "users",
+			Name:  "hors_doeuvres_selection_id",
+		},
+		{
+			Table: "users",
+			Name:  "entree_selection_id",
+		},
+	}}).Updates(&u)
 	return result.Error
 }
 
@@ -83,7 +108,7 @@ func DeleteUser(c context.Context, id uuid.UUID) (int64, error) {
 // Find Users by the given ids; returns a User slice
 func FindUsers(c context.Context, ids []uuid.UUID) ([]User, error) {
 	var users []User
-	result := db.WithContext(c).Find(&users, ids)
+	result := db.WithContext(c).Select("id", "role", "is_going", "first_name", "last_name", "email", "entree_selection_id", "hors_doeuvres_selection_id").Find(&users, ids)
 	return users, result.Error
 }
 
@@ -92,12 +117,17 @@ func FindUsers(c context.Context, ids []uuid.UUID) ([]User, error) {
 // If email is provided, perform lookup by email. Otherwise, assume lookup by ID. If you perform a lookup
 // using a User object that doesn't have ID OR email set, this will return the first record in the set (which
 // is probably not what you want).
-func FindUser(c context.Context, u *User) error {
+func FindUserSafe(c context.Context, u *User) error {
 	var result *gorm.DB
 	if u.Email != "" {
-		result = db.WithContext(c).Where("email = ?", u.Email).First(&u)
+		result = db.WithContext(c).Select("id", "role", "is_going", "first_name", "last_name", "email", "entree_selection_id", "hors_doeuvres_selection_id").Where("email = ?", u.Email).First(&u)
 	} else {
-		result = db.WithContext(c).Find(&u)
+		result = db.WithContext(c).Select("id", "role", "is_going", "first_name", "last_name", "email", "entree_selection_id", "hors_doeuvres_selection_id").Find(&u)
 	}
+	return result.Error
+}
+
+func FindUser(c context.Context, u *User) error {
+	var result = db.WithContext(c).Where("email = ?", u.Email).First(&u)
 	return result.Error
 }

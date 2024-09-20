@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -20,10 +21,10 @@ import (
 //	@Tags         auth
 //	@Accept       json
 //	@Produce      json
-//	@Param		  data body UserSignupInput true "Sign up details"
-//	@Success      202  {object}  V1_API_RESPONSE_USERS
-//	@Failure      400  {object}  V1_API_RESPONSE_USERS
-//	@Failure      500  {object}  V1_API_RESPONSE_USERS
+//	@Param		  data body types.UserSignupInput true "Sign up details"
+//	@Success      202  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      400  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USERS
 //	@Router       /signup [post]
 func Signup(c *gin.Context) {
 	var response types.V1_API_RESPONSE_AUTH
@@ -42,7 +43,6 @@ func Signup(c *gin.Context) {
 
 	count, err := models.CountUsersByEmail(ctx, uInput.Email)
 	if err != nil {
-		log.Println("ERROR: ", err.Error())
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error when checking if user exists"
 		response.Status = status
@@ -51,9 +51,17 @@ func Signup(c *gin.Context) {
 	}
 
 	if count > 0 {
-		log.Println("DUPLICATE USER SIGNUP ATTEMPT FOR EMAIL: ", uInput.Email)
 		status = http.StatusUnprocessableEntity
 		response.Message = "A user with this email address already exists."
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
+
+	inviteCode := os.Getenv("INVITE_CODE")
+	if uInput.InviteCode != inviteCode {
+		status = http.StatusUnauthorized
+		response.Message = "Invalid invite code."
 		response.Status = status
 		c.JSON(status, response)
 		return
@@ -82,6 +90,7 @@ func Signup(c *gin.Context) {
 		return
 	}
 
+	log.Println("SETTING PW: ", uInput.Password)
 	hashedPassword := helper.HashPassword(uInput.Password)
 	var newUser = models.User{}
 	newUser.FirstName = uInput.FirstName
@@ -124,10 +133,11 @@ func Signup(c *gin.Context) {
 //	@Tags         auth
 //	@Accept       json
 //	@Produce      json
-//	@Param		  data body UserLoginInput true "Log in details"
-//	@Success      202  {object}  V1_API_RESPONSE_USERS
-//	@Failure      400  {object}  V1_API_RESPONSE_USERS
-//	@Failure      500  {object}  V1_API_RESPONSE_USERS
+//	@Param		  data body types.UserLoginInput true "Log in details"
+//	@Param		  X-CSRF-Token	header	string	true "Anti CSRF token"
+//	@Success      202  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      400  {object}  types.V1_API_RESPONSE_USERS
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USERS
 //	@Router       /login [post]
 func Login(c *gin.Context) {
 	var response types.V1_API_RESPONSE_AUTH
@@ -151,8 +161,8 @@ func Login(c *gin.Context) {
 	err := models.FindUser(ctx, &dbUser)
 	if err != nil {
 		log.Println("ERROR: ", err.Error())
-		status = http.StatusInternalServerError
-		response.Message = "Internal server error during user lookup"
+		status = http.StatusNotFound
+		response.Message = "User not found"
 		response.Status = status
 		c.JSON(status, response)
 		return

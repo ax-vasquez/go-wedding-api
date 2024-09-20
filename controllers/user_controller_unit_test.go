@@ -37,6 +37,28 @@ func Test_UserController_Unit(t *testing.T) {
 		LastName:  "McFadden",
 		Email:     "fake@email.place",
 	}
+	t.Run("GET /api/v1/user - internal server error", func(t *testing.T) {
+		_, mock, _ := models.Setup()
+		mock.ExpectQuery(
+			regexp.QuoteMeta(`SELECT "id","role","is_going","first_name","last_name","email","entree_selection_id","hors_doeuvres_selection_id" FROM "users" WHERE "users"."id" = $1 AND "users"."deleted_at" IS NULL`)).WithArgs(
+			u.ID,
+		).WillReturnError(fmt.Errorf(errMsg))
+		mock.ExpectRollback()
+		mock.ExpectCommit()
+
+		w := httptest.NewRecorder()
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", u.ID.String())
+		ctx.Set("user_role", "ADMIN")
+		req, err := http.NewRequestWithContext(ctx, "GET", "/api/v1/user", nil)
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusInternalServerError, w.Code)
+
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
+		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
+		assert.Equal(apiErrMsg, jsonResponse.Message)
+	})
 	t.Run("GET /api/v1/users - internal server error", func(t *testing.T) {
 		_, mock, _ := models.Setup()
 		mock.ExpectQuery(
@@ -97,9 +119,52 @@ func Test_UserController_Unit(t *testing.T) {
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
-	t.Run("PATCH /api/v1/user - internal server error", func(t *testing.T) {
+	t.Run("PATCH /api/v1/user - internal server error - non-string ID in context", func(t *testing.T) {
 		input := types.UpdateUserInput{
-			ID:        u.ID,
+			FirstName: "Newname",
+			LastName:  "Newlastname",
+			Email:     u.Email,
+		}
+
+		w := httptest.NewRecorder()
+
+		updateUserJson, _ := json.Marshal(input)
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", nil)
+		ctx.Set("user_role", "GUEST")
+		req, err := http.NewRequestWithContext(ctx, "PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusInternalServerError, w.Code)
+
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
+		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
+		assert.Equal("ID in context failed type assertion (string)", jsonResponse.Message)
+	})
+	t.Run("PATCH /api/v1/user - internal server error - non-UUID ID in context", func(t *testing.T) {
+		input := types.UpdateUserInput{
+			FirstName: "Newname",
+			LastName:  "Newlastname",
+			Email:     u.Email,
+		}
+
+		w := httptest.NewRecorder()
+
+		updateUserJson, _ := json.Marshal(input)
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", "abcdef")
+		ctx.Set("user_role", "GUEST")
+		req, err := http.NewRequestWithContext(ctx, "PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusInternalServerError, w.Code)
+
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
+		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
+		assert.Equal("Invalid UUID detected in context.", jsonResponse.Message)
+	})
+	t.Run("PATCH /api/v1/user - internal server error during lookup", func(t *testing.T) {
+		input := types.UpdateUserInput{
 			FirstName: "Newname",
 			LastName:  "Newlastname",
 			Email:     u.Email,
@@ -107,12 +172,12 @@ func Test_UserController_Unit(t *testing.T) {
 		_, mock, _ := models.Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"first_name"=$2,"last_name"=$3,"email"=$4 WHERE "users"."deleted_at" IS NULL AND "id" = $5 RETURNING *`)).WithArgs(
+			regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"first_name"=$2,"last_name"=$3,"email"=$4 WHERE "users"."deleted_at" IS NULL AND "id" = $5 RETURNING "users"."role","users"."first_name","users"."last_name","users"."email","users"."hors_doeuvres_selection_id","users"."entree_selection_id"`)).WithArgs(
 			test.AnyTime{},
 			input.FirstName,
 			input.LastName,
 			input.Email,
-			input.ID,
+			test.AnyString{},
 		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
 		mock.ExpectCommit()
@@ -120,7 +185,6 @@ func Test_UserController_Unit(t *testing.T) {
 		w := httptest.NewRecorder()
 
 		updateUserJson, _ := json.Marshal(input)
-		fmt.Println("PASSING INPUT: ", strings.NewReader(string(updateUserJson)))
 		ctx := gin.CreateTestContextOnly(w, router)
 		ctx.Set("uid", u.ID.String())
 		ctx.Set("user_role", "GUEST")

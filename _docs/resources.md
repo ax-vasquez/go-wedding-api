@@ -62,6 +62,7 @@ A list of useful references used while developing this API.
 * [JWT authentication in Golang](https://www.golang.company/blog/jwt-authentication-in-golang-using-gin-web-framework)
 * [Build a Gin application on AWS Elastic Beanstalk and scale it with Memcache](https://blog.memcachier.com/2018/07/30/gin-elastic-beanstalk-and-memcache/)
 * [Configuring a public RDS instance for access](https://stackoverflow.com/questions/31867896/aws-rds-public-access)
+* [CSRF is dead](https://scotthelme.co.uk/csrf-is-dead/)
 
 ### GitHub
 
@@ -102,6 +103,8 @@ A list of useful references used while developing this API.
 * [Debugging failed Elastic Beanstalk deployments](https://stackoverflow.com/questions/75539692/how-do-i-debug-instances-that-fail-to-deploy-with-elastic-beanstalk)
 * [Create RDS with `eb` `create-env`](https://stackoverflow.com/questions/25946723/aws-cli-create-rds-with-elasticbeanstalk-create-environment)
 * [RDS connection error - No `pg_hba.conf` entry for host](https://stackoverflow.com/questions/76899023/rds-while-connection-error-no-pg-hba-conf-entry-for-host)
+* [Use existing session cookie in gin router](https://stackoverflow.com/questions/66289603/use-existing-session-cookie-in-gin-router)
+* [Do CSRF attacks apply to APIs?](https://stackoverflow.com/questions/10741339/do-csrf-attacks-apply-to-apis)
 
 ### YouTube
 
