@@ -90,7 +90,6 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	log.Println("SETTING PW: ", uInput.Password)
 	hashedPassword := helper.HashPassword(uInput.Password)
 	var newUser = models.User{}
 	newUser.FirstName = uInput.FirstName
