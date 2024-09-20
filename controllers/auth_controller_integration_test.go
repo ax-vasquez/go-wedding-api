@@ -54,6 +54,28 @@ func Test_AuthController_Integration(t *testing.T) {
 			assert.Empty(signupResponse.Data.RefreshToken)
 		})
 	})
+	t.Run("POST /api/v1/signup - bad invite code", func(t *testing.T) {
+		newUserInput := types.UserSignupInput{
+			FirstName:  "Tony",
+			LastName:   "Pepperoni",
+			InviteCode: "Junk",
+			UserLoginInput: types.UserLoginInput{
+				Email:    "some_other@email.place",
+				Password: models.TestUserPassword,
+			},
+		}
+		newUserInputJson, _ := json.Marshal(newUserInput)
+		w := httptest.NewRecorder()
+		req, err := http.NewRequest("POST", "/api/v1/signup", strings.NewReader(string(newUserInputJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusUnauthorized, w.Code)
+		signupResponse := types.V1_API_RESPONSE_AUTH{}
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &signupResponse)
+		assert.Nil(err)
+		assert.Empty(signupResponse.Data.Token)
+		assert.Empty(signupResponse.Data.RefreshToken)
+	})
 	t.Run("POST /api/v1/signup - bad request", func(t *testing.T) {
 		newUserInput := "invalid input"
 		newUserInputJson, _ := json.Marshal(newUserInput)
