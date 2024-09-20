@@ -176,6 +176,19 @@ func Test_UserController_Guest_Integration(t *testing.T) {
 	assert := assert.New(t)
 	router := paveRoutes()
 	token, _ := loginUser(router, assert, "user_1@fakedomain.com")
+	t.Run("GET /api/v1/user - user can get their own data", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		req, err := http.NewRequest("GET", "/api/v1/user", nil)
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("auth-token", token)
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		responseObj := types.V1_API_RESPONSE_USERS{}
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+		assert.Nil(err)
+		assert.Greater(len(responseObj.Data.Users), 0)
+		assert.Equal("Rupinder", responseObj.Data.Users[0].FirstName)
+	})
 	t.Run("GET /api/v1/users", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		routePath := fmt.Sprintf("/api/v1/users?ids=%s", models.FirstUserIdStr)
