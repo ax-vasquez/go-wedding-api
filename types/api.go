@@ -87,3 +87,13 @@ type UpdateUserInput struct {
 	HorsDoeuvresSelectionId *uuid.UUID `json:"hors_douevres_selection_id"`
 	EntreeSelectionId       *uuid.UUID `json:"entree_selection_id"`
 }
+
+type AdminUpdateUserInput struct {
+	ID                      uuid.UUID  `json:"id"`
+	IsGoing                 bool       `json:"is_going"`
+	FirstName               string     `json:"first_name"`
+	LastName                string     `json:"last_name"`
+	Email                   string     `json:"email"`
+	HorsDoeuvresSelectionId *uuid.UUID `json:"hors_douevres_selection_id"`
+	EntreeSelectionId       *uuid.UUID `json:"entree_selection_id"`
+}

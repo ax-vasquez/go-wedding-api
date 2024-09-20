@@ -73,7 +73,7 @@ func Test_UserController_Admin_Integration(t *testing.T) {
 		routePath := fmt.Sprintf("/api/v1/users?ids=%s", models.FirstUserIdStr)
 		req, err := http.NewRequest("GET", routePath, nil)
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("token", token)
+		req.Header.Set("auth-token", token)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		responseObj := types.V1_API_RESPONSE_USERS{}
@@ -93,7 +93,7 @@ func Test_UserController_Admin_Integration(t *testing.T) {
 		userJson, _ := json.Marshal(testUser)
 		req, err := http.NewRequest("POST", "/api/v1/user", strings.NewReader(string(userJson)))
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("token", token)
+		req.Header.Set("auth-token", token)
 		router.ServeHTTP(w, req)
 		assert.Equal(http.StatusCreated, w.Code)
 		assert.Nil(err)
@@ -102,30 +102,30 @@ func Test_UserController_Admin_Integration(t *testing.T) {
 		assert.Nil(err)
 		assert.Equal(1, len(responseObj.Data.Users))
 		assert.Equal("Spongebob", responseObj.Data.Users[0].FirstName)
-		// t.Run("PATCH /api/v1/user - admin - can update a user", func(t *testing.T) {
-		// 	w := httptest.NewRecorder()
-		// 	updateUserInput := types.UpdateUserInput{
-		// 		ID:       responseObj.Data.Users[0].ID,
-		// 		LastName: "Circlepants",
-		// 	}
-		// 	updateUserJson, _ := json.Marshal(updateUserInput)
-		// 	req, err := http.NewRequest("PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
-		// 	req.Header.Set("Content-Type", "application/json")
-		// 	req.Header.Set("token", token)
-		// 	router.ServeHTTP(w, req)
-		// 	assert.Nil(err)
-		// 	err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
-		// 	assert.Nil(err)
-		// 	assert.Equal(1, len(responseObj.Data.Users))
-		// 	assert.Equal("Circlepants", responseObj.Data.Users[0].LastName)
-		// })
+		t.Run("PATCH /api/v1/user - admin - can update a user", func(t *testing.T) {
+			w := httptest.NewRecorder()
+			updateUserInput := types.AdminUpdateUserInput{
+				ID:       responseObj.Data.Users[0].ID,
+				LastName: "Circlepants",
+			}
+			updateUserJson, _ := json.Marshal(updateUserInput)
+			req, err := http.NewRequest("PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("auth-token", token)
+			router.ServeHTTP(w, req)
+			assert.Nil(err)
+			err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+			assert.Nil(err)
+			assert.Equal(1, len(responseObj.Data.Users))
+			assert.Equal("Circlepants", responseObj.Data.Users[0].LastName)
+		})
 		t.Run("DELETE /api/v1/user/:id - admin - can delete a user", func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// Route needs to be generated since the ID of the record to delete is embedded within the route itself
 			routePath := fmt.Sprintf("/api/v1/user/%s", responseObj.Data.Users[0].ID)
 			req, err := http.NewRequest("DELETE", routePath, nil)
 			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("token", token)
+			req.Header.Set("auth-token", token)
 			router.ServeHTTP(w, req)
 			assert.Nil(err)
 			assert.Equal(http.StatusAccepted, w.Code)
@@ -142,7 +142,7 @@ func Test_UserController_Admin_Integration(t *testing.T) {
 		updateUserJson, _ := json.Marshal(updateUserInput)
 		req, err := http.NewRequest("PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("token", token)
+		req.Header.Set("auth-token", token)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
@@ -161,7 +161,7 @@ func Test_UserController_Admin_Integration(t *testing.T) {
 		testInviteeJson, _ := json.Marshal(badInviteeData)
 		req, err := http.NewRequest("POST", "/api/v1/user", strings.NewReader(string(testInviteeJson)))
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("token", token)
+		req.Header.Set("auth-token", token)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusBadRequest, w.Code)
@@ -181,7 +181,7 @@ func Test_UserController_Guest_Integration(t *testing.T) {
 		routePath := fmt.Sprintf("/api/v1/users?ids=%s", models.FirstUserIdStr)
 		req, err := http.NewRequest("GET", routePath, nil)
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("token", token)
+		req.Header.Set("auth-token", token)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		responseObj := types.V1_API_RESPONSE_USERS{}
@@ -190,63 +190,47 @@ func Test_UserController_Guest_Integration(t *testing.T) {
 		assert.Greater(len(responseObj.Data.Users), 0)
 		assert.Equal("Rupinder", responseObj.Data.Users[0].FirstName)
 	})
-	// TODO: update to read ID from gin context
-	// t.Run("PATCH /api/v1/user - guest - can update a their own user data", func(t *testing.T) {
-	// 	w := httptest.NewRecorder()
-	// 	uid, _ := uuid.Parse(models.FirstUserIdStr)
-	// 	updateUserInput := types.UpdateUserInput{
-	// 		LastName: "Circlepants",
-	// 	}
-	// 	updateUserJson, _ := json.Marshal(updateUserInput)
-	// 	req, err := http.NewRequest("PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
-	// 	req.Header.Set("Content-Type", "application/json")
-	// 	req.Header.Set("token", token)
-	// 	router.ServeHTTP(w, req)
-	// 	assert.Nil(err)
-	// 	responseObj := types.V1_API_RESPONSE_USERS{}
-	// 	err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
-	// 	assert.Nil(err)
-	// 	assert.Equal(1, len(responseObj.Data.Users))
-	// 	assert.Equal("Circlepants", responseObj.Data.Users[0].LastName)
-	// })
-	t.Run("PATCH /api/v1/user - guest - bad input returns unauthorized error", func(t *testing.T) {
+	t.Run("PATCH /api/v1/user - guest - can update a their own user data", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		updateUserInput := types.UpdateUserInput{
+			LastName: "Circlepants",
+		}
+		updateUserJson, _ := json.Marshal(updateUserInput)
+		req, err := http.NewRequest("PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("auth-token", token)
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		responseObj := types.V1_API_RESPONSE_USERS{}
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+		assert.Nil(err)
+		assert.Equal(1, len(responseObj.Data.Users))
+		assert.Equal("Circlepants", responseObj.Data.Users[0].LastName)
+	})
+	t.Run("PATCH /api/v1/user - guest - bad input returns 400", func(t *testing.T) {
 		responseObj := types.V1_API_RESPONSE_USERS{}
 		w := httptest.NewRecorder()
 		updateUserInput := "bad input"
 		updateUserJson, _ := json.Marshal(updateUserInput)
 		req, err := http.NewRequest("PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("token", token)
+		req.Header.Set("auth-token", token)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
 		assert.Nil(err)
-		assert.Equal(http.StatusUnauthorized, w.Code)
-		assert.Equal(http.StatusUnauthorized, responseObj.Status)
+		assert.Equal(http.StatusBadRequest, w.Code)
+		assert.Equal(http.StatusBadRequest, responseObj.Status)
 		assert.NotEmpty(responseObj.Message)
 		assert.Empty(responseObj.Data.Users)
 	})
-	// TODO: update to read ID from gin context
-	// t.Run("PATCH /api/v1/user - guest - cannot update data of another user", func(t *testing.T) {
-	// 	w := httptest.NewRecorder()
-	// 	updateUserInput := types.UpdateUserInput{
-	// 		LastName: "Circlepants",
-	// 	}
-	// 	updateUserJson, _ := json.Marshal(updateUserInput)
-	// 	req, err := http.NewRequest("PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
-	// 	req.Header.Set("Content-Type", "application/json")
-	// 	req.Header.Set("token", token)
-	// 	router.ServeHTTP(w, req)
-	// 	assert.Nil(err)
-	// 	assert.Equal(http.StatusUnauthorized, w.Code)
-	// })
 	t.Run("DELETE /api/v1/user/:id - guest - cannot delete a user", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		// Route needs to be generated since the ID of the record to delete is embedded within the route itself
 		routePath := fmt.Sprintf("/api/v1/user/%s", models.FirstEntreeIdStr)
 		req, err := http.NewRequest("DELETE", routePath, nil)
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("token", token)
+		req.Header.Set("auth-token", token)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusUnauthorized, w.Code)
@@ -262,7 +246,7 @@ func Test_UserController_Guest_Integration(t *testing.T) {
 		userJson, _ := json.Marshal(testUser)
 		req, err := http.NewRequest("POST", "/api/v1/user", strings.NewReader(string(userJson)))
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("token", token)
+		req.Header.Set("auth-token", token)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusUnauthorized, w.Code)
