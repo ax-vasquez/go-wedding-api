@@ -501,10 +501,9 @@ paths:
     patch:
       consumes:
       - application/json
-      description: Updates a user with the given input
+      description: Updates the logged in user with the given input
       parameters:
-      - description: The input user update data (only `id` is required, but is not
-          useful without setting other fields to update)
+      - description: Post body
         in: body
         name: data
         required: true
@@ -525,7 +524,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/types.V1_API_RESPONSE_USERS'
-      summary: updates a user
+      summary: updates the logged in user
       tags:
       - user
     post:

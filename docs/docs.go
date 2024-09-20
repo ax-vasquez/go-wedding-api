@@ -491,7 +491,7 @@ const docTemplate = `{
                 }
             },
             "patch": {
-                "description": "Updates a user with the given input",
+                "description": "Updates the logged in user with the given input",
                 "consumes": [
                     "application/json"
                 ],
@@ -501,10 +501,10 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "updates a user",
+                "summary": "updates the logged in user",
                 "parameters": [
                     {
-                        "description": "The input user update data (only ` + "`" + `id` + "`" + ` is required, but is not useful without setting other fields to update)",
+                        "description": "Post body",
                         "name": "data",
                         "in": "body",
                         "required": true,

@@ -121,7 +121,7 @@ func CreateUser(c *gin.Context) {
 //	@Tags         user
 //	@Accept       json
 //	@Produce      json
-//	@Param		  data body models.User true
+//	@Param		  data body models.User true "Post body"
 //	@Success      202  {object}  types.V1_API_RESPONSE_USERS
 //	@Failure      400  {object}  types.V1_API_RESPONSE_USERS
 //	@Failure      500  {object}  types.V1_API_RESPONSE_USERS
