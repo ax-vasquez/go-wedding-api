@@ -109,7 +109,7 @@ func Test_UserController_Admin_Integration(t *testing.T) {
 				LastName: "Circlepants",
 			}
 			updateUserJson, _ := json.Marshal(updateUserInput)
-			req, err := http.NewRequest("PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
+			req, err := http.NewRequest("PATCH", "/api/v1/user/update-other", strings.NewReader(string(updateUserJson)))
 			req.Header.Set("Content-Type", "application/json")
 			req.Header.Set("auth-token", token)
 			router.ServeHTTP(w, req)

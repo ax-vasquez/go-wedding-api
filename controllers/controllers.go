@@ -78,7 +78,8 @@ func paveRoutes() *gin.Engine {
 		userRoutesV1.GET("/:id/entrees", middleware.IsAdminOrCurrentUser(), GetEntrees)
 		// TODO: Same note as for entrees - should use a different controller to get hors doeuvres for a user
 		userRoutesV1.GET("/:id/horsdoeuvres", middleware.IsAdminOrCurrentUser(), GetHorsDoeuvres)
-		userRoutesV1.PATCH("", middleware.IsAdminOrCurrentUser(), UpdateUser)
+		userRoutesV1.PATCH("", middleware.IsAdminOrCurrentUser(), UpdateLoggedInUser)
+		userRoutesV1.PATCH("/update-other", middleware.IsAdmin(), AdminUpdateUser)
 		userRoutesV1.POST("", middleware.IsAdmin(), CreateUser)
 		userRoutesV1.POST("/:id/invite-user", middleware.IsAdminOrCurrentUser(), CreateUserInvitee)
 		userRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteUser)

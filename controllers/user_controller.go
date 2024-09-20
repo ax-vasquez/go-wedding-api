@@ -114,19 +114,19 @@ func CreateUser(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// UpdateUser updates a user
+// UpdateLoggedInUser updates the logged in user
 //
-//	@Summary      updates a user
-//	@Description  Updates a user with the given input
+//	@Summary      updates the logged in user
+//	@Description  Updates the logged in user with the given input
 //	@Tags         user
 //	@Accept       json
 //	@Produce      json
-//	@Param		  data body models.User true "The input user update data (only `id` is required, but is not useful without setting other fields to update)"
+//	@Param		  data body models.User true
 //	@Success      202  {object}  types.V1_API_RESPONSE_USERS
 //	@Failure      400  {object}  types.V1_API_RESPONSE_USERS
 //	@Failure      500  {object}  types.V1_API_RESPONSE_USERS
 //	@Router       /user [patch]
-func UpdateUser(c *gin.Context) {
+func UpdateLoggedInUser(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 	response := types.V1_API_RESPONSE_USERS{}
@@ -162,6 +162,54 @@ func UpdateUser(c *gin.Context) {
 	u := &models.User{
 		BaseModel: models.BaseModel{
 			ID: uid,
+		},
+		IsGoing:                 input.IsGoing,
+		FirstName:               input.FirstName,
+		LastName:                input.LastName,
+		Email:                   input.Email,
+		HorsDoeuvresSelectionId: input.HorsDoeuvresSelectionId,
+		EntreeSelectionId:       input.EntreeSelectionId,
+	}
+	updateErr := models.UpdateUser(ctx, u)
+	setIsGoingErr := models.SetIsGoing(ctx, u)
+	if updateErr != nil || setIsGoingErr != nil {
+		status = http.StatusInternalServerError
+		response.Message = "Internal server error"
+		response.Status = status
+		c.JSON(status, response)
+		if updateErr != nil {
+			log.Println("Error updating user: ", updateErr.Error())
+		}
+		if setIsGoingErr != nil {
+			log.Println("Error updating user: ", setIsGoingErr.Error())
+		}
+		return
+	}
+	status = http.StatusAccepted
+	response.Message = "Updated user"
+	response.Data.Users = []models.User{*u}
+
+	response.Status = status
+	c.JSON(status, response)
+}
+
+func AdminUpdateUser(c *gin.Context) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+	response := types.V1_API_RESPONSE_USERS{}
+	var status int
+	var input types.AdminUpdateUserInput
+	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
+		status = http.StatusBadRequest
+		response.Message = err.Error()
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
+
+	u := &models.User{
+		BaseModel: models.BaseModel{
+			ID: input.ID,
 		},
 		IsGoing:                 input.IsGoing,
 		FirstName:               input.FirstName,
