@@ -46,6 +46,7 @@ func TestMain(m *testing.M) {
 		log.Println("WARNING! Could not load .env file; application will continue to run with the assumption that needed variables are present in the environment.")
 	}
 	os.Setenv("TEST_ENV", "true")
+	os.Setenv("INVITE_CODE", "SomeCode")
 	models.Setup()
 	models.SeedTestData()
 

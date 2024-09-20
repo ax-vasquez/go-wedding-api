@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -16,12 +17,14 @@ import (
 )
 
 func Test_AuthController_Integration(t *testing.T) {
+	inviteCode := os.Getenv("INVITE_CODE")
 	assert := assert.New(t)
 	router := paveRoutes()
 	t.Run("POST /api/v1/signup - successful signup", func(t *testing.T) {
 		newUserInput := types.UserSignupInput{
-			FirstName: "Test",
-			LastName:  "Person",
+			FirstName:  "Test",
+			LastName:   "Person",
+			InviteCode: inviteCode,
 			UserLoginInput: types.UserLoginInput{
 				Email:    "some@email.place",
 				Password: models.TestUserPassword,
@@ -69,8 +72,9 @@ func Test_AuthController_Integration(t *testing.T) {
 	})
 	t.Run("POST /api/v1/signup - invalid password - password too short", func(t *testing.T) {
 		newUserInput := types.UserSignupInput{
-			FirstName: "Test",
-			LastName:  "Person",
+			FirstName:  "Test",
+			LastName:   "Person",
+			InviteCode: inviteCode,
 			UserLoginInput: types.UserLoginInput{
 				Email: "some_other@email.place",
 				// Passwords must be at least 8 characters in length - this is too short
@@ -93,8 +97,9 @@ func Test_AuthController_Integration(t *testing.T) {
 	})
 	t.Run("POST /api/v1/signup - invalid password - not enough capitals", func(t *testing.T) {
 		newUserInput := types.UserSignupInput{
-			FirstName: "Test",
-			LastName:  "Person",
+			FirstName:  "Test",
+			LastName:   "Person",
+			InviteCode: inviteCode,
 			UserLoginInput: types.UserLoginInput{
 				Email: "some_other@email.place",
 				// Passwords must be at least 8 characters in length - this is too short
@@ -117,8 +122,9 @@ func Test_AuthController_Integration(t *testing.T) {
 	})
 	t.Run("POST /api/v1/signup - invalid password - not enough digits", func(t *testing.T) {
 		newUserInput := types.UserSignupInput{
-			FirstName: "Test",
-			LastName:  "Person",
+			FirstName:  "Test",
+			LastName:   "Person",
+			InviteCode: inviteCode,
 			UserLoginInput: types.UserLoginInput{
 				Email: "some_other@email.place",
 				// Passwords must be at least 8 characters in length - this is too short
@@ -141,8 +147,9 @@ func Test_AuthController_Integration(t *testing.T) {
 	})
 	t.Run("POST /api/v1/signup - invalid password - not enough symbols", func(t *testing.T) {
 		newUserInput := types.UserSignupInput{
-			FirstName: "Test",
-			LastName:  "Person",
+			FirstName:  "Test",
+			LastName:   "Person",
+			InviteCode: inviteCode,
 			UserLoginInput: types.UserLoginInput{
 				Email:    "some_other@email.place",
 				Password: "asdf1234",
