@@ -28,7 +28,7 @@ func Test_UserModel_Integration(t *testing.T) {
 				ID: firstUserId,
 			},
 		}
-		err := FindUser(ctx, &u)
+		err := FindUserSafe(ctx, &u)
 		assert.Nil(err)
 		assert.Equal("Rupinder", u.FirstName)
 	})

@@ -90,6 +90,7 @@ func Signup(c *gin.Context) {
 		return
 	}
 
+	log.Println("SETTING PW: ", uInput.Password)
 	hashedPassword := helper.HashPassword(uInput.Password)
 	var newUser = models.User{}
 	newUser.FirstName = uInput.FirstName
@@ -160,8 +161,8 @@ func Login(c *gin.Context) {
 	err := models.FindUser(ctx, &dbUser)
 	if err != nil {
 		log.Println("ERROR: ", err.Error())
-		status = http.StatusInternalServerError
-		response.Message = "Internal server error during user lookup"
+		status = http.StatusNotFound
+		response.Message = "User not found"
 		response.Status = status
 		c.JSON(status, response)
 		return
