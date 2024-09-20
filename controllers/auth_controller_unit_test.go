@@ -24,6 +24,7 @@ import (
 
 func Test_AuthController_Unit(t *testing.T) {
 	os.Setenv("USE_MOCK_DB", "true")
+	os.Setenv("INVITE_CODE", "SomeCode")
 	assert := assert.New(t)
 	router := paveRoutes()
 	errMsg := "arbitrary database error"
@@ -33,8 +34,9 @@ func Test_AuthController_Unit(t *testing.T) {
 				Email:    "some@email.com",
 				Password: "ASdf12#$",
 			},
-			FirstName: "Firstname",
-			LastName:  "Lastname",
+			FirstName:  "Firstname",
+			LastName:   "Lastname",
+			InviteCode: "SomeCode",
 		}
 		_, mock, _ := models.Setup()
 		mock.ExpectQuery(regexp.QuoteMeta(`SELECT count(*) FROM "users" WHERE email = $1 AND "users"."deleted_at" IS NULL`)).WithArgs("some@email.com").WillReturnError(fmt.Errorf(errMsg))
@@ -57,8 +59,9 @@ func Test_AuthController_Unit(t *testing.T) {
 				Email:    "some@email.com",
 				Password: "ASdf12#$",
 			},
-			FirstName: "Firstname",
-			LastName:  "Lastname",
+			FirstName:  "Firstname",
+			LastName:   "Lastname",
+			InviteCode: "SomeCode",
 		}
 
 		_, mock, _ := models.Setup()
@@ -106,11 +109,11 @@ func Test_AuthController_Unit(t *testing.T) {
 		req, err := http.NewRequest("POST", "/api/v1/login", strings.NewReader(string(loginJson)))
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
-		assert.Equal(http.StatusInternalServerError, w.Code)
+		assert.Equal(http.StatusNotFound, w.Code)
 		loginResponse := types.V1_API_RESPONSE_AUTH{}
 		err = json.Unmarshal([]byte(w.Body.Bytes()), &loginResponse)
-		assert.Equal(http.StatusInternalServerError, loginResponse.Status)
-		assert.Equal("Internal server error during user lookup", loginResponse.Message)
+		assert.Equal(http.StatusNotFound, loginResponse.Status)
+		assert.Equal("User not found", loginResponse.Message)
 	})
 	t.Run("POST /api/v1/login - internal server error when saving token and refresh token for user", func(t *testing.T) {
 		fakeUserId := uuid.New()
