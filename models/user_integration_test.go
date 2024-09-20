@@ -22,13 +22,29 @@ func Test_UserModel_Integration(t *testing.T) {
 		assert.Nil(err)
 		assert.Equal("Rupinder", matchingUsers[0].FirstName)
 	})
-	t.Run("Can find a single user", func(t *testing.T) {
+	t.Run("Can find a single user without email", func(t *testing.T) {
 		u := User{
 			BaseModel: BaseModel{
 				ID: firstUserId,
 			},
 		}
 		err := FindUserSafe(ctx, &u)
+		assert.Nil(err)
+		assert.Equal("Rupinder", u.FirstName)
+	})
+	t.Run("Can find a single user with email", func(t *testing.T) {
+		u := User{
+			Email: "user_1@fakedomain.com",
+		}
+		err := FindUserSafe(ctx, &u)
+		assert.Nil(err)
+		assert.Equal("Rupinder", u.FirstName)
+	})
+	t.Run("Can get full user details (unsafe method for non-admins)", func(t *testing.T) {
+		u := User{
+			Email: "user_1@fakedomain.com",
+		}
+		err := FindUser(ctx, &u)
 		assert.Nil(err)
 		assert.Equal("Rupinder", u.FirstName)
 	})

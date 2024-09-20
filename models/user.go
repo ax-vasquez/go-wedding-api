@@ -2,7 +2,6 @@ package models
 
 import (
 	"context"
-	"log"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -121,7 +120,6 @@ func FindUsers(c context.Context, ids []uuid.UUID) ([]User, error) {
 func FindUserSafe(c context.Context, u *User) error {
 	var result *gorm.DB
 	if u.Email != "" {
-		log.Println("SEARCHING BY EMAIL...")
 		result = db.WithContext(c).Select("id", "role", "is_going", "first_name", "last_name", "email", "entree_selection_id", "hors_doeuvres_selection_id").Where("email = ?", u.Email).First(&u)
 	} else {
 		result = db.WithContext(c).Select("id", "role", "is_going", "first_name", "last_name", "email", "entree_selection_id", "hors_doeuvres_selection_id").Find(&u)
