@@ -37,6 +37,28 @@ func Test_UserController_Unit(t *testing.T) {
 		LastName:  "McFadden",
 		Email:     "fake@email.place",
 	}
+	t.Run("GET /api/v1/user - internal server error", func(t *testing.T) {
+		_, mock, _ := models.Setup()
+		mock.ExpectQuery(
+			regexp.QuoteMeta(`SELECT "id","role","is_going","first_name","last_name","email","entree_selection_id","hors_doeuvres_selection_id" FROM "users" WHERE "users"."id" = $1 AND "users"."deleted_at" IS NULL`)).WithArgs(
+			u.ID,
+		).WillReturnError(fmt.Errorf(errMsg))
+		mock.ExpectRollback()
+		mock.ExpectCommit()
+
+		w := httptest.NewRecorder()
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", u.ID.String())
+		ctx.Set("user_role", "ADMIN")
+		req, err := http.NewRequestWithContext(ctx, "GET", "/api/v1/user", nil)
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusInternalServerError, w.Code)
+
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
+		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
+		assert.Equal(apiErrMsg, jsonResponse.Message)
+	})
 	t.Run("GET /api/v1/users - internal server error", func(t *testing.T) {
 		_, mock, _ := models.Setup()
 		mock.ExpectQuery(
