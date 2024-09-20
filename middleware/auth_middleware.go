@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -33,7 +32,6 @@ func AuthenticateV1() gin.HandlerFunc {
 			return
 		}
 		clientToken := c.Request.Header.Get("auth-token")
-		log.Println("TOKEN: ", clientToken)
 		if clientToken == "" {
 			c.JSON(http.StatusUnauthorized, V1_API_RESPONSE{
 				Status:  http.StatusUnauthorized,
