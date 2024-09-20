@@ -153,7 +153,7 @@ func UpdateLoggedInUser(c *gin.Context) {
 	uid, err := uuid.Parse(uidStr)
 	if err != nil {
 		status = http.StatusInternalServerError
-		response.Message = err.Error()
+		response.Message = "Invalid UUID detected in context."
 		response.Status = status
 		c.JSON(status, response)
 		return
@@ -201,7 +201,7 @@ func AdminUpdateUser(c *gin.Context) {
 	var input types.AdminUpdateUserInput
 	if err := c.ShouldBindBodyWithJSON(&input); err != nil {
 		status = http.StatusBadRequest
-		response.Message = err.Error()
+		response.Message = "Invalid arguments."
 		response.Status = status
 		c.JSON(status, response)
 		return

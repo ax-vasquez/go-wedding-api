@@ -119,7 +119,51 @@ func Test_UserController_Unit(t *testing.T) {
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
-	t.Run("PATCH /api/v1/user - internal server error", func(t *testing.T) {
+	t.Run("PATCH /api/v1/user - internal server error - non-string ID in context", func(t *testing.T) {
+		input := types.UpdateUserInput{
+			FirstName: "Newname",
+			LastName:  "Newlastname",
+			Email:     u.Email,
+		}
+
+		w := httptest.NewRecorder()
+
+		updateUserJson, _ := json.Marshal(input)
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", nil)
+		ctx.Set("user_role", "GUEST")
+		req, err := http.NewRequestWithContext(ctx, "PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusInternalServerError, w.Code)
+
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
+		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
+		assert.Equal("ID in context failed type assertion (string)", jsonResponse.Message)
+	})
+	t.Run("PATCH /api/v1/user - internal server error - non-UUID ID in context", func(t *testing.T) {
+		input := types.UpdateUserInput{
+			FirstName: "Newname",
+			LastName:  "Newlastname",
+			Email:     u.Email,
+		}
+
+		w := httptest.NewRecorder()
+
+		updateUserJson, _ := json.Marshal(input)
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", "abcdef")
+		ctx.Set("user_role", "GUEST")
+		req, err := http.NewRequestWithContext(ctx, "PATCH", "/api/v1/user", strings.NewReader(string(updateUserJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusInternalServerError, w.Code)
+
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
+		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
+		assert.Equal("Invalid UUID detected in context.", jsonResponse.Message)
+	})
+	t.Run("PATCH /api/v1/user - internal server error during lookup", func(t *testing.T) {
 		input := types.UpdateUserInput{
 			FirstName: "Newname",
 			LastName:  "Newlastname",

@@ -82,6 +82,21 @@ func Test_UserController_Admin_Integration(t *testing.T) {
 		assert.Greater(len(responseObj.Data.Users), 0)
 		assert.Equal("Rupinder", responseObj.Data.Users[0].FirstName)
 	})
+	t.Run("PATCH /api/v1/user - admin - returns error with bad input", func(t *testing.T) {
+		responseObj := types.V1_API_RESPONSE_USERS{}
+		w := httptest.NewRecorder()
+		updateUserInput := "kitties"
+		updateUserJson, _ := json.Marshal(updateUserInput)
+		req, err := http.NewRequest("PATCH", "/api/v1/user/update-other", strings.NewReader(string(updateUserJson)))
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("auth-token", token)
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+		assert.Nil(err)
+		assert.Equal(http.StatusBadRequest, responseObj.Status)
+		assert.Equal("Invalid arguments.", responseObj.Message)
+	})
 	t.Run("POST /api/v1/user - admin - can create a user", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		testUser := models.User{
