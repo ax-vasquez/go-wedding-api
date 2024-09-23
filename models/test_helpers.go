@@ -34,7 +34,7 @@ var TestUserPassword = "ASdf12#$"
 
 func loadTestUsers(c context.Context) error {
 	users := []User{}
-	userInvitees := []User{}
+	userInvitees := []UserInvitee{}
 	admins := []User{}
 	userDataFile, err := os.ReadFile("../test-fixtures/users.json")
 	if err != nil {
@@ -68,30 +68,13 @@ func loadTestUsers(c context.Context) error {
 	if err != nil {
 		return errors.New("There was a problem creating test user records: " + err.Error())
 	}
-	err = CreateUsers(c, &userInvitees)
+	err = CreateUserInvitees(c, &userInvitees)
 	if err != nil {
 		return errors.New("There was a problem creating test user invitee records: " + err.Error())
 	}
 	err = CreateUsers(c, &admins)
 	if err != nil {
 		return errors.New("There was a problem creating test user invitee records: " + err.Error())
-	}
-	return nil
-}
-
-func loadTestUserInviteeRelationships() error {
-	records := []UserUserInvitee{}
-	recordsFile, err := os.ReadFile("../test-fixtures/user_user_invitees.json")
-	if err != nil {
-		return errors.New("There was a problem loading test user data from ./test-fixtures/user_user_invitees.json: " + err.Error())
-	}
-	err = json.Unmarshal(recordsFile, &records)
-	if err != nil {
-		return errors.New("There was a problem unmarshaling the JSON from file ./test-fixtures/user_user_invitees.json: " + err.Error())
-	}
-	err = CreateUserUserInvitees(records)
-	if err != nil {
-		return errors.New("There was a problem creating the test user user invitee records: " + err.Error())
 	}
 	return nil
 }
@@ -167,10 +150,6 @@ func SeedTestData() {
 		log.Println(err.Error())
 	}
 	err = loadTestUsers(ctx)
-	if err != nil {
-		log.Println(err.Error())
-	}
-	err = loadTestUserInviteeRelationships()
 	if err != nil {
 		log.Println(err.Error())
 	}

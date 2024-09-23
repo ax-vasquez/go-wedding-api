@@ -28,27 +28,21 @@ func CreateUserInvitee(c *gin.Context) {
 	defer cancel()
 	response := types.V1_API_RESPONSE_USER_INVITEES{}
 	var status int
-	var invitee models.User
-	idStr := c.Param("id")
-	id, err := uuid.Parse(idStr)
-	if err != nil {
+	var invitee models.UserInvitee
+
+	if err := c.ShouldBindBodyWithJSON(&invitee); err != nil {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
 	} else {
-		if err := c.ShouldBindBodyWithJSON(&invitee); err != nil {
-			status = http.StatusBadRequest
-			response.Message = err.Error()
+		err := models.CreateUserInvitee(&ctx, &invitee)
+		if err != nil {
+			status = http.StatusInternalServerError
+			response.Message = "Internal server error"
+			log.Println("Error creating user invitee: ", err.Error())
 		} else {
-			err := models.CreateUserInvitee(&ctx, id, &invitee)
-			if err != nil {
-				status = http.StatusInternalServerError
-				response.Message = "Internal server error"
-				log.Println("Error creating user invitee: ", err.Error())
-			} else {
-				status = http.StatusCreated
-				response.Message = "Created user invitee"
-				response.Data.Invitees = []models.User{invitee}
-			}
+			status = http.StatusCreated
+			response.Message = "Created user invitee"
+			response.Data.Invitees = []models.UserInvitee{invitee}
 		}
 	}
 

@@ -1,253 +1,203 @@
 [
     {
         "id": "007170d7-5633-4a44-9326-ddf9dce5a6ef",
-        "role": "INVITEE",
+        "inviter_id": "0ad1d80a-329b-4ffe-89c1-87af4d945953",
         "first_name": "Suman",
         "last_name": "Sousa",
-        "email": "user_26@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "c9af6978-cea0-4ebb-aebb-d9395d4f17a3",
-        "role": "INVITEE",
+        "inviter_id": "1f3602df-b04a-4abf-a595-0f323404d6e5",
         "first_name": "Padma",
         "last_name": "Van den Andel",
-        "email": "user_27@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "69e61704-84f7-4de9-b6e1-feda4149b692",
-        "role": "INVITEE",
+        "inviter_id": "3f59cb83-ac93-4d00-9530-a2cb103f6e7f",
         "first_name": "Blythe",
         "last_name": "Sobol",
-        "email": "user_28@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
 
     },
     {
         "id": "25444420-9f97-49f4-9ed1-d84cb98f9279",
-        "role": "INVITEE",
+        "inviter_id": "e2b5b82e-3eef-4113-89ac-3160cbda8df0",
         "first_name": "Esme",
         "last_name": "Espina",
-        "email": "user_29@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "8c1bea9a-4268-4374-865e-fa88125197a6",
-        "role": "INVITEE",
+        "inviter_id": "ff6aa443-4a46-49bc-84fc-1f3cb3530b45",
         "first_name": "Vijaya",
         "last_name": "Hyland",
-        "email": "user_30@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "8250a720-e96e-447e-ae22-7b0c1bea2e5d",
-        "role": "INVITEE",
+        "inviter_id": "6dce461d-bab9-4dcd-8233-c90fed4598ea",
         "first_name": "Bowie",
         "last_name": "Wolff",
-        "email": "user_31@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "73a63c2a-bd35-4ea9-b537-823180c48310",
-        "role": "INVITEE",
+        "inviter_id": "6a02e467-4005-40cd-872d-a4189419dd09",
         "first_name": "Kajal",
         "last_name": "North",
-        "email": "user_32@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "df3c21ba-ca73-4c8a-be06-ffa98506f1a2",
-        "role": "INVITEE",
+        "inviter_id": "149708cd-e5c2-4261-a5f3-d4bcae14dd69",
         "first_name": "Teddie",
         "last_name": "Storstrand",
-        "email": "user_33@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "510e0841-72aa-40b7-b919-4191501a6333",
-        "role": "INVITEE",
+        "inviter_id": "d555afc6-3d01-478e-90a0-a769fa9905d0",
         "first_name": "Karam",
         "last_name": "Lorenzen",
-        "email": "user_34@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "b4a00870-2c7b-4839-9c03-8b3e03ba08ad",
-        "role": "INVITEE",
+        "inviter_id": "4f20fc5c-01e7-41f6-8b6f-5c060ecf9a3d",
         "first_name": "Hollis",
         "last_name": "Abbatangelo",
-        "email": "user_35@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "58c96977-5057-4318-97e5-d58411504a15",
-        "role": "INVITEE",
+        "inviter_id": "02eac611-c2ad-40c1-80e3-25c022c94a8a",
         "first_name": "Gerry",
         "last_name": "Deniau",
-        "email": "user_36@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "971c4c13-d04c-4d9d-8042-c1bfc27a0819",
-        "role": "INVITEE",
+        "inviter_id": "6a99eb3d-0f46-4476-9f5d-5c15cc34eb1a",
         "first_name": "Made",
         "last_name": "Chowdhury",
-        "email": "user_37@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "a3dd7bee-0704-4d2f-b868-58aec01783f7",
-        "role": "INVITEE",
+        "inviter_id": "5a54bd2e-5b49-4774-9b77-385ca29e6b42",
         "first_name": "Lethokuhle",
         "last_name": "Marcos",
-        "email": "user_38@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "0c91290a-aa54-44b5-b8ee-e0b032b1e450",
-        "role": "INVITEE",
+        "inviter_id": "52d70ad2-8c9c-4b32-afaf-09535e5ad52e",
         "first_name": "Leilani",
         "last_name": "Barclay",
-        "email": "user_39@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "3d77cd73-ef62-4658-8012-c6dabd5a10a2",
-        "role": "INVITEE",
+        "inviter_id": "49992272-bd27-4558-9f1b-77cc37d46e12",
         "first_name": "Oghenekaro",
         "last_name": "Marchand",
-        "email": "user_40@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "41902d30-2521-4173-8c71-5e93d5f0046a",
-        "role": "INVITEE",
+        "inviter_id": "a61a5e25-5df1-4d3b-ad8a-0e7d25ff3630",
         "first_name": "Hennie",
         "last_name": "Lynch",
-        "email": "user_41@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "178e9cc9-4f2d-4438-84c6-2fffc4829391",
-        "role": "INVITEE",
+        "inviter_id": "505c0315-bbe8-43c8-a6bc-b01d36871d25",
         "first_name": "Payne",
         "last_name": "Hernandez",
-        "email": "user_42@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "e050c82a-4032-4f04-9d5c-859a9bf31a51",
-        "role": "INVITEE",
+        "inviter_id": "94e95ed8-2c09-49b8-a11a-10d79904dd43",
         "first_name": "Kumbukani",
         "last_name": "Minami",
-        "email": "user_43@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "e54ccbd1-6f42-48ee-be70-9143652dc37c",
-        "role": "INVITEE",
+        "inviter_id": "fb649270-dc4d-42d4-8bfa-877224a0b49a",
         "first_name": "Li",
         "last_name": "Vang",
-        "email": "user_44@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "f8643bb5-2eb7-47ea-b297-efe9e1587473",
-        "role": "INVITEE",
+        "inviter_id": "4114ba4b-fb82-4e1b-b8e6-63c767514740",
         "first_name": "Lethokuhle",
         "last_name": "Wilkins",
-        "email": "user_45@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "3ccd6116-6bc8-498b-9f5c-4337dee9ea0e",
-        "role": "INVITEE",
+        "inviter_id": "9db10555-6eca-428a-80ad-2125d01cccc0",
         "first_name": "Adedayo",
         "last_name": "Kjellsson",
-        "email": "user_46@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "1c228cf7-7551-4c61-9e41-d54bfae6328e",
-        "role": "INVITEE",
+        "inviter_id": "db62e0d4-b3fb-4274-b60a-8230cd08b02d",
         "first_name": "Ananta",
         "last_name": "Hanssen",
-        "email": "user_47@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "54e35d22-9466-432c-a455-0b049254a338",
-        "role": "INVITEE",
+        "inviter_id": "c68c64ee-a3ac-4d83-a8ce-fb51a7835e48",
         "first_name": "Purdie",
         "last_name": "Baghdasaryan",
-        "email": "user_48@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "60a327ee-85b2-4cc4-b584-679b503255be",
-        "role": "INVITEE",
+        "inviter_id": "7e496daf-d298-41b3-960d-72bad9316c1c",
         "first_name": "Tumelo",
         "last_name": "Đurić",
-        "email": "user_49@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     },
     {
         "id": "a49f0c0e-7e5f-450a-9864-9303f0caaa2d",
-        "role": "INVITEE",
+        "inviter_id": "494a1cb1-1484-4ab4-b058-9fb515014b6d",
         "first_name": "Andy",
         "last_name": "Kools",
-        "email": "user_50@fakedomain.com",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
-        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8",
-        "password": "$2a$14$lxCdKEMR/01ux8O2Qs4PEOoh5vDZ6zZIwk0bbnaabizNdedECn7VG"
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     }
 ]
