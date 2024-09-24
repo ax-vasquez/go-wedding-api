@@ -12,6 +12,13 @@ import (
 	"github.com/google/uuid"
 )
 
+type UserInviteeInput struct {
+	// The user's first name.
+	FirstName string `json:"first_name" binding:"required"`
+	// The user's last name.
+	LastName string `json:"last_name" binding:"required"`
+}
+
 // CreateUserInvitee invites a user
 //
 //	@Summary      invite a user
@@ -22,18 +29,25 @@ import (
 //	@Failure      400  {object}  types.V1_API_RESPONSE_USER_INVITEES
 //	@Failure      500  {object}  types.V1_API_RESPONSE_USER_INVITEES
 //	@Param 		  user_id  path string true "Inviting user ID" Format(uuid)
-//	@Router       /user/{user_id}/invite-user [post]
+//	@Router       /user/{user_id}/add-invitee [post]
 func CreateUserInvitee(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 	response := types.V1_API_RESPONSE_USER_INVITEES{}
 	var status int
-	var invitee models.UserInvitee
+	var invitee UserInviteeInput
 
 	if err := c.ShouldBindBodyWithJSON(&invitee); err != nil {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
 	} else {
+		inviterId := c.GetString("uid")
+		inviterIdUUID, _ := uuid.Parse(inviterId)
+		invitee := models.UserInvitee{
+			InviterId: inviterIdUUID,
+			FirstName: invitee.FirstName,
+			LastName:  invitee.LastName,
+		}
 		err := models.CreateUserInvitee(&ctx, &invitee)
 		if err != nil {
 			status = http.StatusInternalServerError
@@ -50,7 +64,7 @@ func CreateUserInvitee(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// GetInviteesForUser gets invitees for the given user
+// GetInviteesForLoggedInUser gets invitees for the authenticated user making the request
 //
 //	@Summary      gets invitees for user
 //	@Description  Gets invitee user data for users invited by the given inviter ID
@@ -61,24 +75,20 @@ func CreateUserInvitee(c *gin.Context) {
 //	@Failure      500  {object}  types.V1_API_RESPONSE_USER_INVITEES
 //	@Param 		  user_id  path string true "Invitee search by inviting user ID" Format(uuid)
 //	@Router       /user/{user_id}/invitees [get]
-func GetInviteesForUser(c *gin.Context) {
+func GetInviteesForLoggedInUser(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 	response := types.V1_API_RESPONSE_USER_INVITEES{}
 	var status int
-	id, err := uuid.Parse(c.Param("id"))
+	inviterId := c.GetString("uid")
+	inviterIdUUID, _ := uuid.Parse(inviterId)
+	status = http.StatusOK
+	data, err := models.FindInviteesForUser(&ctx, inviterIdUUID)
 	if err != nil {
-		status = http.StatusBadRequest
-		response.Message = err.Error()
+		status = http.StatusInternalServerError
+		response.Message = "Internal server error"
 	} else {
-		status = http.StatusOK
-		data, err := models.FindInviteesForUser(&ctx, id)
-		if err != nil {
-			status = http.StatusInternalServerError
-			response.Message = "Internal server error"
-		} else {
-			response.Data.Invitees = data
-		}
+		response.Data.Invitees = data
 	}
 	response.Status = status
 	c.JSON(status, response)

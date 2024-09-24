@@ -68,11 +68,11 @@ func loadTestUsers(c context.Context) error {
 	if err != nil {
 		return errors.New("There was a problem creating test user records: " + err.Error())
 	}
-	err = CreateUserInvitees(c, &userInvitees)
+	err = CreateUsers(c, &admins)
 	if err != nil {
 		return errors.New("There was a problem creating test user invitee records: " + err.Error())
 	}
-	err = CreateUsers(c, &admins)
+	err = CreateUserInvitees(c, &userInvitees)
 	if err != nil {
 		return errors.New("There was a problem creating test user invitee records: " + err.Error())
 	}

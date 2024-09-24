@@ -59,7 +59,7 @@ func Test_InviteeController_Unit(t *testing.T) {
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
-	t.Run("POST /api/v1/user/:id/invite-user - internal server error", func(t *testing.T) {
+	t.Run("POST /api/v1/user/add-invitee - internal server error", func(t *testing.T) {
 		_, mock, _ := models.Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
@@ -83,7 +83,7 @@ func Test_InviteeController_Unit(t *testing.T) {
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
-		routePath := fmt.Sprintf("/api/v1/user/%s/invite-user", u.ID)
+		routePath := fmt.Sprintf("/api/v1/user/add-invitee", u.ID)
 		testInviteeJson, _ := json.Marshal(u)
 		ctx := gin.CreateTestContextOnly(w, router)
 		ctx.Set("uid", u.ID.String())

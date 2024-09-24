@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -155,6 +156,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	fmt.Println("DB USER: ", dbUser)
 	dbUser.Email = inputUser.Email
 	// Load the user details from the DB
 	err := models.FindUser(ctx, &dbUser)

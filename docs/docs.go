@@ -612,7 +612,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/{user_id}/invite-user": {
+        "/user/{user_id}/add-invitee": {
             "post": {
                 "description": "Invites a user for ght given user",
                 "produces": [
@@ -831,6 +831,57 @@ const docTemplate = `{
                 }
             }
         },
+        "models.UserInvitee": {
+            "type": "object",
+            "required": [
+                "first_name",
+                "inviter_id",
+                "last_name"
+            ],
+            "properties": {
+                "created_at": {
+                    "description": "The time the record was created at\n\nWe override Gorm's CreatedAt field so we can set the gorm:\"\u003c-:create\" directive,\nwhich prevents this field from being altered once the record is created",
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "entreeSelection": {
+                    "$ref": "#/definitions/models.Entree"
+                },
+                "entree_selection_id": {
+                    "description": "The ID of the entree the user has selected; is null until the user makes a selection.",
+                    "type": "string"
+                },
+                "first_name": {
+                    "description": "The user's first name.",
+                    "type": "string"
+                },
+                "horsDoeuvresSelection": {
+                    "$ref": "#/definitions/models.HorsDoeuvres"
+                },
+                "hors_doeuvres_selection_id": {
+                    "description": "The ID of the hors doeuvres the user has selected; is null until the user makes a selection.",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "inviter": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "inviter_id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "description": "The user's last name.",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "types.EntreeData": {
             "type": "object",
             "properties": {
@@ -870,7 +921,7 @@ const docTemplate = `{
                 "users": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.User"
+                        "$ref": "#/definitions/models.UserInvitee"
                     }
                 }
             }

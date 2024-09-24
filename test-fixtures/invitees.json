@@ -199,5 +199,13 @@
         "last_name": "Kools",
         "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
         "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
+    },
+    {
+        "id": "40aff36d-41b9-4cdf-9e40-4273de637168",
+        "inviter_id": "15034fc9-3f7e-4c42-b6d3-2925330b1b76",
+        "first_name": "Some",
+        "last_name": "Person",
+        "entree_selection_id": "f8cd5ea3-bb29-42fc-9984-a6c37d8b99c3",
+        "hors_doeuvres_selection_id": "3baf970f-1670-4b42-ba81-63168a2f21b8"
     }
 ]
