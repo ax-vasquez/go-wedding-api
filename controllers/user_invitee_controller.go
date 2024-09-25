@@ -139,7 +139,7 @@ func UpdateInviteeForLoggedInUser(c *gin.Context) {
 		LastName:  invInput.LastName,
 	}
 
-	err = models.UpdateInvitee(&ctx, &invitee, inviterIdUUID)
+	err = models.UpdateInviteeForUser(&ctx, &invitee, inviterIdUUID)
 	if err != nil {
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error"

@@ -52,7 +52,7 @@ func DeleteInviteeForUser(c *context.Context, inviteeId uuid.UUID, inviterId uui
 	return &result.RowsAffected, nil
 }
 
-func UpdateInvitee(c *context.Context, invitee *UserInvitee, inviterId uuid.UUID) error {
+func UpdateInviteeForUser(c *context.Context, invitee *UserInvitee, inviterId uuid.UUID) error {
 	result := db.WithContext(*c).Clauses(clause.Returning{}).Where("inviter_id = ?", inviterId).Updates(&invitee)
 	if result.Error != nil {
 		log.Println("Error updating UserInvitee: ", result.Error.Error())
