@@ -157,10 +157,9 @@ func Test_UserInviteeController_Guest_Integration(t *testing.T) {
 	})
 	t.Run("POST /api/v1/user/add-invitee - guest - can invite user", func(t *testing.T) {
 		w := httptest.NewRecorder()
-		testInvitee := models.User{
+		testInvitee := models.UserInvitee{
 			FirstName: "Minerva",
 			LastName:  "Mertens",
-			Email:     "minerva@ooo.world",
 		}
 		testInviteeJson, _ := json.Marshal(testInvitee)
 		req, err := http.NewRequest("POST", "/api/v1/user/add-invitee", strings.NewReader(string(testInviteeJson)))
@@ -179,7 +178,7 @@ func Test_UserInviteeController_Guest_Integration(t *testing.T) {
 		t.Run("DELETE /api/v1/invitee/:id - guest - attempting use admin-only 'delete invitee' endpoint returns error", func(t *testing.T) {
 			w := httptest.NewRecorder()
 			routePath := fmt.Sprintf("/api/v1/invitee/%s", responseObj.Data.Invitees[0].ID)
-			req, err := http.NewRequest("DELETE", routePath, strings.NewReader(string(testInviteeJson)))
+			req, err := http.NewRequest("DELETE", routePath, nil)
 			req.Header.Set("Content-Type", "application/json")
 			req.Header.Set("auth-token", token)
 			router.ServeHTTP(w, req)
@@ -189,6 +188,43 @@ func Test_UserInviteeController_Guest_Integration(t *testing.T) {
 			err = json.Unmarshal([]byte(w.Body.Bytes()), &deleteResponse)
 			assert.Nil(err)
 			assert.Equal(0, deleteResponse.Data.DeletedRecords)
+		})
+		t.Run("PATCH /api/v1/user/invitees/:id - guest - can update their invitees", func(t *testing.T) {
+			w := httptest.NewRecorder()
+			inviteeUpdate := UserInviteeInput{
+				FirstName: "Moomoo",
+				LastName:  "Mertens",
+			}
+			updateJson, _ := json.Marshal(inviteeUpdate)
+			routePath := fmt.Sprintf("/api/v1/user/invitees/%s", responseObj.Data.Invitees[0].ID)
+			req, err := http.NewRequest("PATCH", routePath, strings.NewReader(string(updateJson)))
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("auth-token", token)
+			router.ServeHTTP(w, req)
+			assert.Nil(err)
+			assert.Equal(http.StatusCreated, w.Code)
+			var responseObj types.V1_API_RESPONSE_USER_INVITEES
+			err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+			assert.Nil(err)
+			assert.Equal(1, len(responseObj.Data.Invitees))
+			assert.NotEmpty(responseObj.Data.Invitees[0].ID)
+			assert.NotEqual(models.NilUuid, responseObj.Data.Invitees[0].ID)
+			assert.Equal("Moomoo", responseObj.Data.Invitees[0].FirstName)
+			assert.Equal("Mertens", responseObj.Data.Invitees[0].LastName)
+		})
+		t.Run("DELETE /api/v1/user/invitees/:id - guest - can remove invitee they created", func(t *testing.T) {
+			w := httptest.NewRecorder()
+			routePath := fmt.Sprintf("/api/v1/user/invitees/%s", responseObj.Data.Invitees[0].ID)
+			req, err := http.NewRequest("DELETE", routePath, nil)
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("auth-token", token)
+			router.ServeHTTP(w, req)
+			assert.Nil(err)
+			assert.Equal(http.StatusAccepted, w.Code)
+			var deleteResponse types.V1_API_DELETE_RESPONSE
+			err = json.Unmarshal([]byte(w.Body.Bytes()), &deleteResponse)
+			assert.Nil(err)
+			assert.Equal(1, deleteResponse.Data.DeletedRecords)
 		})
 	})
 	t.Run("DELETE /api/v1/user/:invitee_id - guest - bad ID returns unauthorized (is treated like requesting a resource they don't own)", func(t *testing.T) {

@@ -181,7 +181,6 @@ func DeleteInviteeForLoggedInUser(c *gin.Context) {
 		return
 	}
 
-	log.Printf("Deleting invitee... INVITEE ID: %s | USER ID: %s", inviteeId, inviterIdUUID)
 	result, err := models.DeleteInviteeForUser(&ctx, inviteeId, inviterIdUUID)
 	if err != nil {
 		status = http.StatusInternalServerError
