@@ -189,6 +189,41 @@ func Test_UserInviteeController_Guest_Integration(t *testing.T) {
 			assert.Nil(err)
 			assert.Equal(0, deleteResponse.Data.DeletedRecords)
 		})
+		t.Run("PATCH /api/v1/user/invitees/:id - guest - bad data returns error", func(t *testing.T) {
+			w := httptest.NewRecorder()
+			inviteeUpdate := "bad data"
+			updateJson, _ := json.Marshal(inviteeUpdate)
+			routePath := fmt.Sprintf("/api/v1/user/invitees/%s", responseObj.Data.Invitees[0].ID)
+			req, err := http.NewRequest("PATCH", routePath, strings.NewReader(string(updateJson)))
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("auth-token", token)
+			router.ServeHTTP(w, req)
+			assert.Nil(err)
+			assert.Equal(http.StatusBadRequest, w.Code)
+			var responseObj types.V1_API_RESPONSE_USER_INVITEES
+			err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+			assert.Nil(err)
+			assert.Equal(http.StatusBadRequest, responseObj.Status)
+		})
+		t.Run("PATCH /api/v1/user/invitees/:id - guest - bad ID returns error", func(t *testing.T) {
+			w := httptest.NewRecorder()
+			inviteeUpdate := UserInviteeInput{
+				FirstName: "Moomoo",
+				LastName:  "Mertens",
+			}
+			updateJson, _ := json.Marshal(inviteeUpdate)
+			routePath := fmt.Sprintf("/api/v1/user/invitees/%s", "asdf")
+			req, err := http.NewRequest("PATCH", routePath, strings.NewReader(string(updateJson)))
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("auth-token", token)
+			router.ServeHTTP(w, req)
+			assert.Nil(err)
+			assert.Equal(http.StatusBadRequest, w.Code)
+			var responseObj types.V1_API_RESPONSE_USER_INVITEES
+			err = json.Unmarshal([]byte(w.Body.Bytes()), &responseObj)
+			assert.Nil(err)
+			assert.Equal(http.StatusBadRequest, responseObj.Status)
+		})
 		t.Run("PATCH /api/v1/user/invitees/:id - guest - can update their invitees", func(t *testing.T) {
 			w := httptest.NewRecorder()
 			inviteeUpdate := UserInviteeInput{
