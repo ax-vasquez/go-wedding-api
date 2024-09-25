@@ -600,6 +600,34 @@ paths:
       summary: admin-only operation to create a user
       tags:
       - user
+  /user/{user_id}/add-invitee:
+    post:
+      description: Invites a user for ght given user
+      parameters:
+      - description: Inviting user ID
+        format: uuid
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+      summary: invite a user
+      tags:
+      - user invitee
   /user/{user_id}/entrees:
     get:
       description: Gets the selected entree for the given user ID (empty array if
@@ -654,34 +682,6 @@ paths:
       summary: gets one or all hors doeuvres
       tags:
       - hors doeuvres
-  /user/{user_id}/add-invitee:
-    post:
-      description: Invites a user for ght given user
-      parameters:
-      - description: Inviting user ID
-        format: uuid
-        in: path
-        name: user_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
-      summary: invite a user
-      tags:
-      - user invitee
   /user/{user_id}/invitees:
     get:
       description: Gets invitee user data for users invited by the given inviter ID

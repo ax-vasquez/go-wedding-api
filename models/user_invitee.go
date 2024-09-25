@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm/clause"
 )
 
 type UserInvitee struct {
@@ -39,6 +40,25 @@ func CreateUserInvitee(c *context.Context, invitedUser *UserInvitee) error {
 func CreateUserInvitees(c context.Context, invitees *[]UserInvitee) error {
 	result := db.WithContext(c).Create(&invitees)
 	return result.Error
+}
+
+// Delete an invitee for the given user and by the invitee ID
+func DeleteInviteeForUser(c *context.Context, inviteeId uuid.UUID, inviterId uuid.UUID) (*int64, error) {
+	result := db.WithContext(*c).Delete(&UserInvitee{}, "id = ? AND inviter_id = ?", inviteeId, inviterId)
+	if result.Error != nil {
+		log.Println("Error deleting UserInvitee: ", result.Error.Error())
+		return nil, result.Error
+	}
+	return &result.RowsAffected, nil
+}
+
+func UpdateInvitee(c *context.Context, invitee *UserInvitee, inviterId uuid.UUID) error {
+	result := db.WithContext(*c).Clauses(clause.Returning{}).Where("inviter_id = ?", inviterId).Updates(&invitee)
+	if result.Error != nil {
+		log.Println("Error updating UserInvitee: ", result.Error.Error())
+		return result.Error
+	}
+	return nil
 }
 
 // Delete an invitee

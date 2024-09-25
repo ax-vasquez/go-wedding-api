@@ -94,6 +94,88 @@ func GetInviteesForLoggedInUser(c *gin.Context) {
 	c.JSON(status, response)
 }
 
+func UpdateInviteeForLoggedInUser(c *gin.Context) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+	response := types.V1_API_RESPONSE_USER_INVITEES{}
+	var status int
+	invitee := models.UserInvitee{}
+
+	if err := c.ShouldBindBodyWithJSON(&invitee); err != nil {
+		status = http.StatusBadRequest
+		response.Message = err.Error()
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
+
+	inviteeId, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		status = http.StatusBadRequest
+		response.Message = err.Error()
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
+
+	invitee.ID = inviteeId
+
+	inviterId := c.GetString("uid")
+	inviterIdUUID, _ := uuid.Parse(inviterId)
+	err = models.UpdateInvitee(&ctx, &invitee, inviterIdUUID)
+	if err != nil {
+		status = http.StatusInternalServerError
+		response.Message = "Internal server error"
+	} else {
+		response.Data.Invitees = []models.UserInvitee{invitee}
+	}
+	if err != nil {
+		status = http.StatusInternalServerError
+		response.Message = "Internal server error"
+		log.Println("Error creating user invitee: ", err.Error())
+	} else {
+		status = http.StatusCreated
+		response.Message = "Updated user invitee"
+		response.Data.Invitees = []models.UserInvitee{invitee}
+	}
+
+	response.Status = status
+	c.JSON(status, response)
+}
+
+// DeleteInviteeForLoggedInUser deletes the invitee by the given ID for the logged in user.
+func DeleteInviteeForLoggedInUser(c *gin.Context) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+	response := types.V1_API_DELETE_RESPONSE{}
+	var status int
+
+	inviterId := c.GetString("uid")
+	inviterIdUUID, _ := uuid.Parse(inviterId)
+	inviteeId, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		status = http.StatusBadRequest
+		response.Message = err.Error()
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
+
+	result, err := models.DeleteInviteeForUser(&ctx, inviteeId, inviterIdUUID)
+	if err != nil {
+		status = http.StatusInternalServerError
+		response.Message = "Internal server error"
+		response.Status = status
+		c.JSON(status, response)
+		return
+	}
+
+	status = http.StatusAccepted
+	response.Data.DeletedRecords = int(*result)
+	response.Status = status
+	c.JSON(status, response)
+}
+
 // DeleteInvitee deletes an invitee
 //
 //	@Summary      deletes an invitee

@@ -80,9 +80,11 @@ func paveRoutes() *gin.Engine {
 		userRoutesV1.GET("/:id/horsdoeuvres", middleware.IsAdminOrCurrentUser(), GetHorsDoeuvres)
 		userRoutesV1.PATCH("", middleware.IsAdminOrCurrentUser(), UpdateLoggedInUser)
 		userRoutesV1.PATCH("/update-other", middleware.IsAdmin(), AdminUpdateUser)
+		userRoutesV1.PATCH("/invitees/:id", middleware.IsAdminOrCurrentUser(), UpdateInviteeForLoggedInUser)
 		userRoutesV1.POST("", middleware.IsAdmin(), CreateUser)
 		userRoutesV1.POST("/add-invitee", middleware.IsAdminOrCurrentUser(), CreateUserInvitee)
 		userRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteUser)
+		userRoutesV1.DELETE("/invitees/:id", middleware.IsAdminOrCurrentUser(), DeleteInviteeForLoggedInUser)
 	}
 
 	inviteeRoutesV1 := v1.Group("/invitee")

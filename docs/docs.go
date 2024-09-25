@@ -535,6 +535,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/{user_id}/add-invitee": {
+            "post": {
+                "description": "Invites a user for ght given user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user invitee"
+                ],
+                "summary": "invite a user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Inviting user ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    }
+                }
+            }
+        },
         "/user/{user_id}/entrees": {
             "get": {
                 "security": [
@@ -607,48 +649,6 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/types.V1_API_RESPONSE_HORS_DOEUVRES"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/{user_id}/add-invitee": {
-            "post": {
-                "description": "Invites a user for ght given user",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user invitee"
-                ],
-                "summary": "invite a user",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "Inviting user ID",
-                        "name": "user_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
                         }
                     }
                 }
