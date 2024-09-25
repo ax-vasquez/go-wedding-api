@@ -72,19 +72,19 @@ func paveRoutes() *gin.Engine {
 	userRoutesV1 := v1.Group("/user")
 	{
 		userRoutesV1.Use(middleware.AuthenticateV1())
-		userRoutesV1.GET("", middleware.IsAdminOrCurrentUser(), GetLoggedInUser)
-		userRoutesV1.GET("/invitees", middleware.IsAdminOrCurrentUser(), GetInviteesForLoggedInUser)
+		userRoutesV1.GET("", middleware.IsAdminOrLoggedInUser(), GetLoggedInUser)
+		userRoutesV1.GET("/invitees", middleware.IsAdminOrLoggedInUser(), GetInviteesForLoggedInUser)
 		// TODO: I've fixed the API that this was using before - it's better to have a specific "EntreeForUser" controller since GetEntrees gets one or all entrees, now
-		userRoutesV1.GET("/:id/entrees", middleware.IsAdminOrCurrentUser(), GetEntrees)
+		userRoutesV1.GET("/:id/entrees", middleware.IsAdminOrLoggedInUser(), GetEntrees)
 		// TODO: Same note as for entrees - should use a different controller to get hors doeuvres for a user
-		userRoutesV1.GET("/:id/horsdoeuvres", middleware.IsAdminOrCurrentUser(), GetHorsDoeuvres)
-		userRoutesV1.PATCH("", middleware.IsAdminOrCurrentUser(), UpdateLoggedInUser)
+		userRoutesV1.GET("/:id/horsdoeuvres", middleware.IsAdminOrLoggedInUser(), GetHorsDoeuvres)
+		userRoutesV1.PATCH("", middleware.IsAdminOrLoggedInUser(), UpdateLoggedInUser)
 		userRoutesV1.PATCH("/update-other", middleware.IsAdmin(), AdminUpdateUser)
-		userRoutesV1.PATCH("/invitees/:id", middleware.IsAdminOrCurrentUser(), UpdateInviteeForLoggedInUser)
+		userRoutesV1.PATCH("/invitees/:id", middleware.IsAdminOrLoggedInUser(), UpdateInviteeForLoggedInUser)
 		userRoutesV1.POST("", middleware.IsAdmin(), CreateUser)
-		userRoutesV1.POST("/add-invitee", middleware.IsAdminOrCurrentUser(), CreateUserInvitee)
+		userRoutesV1.POST("/add-invitee", middleware.IsAdminOrLoggedInUser(), CreateUserInvitee)
 		userRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteUser)
-		userRoutesV1.DELETE("/invitees/:id", middleware.IsAdminOrCurrentUser(), DeleteInviteeForLoggedInUser)
+		userRoutesV1.DELETE("/invitees/:id", middleware.IsAdminOrLoggedInUser(), DeleteInviteeForLoggedInUser)
 	}
 
 	inviteeRoutesV1 := v1.Group("/invitee")

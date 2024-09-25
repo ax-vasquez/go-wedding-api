@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func IsAdminOrCurrentUser() gin.HandlerFunc {
+func IsAdminOrLoggedInUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// If the current user is an admin, don't bother with UID check - admins have full access
 		if err := helper.CheckUserType(c, "ADMIN"); err == nil {
