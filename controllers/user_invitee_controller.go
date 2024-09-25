@@ -99,9 +99,9 @@ func UpdateInviteeForLoggedInUser(c *gin.Context) {
 	defer cancel()
 	response := types.V1_API_RESPONSE_USER_INVITEES{}
 	var status int
-	invitee := models.UserInvitee{}
+	invInput := UserInviteeInput{}
 
-	if err := c.ShouldBindBodyWithJSON(&invitee); err != nil {
+	if err := c.ShouldBindBodyWithJSON(&invInput); err != nil {
 		status = http.StatusBadRequest
 		response.Message = err.Error()
 		response.Status = status
@@ -118,21 +118,22 @@ func UpdateInviteeForLoggedInUser(c *gin.Context) {
 		return
 	}
 
-	invitee.ID = inviteeId
-
 	inviterId := c.GetString("uid")
 	inviterIdUUID, _ := uuid.Parse(inviterId)
+	invitee := models.UserInvitee{
+		BaseModel: models.BaseModel{
+			ID: inviteeId,
+		},
+		InviterId: inviterIdUUID,
+		FirstName: invInput.FirstName,
+		LastName:  invInput.LastName,
+	}
+
 	err = models.UpdateInvitee(&ctx, &invitee, inviterIdUUID)
 	if err != nil {
 		status = http.StatusInternalServerError
 		response.Message = "Internal server error"
-	} else {
-		response.Data.Invitees = []models.UserInvitee{invitee}
-	}
-	if err != nil {
-		status = http.StatusInternalServerError
-		response.Message = "Internal server error"
-		log.Println("Error creating user invitee: ", err.Error())
+		log.Println("Error updating user invitee: ", err.Error())
 	} else {
 		status = http.StatusCreated
 		response.Message = "Updated user invitee"
