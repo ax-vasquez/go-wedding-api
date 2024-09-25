@@ -238,14 +238,14 @@ const docTemplate = `{
         },
         "/invitee/{id}": {
             "delete": {
-                "description": "Deletes an invitee",
+                "description": "Deletes an invitee, regardless the inviter",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "user invitee"
                 ],
-                "summary": "deletes an invitee",
+                "summary": "deletes an invitee, regardless the inviter",
                 "parameters": [
                     {
                         "type": "string",
@@ -530,6 +530,76 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/types.V1_API_RESPONSE_USERS"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/invitees/{id}": {
+            "delete": {
+                "description": "Deletes the given invitee if the logged in user is the one who invited them",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user invitee"
+                ],
+                "summary": "deletes the given invitee if the logged in user is the one who invited them",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "User ID of the invitee to delete",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Updates an invitee for the logged in user; this will have no effect if a user attempts to update an invitee they did not add",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user invitee"
+                ],
+                "summary": "updates an invitee for the logged in user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "User ID of the invitee to delete",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
                         }
                     }
                 }

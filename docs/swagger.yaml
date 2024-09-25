@@ -401,7 +401,7 @@ paths:
       - hors doeuvres
   /invitee/{id}:
     delete:
-      description: Deletes an invitee
+      description: Deletes an invitee, regardless the inviter
       parameters:
       - description: User ID of the invitee to delete
         format: uuid
@@ -420,7 +420,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
-      summary: deletes an invitee
+      summary: deletes an invitee, regardless the inviter
       tags:
       - user invitee
   /login:
@@ -708,6 +708,56 @@ paths:
           schema:
             $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
       summary: gets invitees for user
+      tags:
+      - user invitee
+  /user/invitees/{id}:
+    delete:
+      description: Deletes the given invitee if the logged in user is the one who
+        invited them
+      parameters:
+      - description: User ID of the invitee to delete
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+      summary: deletes the given invitee if the logged in user is the one who invited
+        them
+      tags:
+      - user invitee
+    patch:
+      description: Updates an invitee for the logged in user; this will have no effect
+        if a user attempts to update an invitee they did not add
+      parameters:
+      - description: User ID of the invitee to delete
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+      summary: updates an invitee for the logged in user
       tags:
       - user invitee
 swagger: "2.0"

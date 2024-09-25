@@ -94,6 +94,16 @@ func GetInviteesForLoggedInUser(c *gin.Context) {
 	c.JSON(status, response)
 }
 
+// UpdateInviteeForLoggedInUser update an invitee for the logged in user
+//
+//	@Summary      updates an invitee for the logged in user
+//	@Description  Updates an invitee for the logged in user; this will have no effect if a user attempts to update an invitee they did not add
+//	@Tags         user invitee
+//	@Produce      json
+//	@Success      200  {object}  types.V1_API_RESPONSE_USER_INVITEES
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USER_INVITEES
+//	@Param 		  id  path string true "User ID of the invitee to delete" Format(uuid)
+//	@Router       /user/invitees/{id} [patch]
 func UpdateInviteeForLoggedInUser(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
@@ -145,6 +155,15 @@ func UpdateInviteeForLoggedInUser(c *gin.Context) {
 }
 
 // DeleteInviteeForLoggedInUser deletes the invitee by the given ID for the logged in user.
+//
+//	@Summary      deletes the given invitee if the logged in user is the one who invited them
+//	@Description  Deletes the given invitee if the logged in user is the one who invited them
+//	@Tags         user invitee
+//	@Produce      json
+//	@Success      200  {object}  types.V1_API_RESPONSE_USER_INVITEES
+//	@Failure      500  {object}  types.V1_API_RESPONSE_USER_INVITEES
+//	@Param 		  id  path string true "User ID of the invitee to delete" Format(uuid)
+//	@Router       /user/invitees/{id} [delete]
 func DeleteInviteeForLoggedInUser(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
@@ -177,10 +196,10 @@ func DeleteInviteeForLoggedInUser(c *gin.Context) {
 	c.JSON(status, response)
 }
 
-// DeleteInvitee deletes an invitee
+// DeleteInvitee deletes an invitee (intended for admin use only)
 //
-//	@Summary      deletes an invitee
-//	@Description  Deletes an invitee
+//	@Summary      deletes an invitee, regardless the inviter
+//	@Description  Deletes an invitee, regardless the inviter
 //	@Tags         user invitee
 //	@Produce      json
 //	@Success      200  {object}  types.V1_API_RESPONSE_USER_INVITEES
