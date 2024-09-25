@@ -39,7 +39,7 @@ func Test_InviteeController_Unit(t *testing.T) {
 	}
 	t.Run("GET /api/v1/user/:id/invitees - internal server error", func(t *testing.T) {
 		_, mock, _ := models.Setup()
-		mock.ExpectQuery(regexp.QuoteMeta(`SELECT "users"."created_at","users"."updated_at","users"."deleted_at","users"."id","users"."role","users"."is_going","users"."first_name","users"."last_name","users"."email","users"."password","users"."token","users"."refresh_token","users"."hors_doeuvres_selection_id","users"."entree_selection_id" FROM "users" JOIN user_user_invitees ON user_user_invitees.invitee_id = users.id AND user_user_invitees.inviter_id = $1 WHERE "users"."deleted_at" IS NULL`)).WithArgs(
+		mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "user_invitees" WHERE inviter_id = $1 AND "user_invitees"."deleted_at" IS NULL`)).WithArgs(
 			u.ID,
 		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
@@ -62,21 +62,15 @@ func Test_InviteeController_Unit(t *testing.T) {
 		_, mock, _ := models.Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","role","is_going","first_name","last_name","email","password","token","refresh_token","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) ON CONFLICT DO NOTHING RETURNING "id`)).WithArgs(
+			regexp.QuoteMeta(`INSERT INTO "user_invitees" ("created_at","updated_at","deleted_at","inviter_id","first_name","last_name","hors_doeuvres_selection_id","entree_selection_id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING "id"`)).WithArgs(
 			test.AnyTime{},
 			test.AnyTime{},
 			nil,
-			u.Role,
-			u.IsGoing,
+			test.AnyString{},
 			u.FirstName,
 			u.LastName,
-			u.Email,
-			u.Password,
-			u.Token,
-			u.RefreshToken,
 			u.HorsDoeuvresSelectionId,
 			u.EntreeSelectionId,
-			u.ID,
 		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
 		mock.ExpectCommit()
@@ -98,7 +92,7 @@ func Test_InviteeController_Unit(t *testing.T) {
 	t.Run("DELETE /api/v1/invitee/:id - internal server error", func(t *testing.T) {
 		_, mock, _ := models.Setup()
 		mock.ExpectBegin()
-		mock.ExpectExec(regexp.QuoteMeta(`UPDATE "user_user_invitees" SET "deleted_at"=$1 WHERE invitee_id = $2 AND "user_user_invitees"."deleted_at" IS NULL`)).WithArgs(
+		mock.ExpectExec(regexp.QuoteMeta(`UPDATE "user_invitees" SET "deleted_at"=$1 WHERE id = $2 AND "user_invitees"."deleted_at" IS NULL`)).WithArgs(
 			test.AnyTime{},
 			u.ID,
 		).WillReturnError(fmt.Errorf(errMsg))
