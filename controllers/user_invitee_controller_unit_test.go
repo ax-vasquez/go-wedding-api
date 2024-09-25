@@ -27,7 +27,8 @@ func Test_InviteeController_Unit(t *testing.T) {
 	router := paveRoutes()
 	errMsg := "arbitrary database error"
 	apiErrMsg := "Internal server error"
-	u := models.User{
+	mockInviterId := uuid.New()
+	invitee := models.User{
 		BaseModel: models.BaseModel{
 			ID: uuid.New(),
 		},
@@ -39,18 +40,17 @@ func Test_InviteeController_Unit(t *testing.T) {
 	}
 	t.Run("GET /api/v1/user/:id/invitees - internal server error", func(t *testing.T) {
 		_, mock, _ := models.Setup()
-		mock.ExpectQuery(regexp.QuoteMeta(`SELECT "users"."created_at","users"."updated_at","users"."deleted_at","users"."id","users"."role","users"."is_going","users"."first_name","users"."last_name","users"."email","users"."password","users"."token","users"."refresh_token","users"."hors_doeuvres_selection_id","users"."entree_selection_id" FROM "users" JOIN user_user_invitees ON user_user_invitees.invitee_id = users.id AND user_user_invitees.inviter_id = $1 WHERE "users"."deleted_at" IS NULL`)).WithArgs(
-			u.ID,
+		mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "user_invitees" WHERE inviter_id = $1 AND "user_invitees"."deleted_at" IS NULL`)).WithArgs(
+			invitee.ID,
 		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
-		routePath := fmt.Sprintf("/api/v1/user/%s/invitees", u.ID)
 		ctx := gin.CreateTestContextOnly(w, router)
-		ctx.Set("uid", u.ID.String())
+		ctx.Set("uid", invitee.ID.String())
 		ctx.Set("user_role", "GUEST")
-		req, err := http.NewRequestWithContext(ctx, "GET", routePath, nil)
+		req, err := http.NewRequestWithContext(ctx, "GET", "/api/v1/user/invitees", nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
@@ -59,36 +59,86 @@ func Test_InviteeController_Unit(t *testing.T) {
 		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
 		assert.Equal(apiErrMsg, jsonResponse.Message)
 	})
-	t.Run("POST /api/v1/user/:id/invite-user - internal server error", func(t *testing.T) {
+	t.Run("POST /api/v1/user/add-invitee - internal server error", func(t *testing.T) {
 		_, mock, _ := models.Setup()
 		mock.ExpectBegin()
 		mock.ExpectQuery(
-			regexp.QuoteMeta(`INSERT INTO "users" ("created_at","updated_at","deleted_at","role","is_going","first_name","last_name","email","password","token","refresh_token","hors_doeuvres_selection_id","entree_selection_id","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) ON CONFLICT DO NOTHING RETURNING "id`)).WithArgs(
+			regexp.QuoteMeta(`INSERT INTO "user_invitees" ("created_at","updated_at","deleted_at","inviter_id","first_name","last_name","hors_doeuvres_selection_id","entree_selection_id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING "id"`)).WithArgs(
 			test.AnyTime{},
 			test.AnyTime{},
 			nil,
-			u.Role,
-			u.IsGoing,
-			u.FirstName,
-			u.LastName,
-			u.Email,
-			u.Password,
-			u.Token,
-			u.RefreshToken,
-			u.HorsDoeuvresSelectionId,
-			u.EntreeSelectionId,
-			u.ID,
+			test.AnyString{},
+			invitee.FirstName,
+			invitee.LastName,
+			invitee.HorsDoeuvresSelectionId,
+			invitee.EntreeSelectionId,
 		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
-		routePath := fmt.Sprintf("/api/v1/user/%s/invite-user", u.ID)
-		testInviteeJson, _ := json.Marshal(u)
+		testInviteeJson, _ := json.Marshal(invitee)
 		ctx := gin.CreateTestContextOnly(w, router)
-		ctx.Set("uid", u.ID.String())
+		ctx.Set("uid", invitee.ID.String())
 		ctx.Set("user_role", "GUEST")
-		req, err := http.NewRequestWithContext(ctx, "POST", routePath, strings.NewReader(string(testInviteeJson)))
+		req, err := http.NewRequestWithContext(ctx, "POST", "/api/v1/user/add-invitee", strings.NewReader(string(testInviteeJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusInternalServerError, w.Code)
+
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
+		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
+		assert.Equal(apiErrMsg, jsonResponse.Message)
+	})
+	t.Run("PATCH /api/v1/user/invitees/:id - internal server error", func(t *testing.T) {
+		_, mock, _ := models.Setup()
+		mock.ExpectBegin()
+		mock.ExpectQuery(
+			regexp.QuoteMeta(`UPDATE "user_invitees" SET "updated_at"=$1,"inviter_id"=$2,"first_name"=$3,"last_name"=$4 WHERE inviter_id = $5 AND "user_invitees"."deleted_at" IS NULL AND "id" = $6 RETURNING *`)).WithArgs(
+			test.AnyTime{},
+			mockInviterId,
+			invitee.FirstName,
+			invitee.LastName,
+			mockInviterId,
+			invitee.ID,
+		).WillReturnError(fmt.Errorf(errMsg))
+		mock.ExpectRollback()
+		mock.ExpectCommit()
+
+		w := httptest.NewRecorder()
+		testInviteeJson, _ := json.Marshal(invitee)
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", mockInviterId.String())
+		ctx.Set("user_role", "GUEST")
+		routePath := fmt.Sprintf("/api/v1/user/invitees/%s", invitee.ID)
+		req, err := http.NewRequestWithContext(ctx, "PATCH", routePath, strings.NewReader(string(testInviteeJson)))
+		router.ServeHTTP(w, req)
+		assert.Nil(err)
+		assert.Equal(http.StatusInternalServerError, w.Code)
+
+		var jsonResponse types.V1_API_RESPONSE_ENTREE
+		json.Unmarshal([]byte(w.Body.Bytes()), &jsonResponse)
+		assert.Equal(apiErrMsg, jsonResponse.Message)
+	})
+	t.Run("DELETE /api/v1/user/invitees/:id - internal server error", func(t *testing.T) {
+		mockInviteeId := uuid.New()
+		_, mock, _ := models.Setup()
+		mock.ExpectBegin()
+		mock.ExpectExec(
+			regexp.QuoteMeta(`UPDATE "user_invitees" SET "deleted_at"=$1 WHERE (id = $2 AND inviter_id = $3) AND "user_invitees"."deleted_at" IS NULL`)).WithArgs(
+			test.AnyTime{},
+			mockInviteeId.String(),
+			mockInviterId.String(),
+		).WillReturnError(fmt.Errorf(errMsg))
+		mock.ExpectRollback()
+		mock.ExpectCommit()
+
+		w := httptest.NewRecorder()
+		ctx := gin.CreateTestContextOnly(w, router)
+		ctx.Set("uid", mockInviterId.String())
+		ctx.Set("user_role", "GUEST")
+		routePath := fmt.Sprintf("/api/v1/user/invitees/%s", mockInviteeId)
+		req, err := http.NewRequestWithContext(ctx, "DELETE", routePath, nil)
 		router.ServeHTTP(w, req)
 		assert.Nil(err)
 		assert.Equal(http.StatusInternalServerError, w.Code)
@@ -100,16 +150,16 @@ func Test_InviteeController_Unit(t *testing.T) {
 	t.Run("DELETE /api/v1/invitee/:id - internal server error", func(t *testing.T) {
 		_, mock, _ := models.Setup()
 		mock.ExpectBegin()
-		mock.ExpectExec(regexp.QuoteMeta(`UPDATE "user_user_invitees" SET "deleted_at"=$1 WHERE invitee_id = $2 AND "user_user_invitees"."deleted_at" IS NULL`)).WithArgs(
+		mock.ExpectExec(regexp.QuoteMeta(`UPDATE "user_invitees" SET "deleted_at"=$1 WHERE id = $2 AND "user_invitees"."deleted_at" IS NULL`)).WithArgs(
 			test.AnyTime{},
-			u.ID,
+			invitee.ID,
 		).WillReturnError(fmt.Errorf(errMsg))
 		mock.ExpectRollback()
 		mock.ExpectCommit()
 
 		w := httptest.NewRecorder()
-		testInviteeJson, _ := json.Marshal(u)
-		routePath := fmt.Sprintf("/api/v1/invitee/%s", u.ID)
+		testInviteeJson, _ := json.Marshal(invitee)
+		routePath := fmt.Sprintf("/api/v1/invitee/%s", invitee.ID)
 		ctx := gin.CreateTestContextOnly(w, router)
 		ctx.Set("uid", models.NilUuid)
 		ctx.Set("user_role", "ADMIN")

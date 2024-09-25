@@ -27,7 +27,6 @@ func CheckUserType(c *gin.Context, role string) (err error) {
 // MatchUserTypeToUid checks to see if the incoming request has a user_role set in the context, and if the uid matches the user ID of the
 // owner for the resource being requested/modified.
 func MatchUserTypeToUid(c *gin.Context, userId string) (err error) {
-	uid := c.Value("uid")
 	userType := c.Value("user_role")
 	err = nil
 
@@ -35,7 +34,7 @@ func MatchUserTypeToUid(c *gin.Context, userId string) (err error) {
 
 	// If userId is empty at this point, it means there was no user ID present in the URL parameters
 	if userId != "" {
-		if !ok || uid != userId {
+		if !ok {
 			err = errors.New("you are not authorised to access this resource")
 			return err
 		}

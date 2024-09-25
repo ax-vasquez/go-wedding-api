@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_UserUserInvitee_Integration(t *testing.T) {
+func Test_UserInvitee_Integration(t *testing.T) {
 	assert := assert.New(t)
 	firstUserUuid, _ := uuid.Parse(FirstUserIdStr)
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
@@ -24,13 +24,12 @@ func Test_UserUserInvitee_Integration(t *testing.T) {
 		assert.Equal("Suman", invitees[0].FirstName)
 	})
 	t.Run("Can create user invitee", func(t *testing.T) {
-		invitee := User{
-			Role:      "GUEST",
+		invitee := UserInvitee{
+			InviterId: firstUserUuid,
 			FirstName: "Billy",
 			LastName:  "McTesterson",
-			Email:     "a@b.com",
 		}
-		err := CreateUserInvitee(&ctx, firstUserUuid, &invitee)
+		err := CreateUserInvitee(&ctx, &invitee)
 		assert.Nil(err)
 		assert.NotEmpty(invitee.ID)
 		assert.Equal("Billy", invitee.FirstName)

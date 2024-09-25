@@ -109,6 +109,48 @@ definitions:
     - first_name
     - last_name
     type: object
+  models.UserInvitee:
+    properties:
+      created_at:
+        description: |-
+          The time the record was created at
+
+          We override Gorm's CreatedAt field so we can set the gorm:"<-:create" directive,
+          which prevents this field from being altered once the record is created
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      entree_selection_id:
+        description: The ID of the entree the user has selected; is null until the
+          user makes a selection.
+        type: string
+      entreeSelection:
+        $ref: '#/definitions/models.Entree'
+      first_name:
+        description: The user's first name.
+        type: string
+      hors_doeuvres_selection_id:
+        description: The ID of the hors doeuvres the user has selected; is null until
+          the user makes a selection.
+        type: string
+      horsDoeuvresSelection:
+        $ref: '#/definitions/models.HorsDoeuvres'
+      id:
+        type: string
+      inviter:
+        $ref: '#/definitions/models.User'
+      inviter_id:
+        type: string
+      last_name:
+        description: The user's last name.
+        type: string
+      updated_at:
+        type: string
+    required:
+    - first_name
+    - inviter_id
+    - last_name
+    type: object
   types.EntreeData:
     properties:
       entrees:
@@ -134,7 +176,7 @@ definitions:
     properties:
       users:
         items:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/models.UserInvitee'
         type: array
     type: object
   types.UserLoginInput:
@@ -359,7 +401,7 @@ paths:
       - hors doeuvres
   /invitee/{id}:
     delete:
-      description: Deletes an invitee
+      description: Deletes an invitee, regardless the inviter
       parameters:
       - description: User ID of the invitee to delete
         format: uuid
@@ -378,7 +420,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
-      summary: deletes an invitee
+      summary: deletes an invitee, regardless the inviter
       tags:
       - user invitee
   /login:
@@ -558,6 +600,34 @@ paths:
       summary: admin-only operation to create a user
       tags:
       - user
+  /user/{user_id}/add-invitee:
+    post:
+      description: Invites a user for ght given user
+      parameters:
+      - description: Inviting user ID
+        format: uuid
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+      summary: invite a user
+      tags:
+      - user invitee
   /user/{user_id}/entrees:
     get:
       description: Gets the selected entree for the given user ID (empty array if
@@ -612,34 +682,6 @@ paths:
       summary: gets one or all hors doeuvres
       tags:
       - hors doeuvres
-  /user/{user_id}/invite-user:
-    post:
-      description: Invites a user for ght given user
-      parameters:
-      - description: Inviting user ID
-        format: uuid
-        in: path
-        name: user_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
-      summary: invite a user
-      tags:
-      - user invitee
   /user/{user_id}/invitees:
     get:
       description: Gets invitee user data for users invited by the given inviter ID
@@ -666,6 +708,56 @@ paths:
           schema:
             $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
       summary: gets invitees for user
+      tags:
+      - user invitee
+  /user/invitees/{id}:
+    delete:
+      description: Deletes the given invitee if the logged in user is the one who
+        invited them
+      parameters:
+      - description: User ID of the invitee to delete
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+      summary: deletes the given invitee if the logged in user is the one who invited
+        them
+      tags:
+      - user invitee
+    patch:
+      description: Updates an invitee for the logged in user; this will have no effect
+        if a user attempts to update an invitee they did not add
+      parameters:
+      - description: User ID of the invitee to delete
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.V1_API_RESPONSE_USER_INVITEES'
+      summary: updates an invitee for the logged in user
       tags:
       - user invitee
 swagger: "2.0"

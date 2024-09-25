@@ -238,14 +238,14 @@ const docTemplate = `{
         },
         "/invitee/{id}": {
             "delete": {
-                "description": "Deletes an invitee",
+                "description": "Deletes an invitee, regardless the inviter",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "user invitee"
                 ],
-                "summary": "deletes an invitee",
+                "summary": "deletes an invitee, regardless the inviter",
                 "parameters": [
                     {
                         "type": "string",
@@ -535,6 +535,118 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/invitees/{id}": {
+            "delete": {
+                "description": "Deletes the given invitee if the logged in user is the one who invited them",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user invitee"
+                ],
+                "summary": "deletes the given invitee if the logged in user is the one who invited them",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "User ID of the invitee to delete",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Updates an invitee for the logged in user; this will have no effect if a user attempts to update an invitee they did not add",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user invitee"
+                ],
+                "summary": "updates an invitee for the logged in user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "User ID of the invitee to delete",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{user_id}/add-invitee": {
+            "post": {
+                "description": "Invites a user for ght given user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user invitee"
+                ],
+                "summary": "invite a user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Inviting user ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
+                        }
+                    }
+                }
+            }
+        },
         "/user/{user_id}/entrees": {
             "get": {
                 "security": [
@@ -607,48 +719,6 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/types.V1_API_RESPONSE_HORS_DOEUVRES"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/{user_id}/invite-user": {
-            "post": {
-                "description": "Invites a user for ght given user",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user invitee"
-                ],
-                "summary": "invite a user",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "Inviting user ID",
-                        "name": "user_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/types.V1_API_RESPONSE_USER_INVITEES"
                         }
                     }
                 }
@@ -831,6 +901,57 @@ const docTemplate = `{
                 }
             }
         },
+        "models.UserInvitee": {
+            "type": "object",
+            "required": [
+                "first_name",
+                "inviter_id",
+                "last_name"
+            ],
+            "properties": {
+                "created_at": {
+                    "description": "The time the record was created at\n\nWe override Gorm's CreatedAt field so we can set the gorm:\"\u003c-:create\" directive,\nwhich prevents this field from being altered once the record is created",
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "entreeSelection": {
+                    "$ref": "#/definitions/models.Entree"
+                },
+                "entree_selection_id": {
+                    "description": "The ID of the entree the user has selected; is null until the user makes a selection.",
+                    "type": "string"
+                },
+                "first_name": {
+                    "description": "The user's first name.",
+                    "type": "string"
+                },
+                "horsDoeuvresSelection": {
+                    "$ref": "#/definitions/models.HorsDoeuvres"
+                },
+                "hors_doeuvres_selection_id": {
+                    "description": "The ID of the hors doeuvres the user has selected; is null until the user makes a selection.",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "inviter": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "inviter_id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "description": "The user's last name.",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "types.EntreeData": {
             "type": "object",
             "properties": {
@@ -870,7 +991,7 @@ const docTemplate = `{
                 "users": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.User"
+                        "$ref": "#/definitions/models.UserInvitee"
                     }
                 }
             }

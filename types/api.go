@@ -41,7 +41,7 @@ type V1_API_RESPONSE_USERS struct {
 }
 
 type UserInviteeData struct {
-	Invitees []models.User `json:"users"`
+	Invitees []models.UserInvitee `json:"users"`
 }
 
 type V1_API_RESPONSE_USER_INVITEES struct {

@@ -132,7 +132,7 @@ func Test_AuthController_Unit(t *testing.T) {
 				helper.HashPassword(loginInput.Password),
 			))
 		mock.ExpectBegin()
-		mock.ExpectQuery(regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"token"=$2,"refresh_token"=$3 WHERE "users"."deleted_at" IS NULL AND "id" = $4 RETURNING *`)).WithArgs(
+		mock.ExpectQuery(regexp.QuoteMeta(`UPDATE "users" SET "updated_at"=$1,"token"=$2,"refresh_token"=$3 WHERE "users"."deleted_at" IS NULL AND "id" = $4 RETURNING "users"."role","users"."first_name","users"."last_name","users"."email","users"."hors_doeuvres_selection_id","users"."entree_selection_id`)).WithArgs(
 			test.AnyTime{},
 			test.AnyString{},
 			test.AnyString{},
