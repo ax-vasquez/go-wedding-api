@@ -90,8 +90,13 @@ func paveRoutes() *gin.Engine {
 	inviteeRoutesV1 := v1.Group("/invitee")
 	{
 		inviteeRoutesV1.Use(middleware.AuthenticateV1())
-		// TODO: Make an endpoint that allows a guest to delete invitees they invited - this route is admin-only
 		inviteeRoutesV1.DELETE("/:id", middleware.IsAdmin(), DeleteInvitee)
+	}
+
+	venueGroupV1 := v1.Group("/venue")
+	{
+		venueGroupV1.Use(middleware.AuthenticateV1())
+		venueGroupV1.GET("/reservation-link", GetHotelRoomReservationBlockLink)
 	}
 
 	return r

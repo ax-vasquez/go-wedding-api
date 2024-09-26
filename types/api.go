@@ -67,6 +67,16 @@ type V1_API_RESPONSE_HORS_DOEUVRES struct {
 	Data HorsDoeuvresData `json:"data"`
 }
 
+type VenueData struct {
+	Link string `json:"link"`
+}
+
+type V1_API_RESPONSE_VENUE struct {
+	Status  int       `json:"status"`
+	Message string    `json:"message"`
+	Data    VenueData `json:"data"`
+}
+
 type UserLoginInput struct {
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
